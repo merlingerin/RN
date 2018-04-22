@@ -1,0 +1,35 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@expo/samples": "2.1.1",
+    "expo": "26.0.0",
+    "module-resolver": "^1.0.0",
+    "native-base": "^2.4.2",
+    "react": "16.3.0-alpha.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
+    "react-native-animatable": "^1.2.4",
+    "react-native-app-intro": "^1.1.5",
+    "react-native-calendars": "^1.18.2",
+    "react-native-elements": "^1.0.0-beta4",
+    "react-native-gifted-form": "^0.1.1",
+    "react-native-image-picker": "^0.26.7",
+    "react-native-loading-spinner-overlay": "^0.5.2",
+    "react-native-modal": "^5.4.0",
+    "react-native-push-notification": "^3.0.2",
+    "react-native-share": "^1.0.27",
+    "react-navigation": "1.5.10",
+    "react-redux": "^5.0.7",
+    "redux-offline": "^2.0.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "jest-expo": "^26.0.0"
+  }
+}
