@@ -19,7 +19,8 @@ import {
 } from 'native-base';
 import { WebBrowser } from 'expo';
 
-import GoalsCard from 'components/GoalsCard/GoalsCard';
+import AuthModal from 'components/AuthModal/AuthModal';
+import GoalsCard from '../../components/GoalsCard/GoalsCard';
 
 const goalsArr = [
 	[
@@ -66,6 +67,21 @@ export default class HomeScreen extends React.Component {
 		header: null,
 	};
 
+	state = {
+		isModalVisible: false,
+	};
+
+	_toggleModal = () => {
+		console.log('STATE', this.state.isModalVisible);
+		this.setState({ isModalVisible: !this.state.isModalVisible });
+	};
+
+	_turnOffModal = () => {
+		this.setState({ isModalVisible: false });
+	};
+
+	_navTo = () => this.props.navigation.navigate('GoalsScreen');
+
 	render() {
 		return (
 			<Container>
@@ -101,6 +117,7 @@ export default class HomeScreen extends React.Component {
 					}}
 				>
 					<TouchableOpacity
+						onPress={this._toggleModal}
 						style={{
 							borderWidth: 1,
 							borderColor: 'rgba(0,0,0,0.2)',
@@ -125,6 +142,7 @@ export default class HomeScreen extends React.Component {
 								{item.map((item, idx) => (
 									<Col key={idx} style={{ width: '50%' }}>
 										<GoalsCard
+											navTo={this._navTo}
 											title={item.title}
 											image={item.image}
 											btnTitle={item.btnTitle}
@@ -134,6 +152,10 @@ export default class HomeScreen extends React.Component {
 							</Row>
 						))}
 					</Grid>
+					<AuthModal
+						isVisible={this.state.isModalVisible}
+						turnOffModal={this._turnOffModal}
+					/>
 				</Content>
 			</Container>
 		);

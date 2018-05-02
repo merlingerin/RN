@@ -1,20 +1,5 @@
 import React from 'react';
-import {
-	Header,
-	Container,
-	Title,
-	Content,
-	Tabs,
-	Left,
-	Right,
-	Body,
-	Text,
-	Card,
-	Icon,
-	Button,
-	H1,
-} from 'native-base';
-import { WebBrowser } from 'expo';
+import { NavigationBar, ImageBackground, Title } from '@shoutem/ui';
 
 export default class StatisticScreen extends React.Component {
 	static navigationOptions = {
@@ -24,29 +9,18 @@ export default class StatisticScreen extends React.Component {
 
 	render() {
 		return (
-			<Container>
-				<Header>
-					<Left>
-						<Button transparent>
-							<Icon name="menu" />
-						</Button>
-					</Left>
-					<Body>
-						<Title>Statistic</Title>
-					</Body>
-					<Right>
-						<Button transparent>
-							<Icon
-								name="ios-more"
-								style={{ transform: [{ rotateZ: '90deg' }] }}
-							/>
-						</Button>
-					</Right>
-				</Header>
-				<Content>
-					<Text>Statistic page</Text>
-				</Content>
-			</Container>
+			<ImageBackground
+				source={{
+					uri:
+						'https://shoutem.github.io/img/ui-toolkit/examples/image-3.png',
+				}}
+				style={{ width: 375, height: 70 }}
+			>
+				<NavigationBar
+					styleName="clear"
+					centerComponent={<Title>TITLE</Title>}
+				/>
+			</ImageBackground>
 		);
 	}
 }

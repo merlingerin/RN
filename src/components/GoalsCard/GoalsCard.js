@@ -35,7 +35,7 @@ export default class GoalsCard extends Component {
 				</CardItem>
 				<CardItem>
 					<Body>
-						<Button transparent>
+						<Button onPress={() => this.props.navTo()} transparent>
 							<Icon active name="md-add-circle" />
 							<Text>{this.props.btnTitle}</Text>
 						</Button>
