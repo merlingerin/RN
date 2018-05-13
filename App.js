@@ -42,6 +42,9 @@ export default class App extends React.Component {
 				Roboto: require('./assets/fonts/Roboto.ttf'),
 				Roboto_medium: require('./assets/fonts/Roboto_medium.ttf'),
 				Ionicons: require('./assets/fonts/Ionicons.ttf'),
+
+				'Rubik-Regular': require('./assets/fonts/Rubik/Rubik-Regular.ttf'),
+				'rubicon-icon-font': require('./assets/fonts/Rubik/rubicon-icon-font.ttf'),
 			}),
 		]);
 	};

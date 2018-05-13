@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Image, View } from 'react-native';
+import { Header } from 'react-native-elements';
 import {
-	Header,
 	Container,
 	Footer,
 	Title,
@@ -69,24 +69,14 @@ export default class GoalsScreen extends React.Component {
 	render() {
 		return (
 			<Container>
-				<Header>
-					<Left>
-						<Button transparent>
-							<Icon name="menu" />
-						</Button>
-					</Left>
-					<Body>
-						<Title>Добавить цель</Title>
-					</Body>
-					<Right>
-						<Button transparent>
-							<Icon
-								name="ios-more"
-								style={{ transform: [{ rotateZ: '90deg' }] }}
-							/>
-						</Button>
-					</Right>
-				</Header>
+				<Header
+					leftComponent={{ icon: 'menu', color: '#fff' }}
+					centerComponent={{
+						text: 'Добавить цель',
+						style: { color: '#fff' },
+					}}
+					rightComponent={{ icon: 'more-vert', color: '#fff' }}
+				/>
 				<Content padder>
 					<Button
 						iconLeft

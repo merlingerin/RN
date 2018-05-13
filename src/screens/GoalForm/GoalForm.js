@@ -1,26 +1,58 @@
 import React from 'react';
-import { FlatList, Image, View } from 'react-native';
+import _ from 'lodash';
+import { FlatList, Image, StyleSheet } from 'react-native';
+import TimePicker from '../../components/TimePicker/TimePicker';
+import GoalsGallery from '../../components/GoalsGallery/GoalsGallery';
+import CustomPicker from '../../components/CustomPicker/CustomPicker';
+import WeekDaysSegment from '../../components/WeekDaysSegment/WeekDaysSegment';
 import {
 	Header,
+	List,
+	ListItem,
+	Text,
+	CheckBox,
+	Tile,
+	Icon,
+} from 'react-native-elements';
+import {
 	Container,
-	Title,
+	Button,
 	Content,
 	Tabs,
 	Left,
 	Right,
 	Body,
-	Text,
 	Card,
-	Icon,
-	Button,
 	H1,
 	CardItem,
 	Badge,
 	Picker,
 	Segment,
+	Item,
+	Label,
+	Input,
 } from 'native-base';
 import DatePicker from 'react-native-datepicker';
+import { Title, View, Subtitle } from '@shoutem/ui';
+import GoalTitleInput from '../../components/GoalTitleInput/GoalTitleInput';
+import DeadlinePicker from '../../components/DeadlinePicker/DeadlinePicker';
 // import LabelSelect from 'react-native-label-select';
+
+styles1 = StyleSheet.create({
+	subtitleView: {
+		flexDirection: 'row',
+		paddingLeft: 10,
+		paddingTop: 5,
+	},
+	ratingImage: {
+		height: 19.21,
+		width: 100,
+	},
+	ratingText: {
+		paddingLeft: 10,
+		color: 'grey',
+	},
+});
 
 const styles = {
 	container: {
@@ -33,17 +65,57 @@ const styles = {
 	},
 };
 
+const weekDays = [
+	{
+		id: '0',
+		title: 'Пт',
+	},
+	{
+		id: '1',
+		title: 'Вт',
+	},
+	{
+		id: '2',
+		title: 'Ср',
+	},
+	{
+		id: '3',
+		title: 'Чт',
+	},
+	{
+		id: '4',
+		title: 'Пт',
+	},
+	{
+		id: '5',
+		title: 'Сб',
+	},
+	{
+		id: '6',
+		title: 'Вс',
+	},
+];
+
 export default class GoalForm extends React.Component {
 	static navigationOptions = {
-		title: 'Цели',
+		title: 'Редактировать Цели',
 		header: null,
 	};
 
 	state = {
+		notification: true,
+		categoryKey: 2,
+		goalTitle: 'Чиканить мяч 20 минут',
+		pickedWeekDays: [1, 5],
 		isShown: false,
+		time: [
+			{
+				id: 1,
+				time: '21:15',
+			},
+		],
 		date: '2018-05-01',
-		selected: 'key1',
-		activityInterval: 'key4',
+		reminderInterval: 3,
 		arr: [
 			{
 				name: 'Aspirin',
@@ -88,6 +160,28 @@ export default class GoalForm extends React.Component {
 		],
 	};
 
+	_onDeadlineChange = date => {
+		this.setState({
+			date: date,
+		});
+	};
+
+	addTimePicker = id => {
+		this.setState({
+			time: [
+				...this.state.time,
+				{ id: _.random(1, 10000), time: '21:12' },
+			],
+		});
+	};
+
+	removeTimePicker = id => {
+		let times = _.remove(this.state.time, item => {
+			return +item.id === +id;
+		});
+		this.setState({});
+	};
+
 	selectConfirm = list => {
 		let { arr } = this.state;
 		for (let item of list) {
@@ -100,6 +194,7 @@ export default class GoalForm extends React.Component {
 		}
 		this.setState({ arr: arr });
 	};
+
 	deleteItem = item => {
 		let { arr } = this.state;
 		let index = arr.findIndex(a => a === item);
@@ -107,217 +202,200 @@ export default class GoalForm extends React.Component {
 		this.setState({ arr: arr });
 	};
 
-	onValueChange = value => {
+	onCategoryChange = value => {
+		console.log('value', value);
 		this.setState({
-			selected: value,
+			categoryKey: value,
 		});
 	};
 
-	onActivitityIntervalChange = value => {
+	onReminderIntervalChange = value => {
 		this.setState({
 			activityInterval: value,
 		});
 	};
 
+	toggleNotification = () =>
+		this.setState(prevState => ({
+			notification: !prevState.notification,
+		}));
+
 	toggleShown = () => this.setState({ isShown: !this.state.isShown });
+
+	toggleWeekButton = id => {
+		let { pickedWeekDays } = this.state;
+		console.log(_.some(this.state.pickedWeekDays, item => id === item));
+		if (_.some(this.state.pickedWeekDays, item => id === item)) {
+			this.setState({
+				pickedWeekDays: _.filter(
+					this.state.pickedWeekDays,
+					item => item !== id,
+				),
+			});
+		} else {
+			this.setState({
+				pickedWeekDays: [...this.state.pickedWeekDays, id],
+			});
+		}
+	};
+
+	_handleInputChange = e => {
+		this.setState({
+			goalTitle: e.target.value,
+		});
+	};
 
 	render() {
 		return (
 			<Container>
-				<Header back>
-					<Left>
-						<Button
-							transparent
-							dark
-							onPress={() => this.props.navigation.goBack()}
-						>
-							<Icon name="arrow-back" />
-						</Button>
-					</Left>
-					<Body>
-						<Title>Редактировать цель</Title>
-					</Body>
-					<Right />
-				</Header>
-				<Content padder>
-					<Card>
-						<CardItem>
-							<View style={styles.container.inline}>
-								<Text>Категория цели</Text>
-								<Badge info>
-									<Picker
-										mode="dropdown"
-										iosHeader="Категория цели"
-										iosIcon={
-											<Icon name="ios-arrow-down-outline" />
-										}
-										style={{ width: undefined }}
-										selectedValue={this.state.selected}
-										onValueChange={this.onValueChange}
-									>
-										<Picker.Item
-											label="Спорт"
-											value="key0"
-										/>
-										<Picker.Item
-											label="Финансы"
-											value="key1"
-										/>
-										<Picker.Item
-											label="Семья"
-											value="key2"
-										/>
-										<Picker.Item
-											label="Социум"
-											value="key3"
-										/>
-										<Picker.Item
-											label="Путишествия"
-											value="key4"
-										/>
-									</Picker>
-								</Badge>
-							</View>
-						</CardItem>
-						<CardItem>
-							<View>
-								<Text>Цель</Text>
-								<Badge info>
-									<Text>Чиканить мяч 40 минут</Text>
-								</Badge>
-							</View>
-						</CardItem>
-						<CardItem>
-							<View style={styles.container.inline}>
-								<Text>Срок достижения</Text>
-								<Badge info>
-									<DatePicker
-										style={{
-											width: 150,
-											borderWidth: 0,
-											borderColor: 'transparent',
-										}}
-										showIcon={false}
-										date={this.state.date}
-										mode="date"
-										placeholder="select date"
-										format="YYYY-MM-DD"
-										minDate="2018-04-01"
-										// maxDate="2016-06-01"
-										confirmBtnText="Confirm"
-										cancelBtnText="Cancel"
-										customStyles={{
-											dateInput: {
-												borderWidth: 0,
-												borderColor: 'transparent',
-											},
-										}}
-										onDateChange={date => {
-											this.setState({ date: date });
-										}}
-									/>
-								</Badge>
-							</View>
-						</CardItem>
-						<CardItem>
-							<View style={styles.container.inline}>
-								<Text>Активность</Text>
-							</View>
-						</CardItem>
-						<CardItem>
-							<View>
-								<Text>Повторять активность</Text>
-								<Picker
-									mode="dropdown"
-									iosHeader="Категория цели"
-									iosIcon={
-										<Icon name="ios-arrow-down-outline" />
-									}
-									style={{ width: undefined }}
-									selectedValue={this.state.activityInterval}
+				<Header
+					leftComponent={{
+						icon: 'navigate-before',
+						color: '#fff',
+						underlayColor: 'transparent',
+						onPress: () => this.props.navigation.goBack(),
+					}}
+					centerComponent={{
+						text: 'Редактировать цель',
+						style: { color: '#fff' },
+					}}
+				/>
+				<Content>
+					<Text h4 style={{ paddingLeft: 10 }}>
+						Описание
+					</Text>
+					<List>
+						<ListItem
+							title="Категория цели"
+							hideChevron={true}
+							subtitle={
+								<CustomPicker
+									selected={this.state.categoryKey}
+									onValueChange={this.onCategoryChange}
+									type="categorys"
+								/>
+							}
+						/>
+						<ListItem
+							title="Цель"
+							hideChevron={true}
+							subtitle={
+								<GoalTitleInput
+									value={this.state.goalTitle}
+									onChange={this._handleInputChange}
+								/>
+							}
+						/>
+						<ListItem
+							title="Срок достижения"
+							hideChevron={true}
+							subtitle={
+								<DeadlinePicker
+									date={this.state.date}
+									onDateChange={this._onDeadlineChange}
+								/>
+							}
+						/>
+					</List>
+					<Text h4 style={{ paddingLeft: 10 }}>
+						Активность
+					</Text>
+					<List>
+						<ListItem
+							title="Повторять активность"
+							hideChevron={true}
+							subtitle={
+								<CustomPicker
+									selected={this.state.reminderInterval}
 									onValueChange={
-										this.onActivitityIntervalChange
+										this.onReminderIntervalChange
 									}
-								>
-									<Picker.Item
-										label="Не повторять"
-										value="key0"
+									type="reminder"
+								/>
+							}
+						/>
+						<ListItem
+							title="Дни активности"
+							hideChevron={true}
+							subtitle={<WeekDaysSegment />}
+						/>
+						<ListItem
+							hideChevron={true}
+							containerStyle={{
+								borderBottomWidth: 0,
+							}}
+							subtitle={
+								<CheckBox
+									title="Включить Напоминание"
+									onPress={this.toggleNotification}
+									checked={this.state.notification}
+								/>
+							}
+						/>
+						{this.state.notification
+							? this.state.time.map(item => (
+									<ListItem
+										key={item.id}
+										containerStyle={{
+											borderTopWidth: 0,
+											borderBottomWidth: 0,
+										}}
+										leftIcon={{ name: 'access-time' }}
+										rightIcon={{
+											name: 'close',
+										}}
+										onPressRightIcon={() =>
+											this.removeTimePicker(item.id)
+										}
+										subtitle={
+											<View>
+												<TimePicker time={item.time} />
+											</View>
+										}
 									/>
-									<Picker.Item
-										label="Каждый день"
-										value="key1"
-									/>
-									<Picker.Item
-										label="По четным"
-										value="key2"
-									/>
-									<Picker.Item
-										label="По нечетным"
-										value="key3"
-									/>
-									<Picker.Item
-										label="Каждую неделю"
-										value="key4"
-									/>
-									<Picker.Item
-										label="Каждый месяц"
-										value="key5"
-									/>
-								</Picker>
-							</View>
-						</CardItem>
-						<CardItem>
-							<View style={styles.container.inline}>
-								<Text style={styles.text}>
-									Normal LabelSelect
-								</Text>
-								{/*<LabelSelect
-								// 	title="Checkbox"
-								// 	ref="select"
-								// 	style={styles.labelSelect}
-								// 	onConfirm={this.selectConfirm}
-								// >
-								// 	{this.state.arr
-								// 		.filter(item => item.isSelected)
-								// 		.map((item, index) => (
-								// 			<LabelSelect.Label
-								// 				key={'label-' + index}
-								// 				data={item}
-								// 				onCancel={() => {
-								// 					this.deleteItem(item);
-								// 				}}
-								// 			>
-								// 				{item.name}
-								// 			</LabelSelect.Label>
-								// 		))}
-								// 	{this.state.arr
-								// 		.filter(item => !item.isSelected)
-								// 		.map((item, index) => (
-								// 			<LabelSelect.ModalItem
-								// 				key={'modal-item-' + index}
-								// 				data={item}
-								// 			>
-								// 				{item.name}
-								// 			</LabelSelect.ModalItem>
-								// 		))}
-                                // </LabelSelect>*/}
-							</View>
-						</CardItem>
-					</Card>
+							  ))
+							: null}
+						{this.state.notification ? (
+							this.state.time.length < 3 ? (
+								<ListItem
+									rightIcon={{ name: 'add' }}
+									onPressRightIcon={() =>
+										this.addTimePicker()
+									}
+									onPress={() => this.addTimePicker()}
+									subtitle={<Text>Добавить время</Text>}
+								/>
+							) : null
+						) : null}
+					</List>
+					<Text h4 style={{ paddingLeft: 10 }}>
+						Изображение цели
+					</Text>
 
-					<Button
-						iconLeft
-						transparent
-						bordered
-						dark
-						block
-						onPress={() =>
-							this.props.navigation.navigate('NewGoalScreen')
-						}
+					<GoalsGallery />
+
+					<View
+						style={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'center',
+							padding: 10,
+						}}
 					>
-						<Icon name="ios-add-circle-outline" />
-						<Text>Сохранить</Text>
-					</Button>
+						<Button
+							iconLeft
+							transparent
+							bordered
+							dark
+							block
+							style={{ width: '100%' }}
+							onPress={() =>
+								this.props.navigation.navigate('NewGoalScreen')
+							}
+						>
+							<Text>Сохранить</Text>
+						</Button>
+					</View>
 				</Content>
 			</Container>
 		);

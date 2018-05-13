@@ -4,12 +4,16 @@ import { StackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import GoalForm from '../screens/GoalForm/GoalForm';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import registerForPushNotificationsAsync from '../../api/registerForPushNotificationsAsync';
 
 const RootStackNavigator = StackNavigator(
 	{
 		Main: {
 			screen: MainTabNavigator,
+		},
+		HomeScreen: {
+			screen: HomeScreen
 		},
 		GoalForm: {
 			screen: GoalForm,
