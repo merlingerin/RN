@@ -17,8 +17,14 @@ import {
 	Button,
 	Icon,
 } from 'native-base';
+import { db, auth, fb } from '../../services/api';
+import { SocialIcon } from 'react-native-elements';
 
 export default class AuthModal extends Component {
+	state = {
+		profile: {},
+	};
+
 	render() {
 		return (
 			<View style={{ flex: 1, alignItems: 'flex-start' }}>
@@ -33,7 +39,7 @@ export default class AuthModal extends Component {
 						<Body style={{ flex: 1, width: '100%' }}>
 							<H2>Авторизация</H2>
 							<Form style={{ flex: 1, width: '100%' }}>
-								<Item floatingLabel>
+								{/*<Item floatingLabel>
 									<Label>Email</Label>
 									<Input />
 								</Item>
@@ -42,6 +48,7 @@ export default class AuthModal extends Component {
 									<Input />
 								</Item>
 								<Button
+									onPress={() => this.authWithGoogle()}
 									iconLeft
 									style={{
 										alignSelf: 'center',
@@ -50,7 +57,16 @@ export default class AuthModal extends Component {
 								>
 									<Icon name="home" />
 									<Text>Sign In</Text>
-								</Button>
+								</Button>*/}
+								<SocialIcon
+									title="Sign In With Google"
+									button
+									type="google-plus-official"
+									onPress={() => {
+										this.props.turnOffModal();
+										this.props.handleAuth();
+									}}
+								/>
 							</Form>
 						</Body>
 					</Card>

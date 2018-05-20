@@ -17,31 +17,31 @@ const styles = {
 const weekDays = [
 	{
 		id: '0',
-		title: 'Пт',
+		title: 'Вс',
 	},
 	{
 		id: '1',
-		title: 'Вт',
-	},
-	{
-		id: '2',
-		title: 'Ср',
-	},
-	{
-		id: '3',
-		title: 'Чт',
-	},
-	{
-		id: '4',
 		title: 'Пт',
 	},
 	{
+		id: '2',
+		title: 'Вт',
+	},
+	{
+		id: '3',
+		title: 'Ср',
+	},
+	{
+		id: '4',
+		title: 'Чт',
+	},
+	{
 		id: '5',
-		title: 'Сб',
+		title: 'Пт',
 	},
 	{
 		id: '6',
-		title: 'Вс',
+		title: 'Сб',
 	},
 ];
 
@@ -81,10 +81,12 @@ export default class WeekDaysSegment extends Component {
 					? weekDays.map(day => (
 							<Button
 								key={day.id}
-								onPress={() => this.toggleWeekButton(+day.id)}
+								onPress={() =>
+									this.props.toggleWeekButton(+day.id)
+								}
 								active={
 									_.some(
-										this.state.pickedWeekDays,
+										this.props.pickedWeekDays,
 										item => +day.id === item,
 									)
 										? true
@@ -112,14 +114,16 @@ export default class WeekDaysSegment extends Component {
 					: weekDays.map(day => (
 							<Button
 								key={day.id}
-								onPress={() => this.toggleWeekButton(+day.id)}
+								onPress={() =>
+									this.props.toggleWeekButton(+day.id)
+								}
 								style={{
 									borderWidth: 1,
 									borderColor: '#000',
 									paddingLeft: 0,
 									paddingRight: 0,
 									backgroundColor: _.some(
-										this.state.pickedWeekDays,
+										this.props.pickedWeekDays,
 										item => +day.id === item,
 									)
 										? '#4051b3'
@@ -133,7 +137,7 @@ export default class WeekDaysSegment extends Component {
 										paddingLeft: 8,
 										paddingRight: 8,
 										color: _.some(
-											this.state.pickedWeekDays,
+											this.props.pickedWeekDays,
 											item => +day.id === item,
 										)
 											? '#fff'

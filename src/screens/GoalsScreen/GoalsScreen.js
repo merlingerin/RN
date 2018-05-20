@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { FlatList, Image, View } from 'react-native';
 import { Header } from 'react-native-elements';
 import {
@@ -22,40 +23,7 @@ import { WebBrowser } from 'expo';
 import Collapsible from 'react-native-collapsible';
 import GoalsCollapse from '../../components/GoalsCollapse/GoalsCollapse';
 
-const goalsArr = [
-	{
-		title: 'Футбол',
-		image: <Icon name="ios-american-football" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-	{
-		title: 'Посмотреть фильм',
-		image: <Icon name="ios-film" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-	{
-		title: 'Купить TV',
-		image: <Icon name="ios-desktop" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-	{
-		title: 'Выйти на яхте',
-		image: <Icon name="ios-boat" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-	{
-		title: 'Выпить пиво',
-		image: <Icon name="ios-beer" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-	{
-		title: 'Купить автомобиль',
-		image: <Icon name="ios-car" style={{ fontSize: 54 }} />,
-		btnTitle: 'Поставить цель',
-	},
-];
-
-export default class GoalsScreen extends React.Component {
+class GoalsScreen extends React.Component {
 	state = {
 		isShown: false,
 	};
@@ -65,7 +33,6 @@ export default class GoalsScreen extends React.Component {
 	};
 
 	toggleShown = () => this.setState({ isShown: !this.state.isShown });
-
 	render() {
 		return (
 			<Container>
@@ -91,7 +58,14 @@ export default class GoalsScreen extends React.Component {
 						<Icon name="ios-add-circle-outline" />
 						<Text>Добавить цель</Text>
 					</Button>
-					<GoalsCollapse />
+					<GoalsCollapse
+						navigation={this.props.navigation}
+						goals={this.props.goals}
+						categorys={this.props.categorys}
+						activeCategoryID={this.props.navigation.getParam(
+							'categoryId',
+						)}
+					/>
 				</Content>
 				<Fab
 					active={this.state.active}
@@ -103,7 +77,9 @@ export default class GoalsScreen extends React.Component {
 						justifyContent: 'center',
 					}}
 					position="bottomRight"
-					onPress={() => this.props.navigation.navigate('GoalForm')}
+					onPress={() =>
+						this.props.navigation.navigate('GoalForm')
+					}
 				>
 					<Icon name="ios-add" />
 				</Fab>
@@ -111,3 +87,10 @@ export default class GoalsScreen extends React.Component {
 		);
 	}
 }
+
+const mapStateToProps = state => ({
+	goals: state.goals,
+	categorys: state.categorys,
+});
+
+export default connect(mapStateToProps, null)(GoalsScreen);

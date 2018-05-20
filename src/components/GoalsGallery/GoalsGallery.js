@@ -8,7 +8,8 @@ export default class GoalsGallery extends Component {
 		super(props);
 		this.state = {
 			isShow: false,
-			image: 'http://demo.makitweb.com/broken_image/images/noimage.png',
+			image: this.props.image,
+			images: this.props.defaultImages,
 			restaurants: [
 				{
 					image: {
@@ -69,17 +70,14 @@ export default class GoalsGallery extends Component {
 	};
 
 	renderRow = (rowData, sectionId, index) => {
-		const cellViews = rowData.map((restaurant, id) => {
+		const cellViews = rowData.map((item, id) => {
 			return (
 				<TouchableOpacity
-					key={id}
+					key={item.id}
 					styleName="flexible"
-					onPress={() => this._pickImage(restaurant.image.url)}
+					onPress={() => this._pickImage(item.image)}
 				>
-					<Image
-						styleName="small"
-						source={{ uri: restaurant.image.url }}
-					/>
+					<Image styleName="small" source={{ uri: item.image }} />
 				</TouchableOpacity>
 			);
 		});
@@ -88,43 +86,44 @@ export default class GoalsGallery extends Component {
 	};
 
 	_pickImage = uri => {
+		this.props.getImage(uri);
 		this.setState({ image: uri });
 	};
 
+	_askPermissionsAsync = async () => {
+		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		// you would probably do something to verify that permissions
+		// are actually granted, but I'm skipping that for brevity
+	};
+
 	_pickImageFromCamera = async () => {
+		await this._askPermissionsAsync();
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: 'Images',
+			quality: 0.1,
 		});
 
 		console.log(result);
 
 		if (!result.cancelled) {
+			this.props.getImage(result.uri);
 			this.setState({ image: result.uri });
 		}
 	};
 
 	render() {
-		const restaurants = this.state.restaurants;
+		const { images } = this.state;
 
-		const groupedData = GridRow.groupByRows(restaurants, 2, () => {
-			return 1;
-		});
+		const groupedData = GridRow.groupByRows(
+			this.props.defaultImages,
+			2,
+			() => {
+				return 1;
+			},
+		);
 
 		return (
 			<List>
-				{/*<ListItem
-							hideChevron={true}
-							containerStyle={{
-								borderBottomWidth: 0,
-							}}
-							subtitle={
-								<CheckBox
-									title="Изменить изображение цели"
-									onPress={this.toggleNotification}
-									checked={this.state.notification}
-								/>
-							}
-						/>*/}
 				<View
 					style={{
 						overflow: 'hidden',

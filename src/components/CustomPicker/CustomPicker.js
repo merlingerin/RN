@@ -5,7 +5,7 @@ import { Icon } from 'react-native-elements';
 
 const categorys = [
 	{
-		label: 'Спорт',
+		label: 'Спорт, Здоровье',
 		key: 0,
 	},
 	{
@@ -13,11 +13,11 @@ const categorys = [
 		key: 1,
 	},
 	{
-		label: 'Семья',
+		label: 'Карьера, развитие',
 		key: 2,
 	},
 	{
-		label: 'Карьера',
+		label: 'Окружение',
 		key: 3,
 	},
 	{
@@ -25,7 +25,7 @@ const categorys = [
 		key: 4,
 	},
 	{
-		label: 'Окружение',
+		label: 'Семья',
 		key: 5,
 	},
 ];

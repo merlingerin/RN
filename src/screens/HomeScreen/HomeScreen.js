@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 import { Platform } from 'react-native';
 import { Header } from 'react-native-elements';
 import {
@@ -18,11 +20,27 @@ import {
 	Button,
 	Text,
 	Icon,
+	Tile,
+	Overlay,
+	Heading,
 } from '@shoutem/ui';
 import AuthModal from '../../components/AuthModal/AuthModal';
 import GoalsCard from '../../components/GoalsCard/GoalsCard';
+import { db, auth } from '../../services/api';
+import Expo from 'expo';
+import { categorys } from '../../services/categorys';
 
-export default class HomeScreen extends React.Component {
+const credential = {
+	androidClientId:
+		'554183303492-7770qnitnolm6lfb1qsvnhn1nbfutm3a.apps.googleusercontent.com',
+	iosClientId:
+		'554183303492-omjg2o28ma84h5o3t1ee2nb07sfp3cab.apps.googleusercontent.com',
+	scopes: ['profile', 'email'],
+};
+
+const anonimProfile = require('../../../assets/images/anonimProfile.png');
+
+class HomeScreen extends React.Component {
 	static navigationOptions = {
 		title: 'Карта',
 		header: null,
@@ -32,69 +50,108 @@ export default class HomeScreen extends React.Component {
 		super(props);
 		this.renderRow = this.renderRow.bind(this);
 		this.state = {
+			isAuth: false,
+			profile: {},
 			isModalVisible: false,
-			restaurants: [
-				{
-					name: 'Карьера',
-					image: {
-						url:
-							'https://geekbrains-uploads.s3.amazonaws.com/events/og_images/000/000/296/original/%D0%9A%D0%B0%D1%80%D1%8C%D0%B5%D1%80%D0%B0_%D0%B2%D0%B5%D0%B1-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%B0_%D1%81_%D0%BD%D1%83%D0%BB%D1%8F_%D0%B4%D0%BE_%D1%82%D0%BE%D0%BF-%D0%B7%D0%B0%D1%80%D0%BF%D0%BB%D0%B0%D1%82%D1%8B.png',
-					},
-				},
-				{
-					name: 'Финансы',
-					image: {
-						url:
-							'http://infoeuro.com.ua/wp-content/uploads/2016/10/3e4adb4dae96457de7f8df38312343c9.jpg',
-					},
-				},
-				{
-					name: 'Спорт',
-					image: {
-						url:
-							'https://enjoyenglish-blog.com/wp-content/uploads/2014/06/%D0%BE-%D1%81%D0%BF%D0%BE%D1%80%D1%82%D0%B5-%D0%BD%D0%B0-%D0%B0%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%BE%D0%BC-1.jpg',
-					},
-				},
-				{
-					name: 'Семья',
-					image: {
-						url:
-							'http://www.mirvboge.ru/wp-content/uploads/2017/05/mirvboge.ru_%D1%81%D0%B5%D0%BC%D1%8C%D1%8F.jpg',
-					},
-				},
-				{
-					name: 'Самовыражение',
-					image: {
-						url: 'http://www.fonstola.ru/large/201606/235913.jpg',
-					},
-				},
-				{
-					name: 'Окружение',
-					image: {
-						url:
-							'https://insdrcdn.com/media/articles/d/2c/ace1ce2cd__430x224__q85_049957603500.jpg',
-					},
-				},
-			],
+			categorys: this.props.categorys,
 		};
 	}
 
+	authWithGoogle = async () => {
+		try {
+			const result = await Expo.Google.logInAsync(credential);
+
+			if (result.type === 'success') {
+				console.log('result', result);
+				this.setState({
+					isAuth: true,
+					profile: result,
+				});
+				return result.accessToken;
+			} else {
+				return { cancelled: true };
+			}
+		} catch (e) {
+			console.log('error ', e);
+
+			return { error: true };
+		}
+	};
+
+	_handlePress = () => {
+		// auth
+		// 	.signInWithEmailAndPassword('test@test.com', '123123')
+		// 	.then(user => {
+		// 		console.log('user', user);
+		// 	})
+		// 	.catch(function(error) {
+		// 		// Handle Errors here.
+		// 		var errorCode = error.code;
+		// 		var errorMessage = error.message;
+		// 		console.log(errorMessage);
+		// 	});
+	};
+
+	componentDidMount() {
+		// auth.onAuthStateChanged(function(user) {
+		// 	if (user) {
+		// 		// User is signed in.
+		// 		var displayName = user.displayName;
+		// 		var email = user.email;
+		// 		var emailVerified = user.emailVerified;
+		// 		var photoURL = user.photoURL;
+		// 		var isAnonymous = user.isAnonymous;
+		// 		var uid = user.uid;
+		// 		var providerData = user.providerData;
+		// 		console.log(displayName);
+		// 		console.log(email);
+		// 		console.log(photoURL);
+		// 		console.log(uid);
+		// 	}
+		// });
+		// db
+		// 	.collection('users')
+		// 	.get()
+		// 	.then(querySnapshot => {
+		// 		querySnapshot.forEach(doc => {
+		// 			console.log(`${doc.id} => ${doc.data().profile.email}`);
+		// 		});
+		// 	});
+	}
+
+	_toggleModal = () => {
+		this.setState({ isModalVisible: !this.state.isModalVisible });
+	};
+
+	_turnOffModal = () => {
+		this.setState({ isModalVisible: false });
+	};
+
+	_navTo = id => {
+		this.props.navigation.navigate('GoalsScreen', {
+			categoryId: id,
+		});
+	};
+
 	renderRow(rowData, sectionId, index) {
-		const cellViews = rowData.map((restaurant, id) => {
+		const cellViews = _.map(rowData, (category, id) => {
+			let img = category.image.file;
 			return (
 				<TouchableOpacity
-					onPress={this._navTo}
-					key={id}
+					onPress={() => this._navTo(category.categoryId)}
+					// onPress={
+					// 	this.state.isAuth
+					// 		? () => this._navTo(category.categoryId)
+					// 		: this._toggleModal
+					// }
+					key={category.categoryId}
 					styleName="flexible"
 				>
 					<Card styleName="flexible">
-						<Image
-							styleName="medium-wide"
-							source={{ uri: restaurant.image.url }}
-						/>
+						<Image styleName="medium-wide" source={img} />
 						<View styleName="content">
 							<Subtitle styleName="h-center" numberOfLines={4}>
-								{restaurant.name}
+								{category.categoryTitle}
 							</Subtitle>
 						</View>
 						<View styleName="horizontal v-center">
@@ -111,21 +168,10 @@ export default class HomeScreen extends React.Component {
 		return <GridRow columns={2}>{cellViews}</GridRow>;
 	}
 
-	_toggleModal = () => {
-		console.log('STATE', this.state.isModalVisible);
-		this.setState({ isModalVisible: !this.state.isModalVisible });
-	};
-
-	_turnOffModal = () => {
-		this.setState({ isModalVisible: false });
-	};
-
-	_navTo = () => this.props.navigation.navigate('GoalsScreen');
-
 	render() {
-		const restaurants = this.state.restaurants;
+		const { categorys } = this.state;
 		let isFirstArticle = true;
-		const groupedData = GridRow.groupByRows(restaurants, 2, () => {
+		const groupedData = GridRow.groupByRows(categorys, 2, () => {
 			return 1;
 		});
 		return (
@@ -142,8 +188,8 @@ export default class HomeScreen extends React.Component {
 					style={{
 						position: 'absolute',
 						top: '42%',
-						width: 150,
-						height: 150,
+						width: 200,
+						height: 200,
 						backgroundColor: 'transparent',
 						alignItems: 'center',
 						justifyContent: 'center',
@@ -159,15 +205,48 @@ export default class HomeScreen extends React.Component {
 							alignItems: 'center',
 							justifyContent: 'center',
 							margin: 'auto',
-							width: 150,
-							height: 150,
+
+							width: 200,
+							height: 200,
 							backgroundColor: '#fff',
 							borderRadius: 100,
 							zIndex: 10,
+							overflow: 'hidden',
 						}}
 					>
-						<Icon style={{ fontSize: 35 }} name="user-profile" />
-						<Text>Авторизироватся</Text>
+						<ImageBackground
+							styleName="medium-square"
+							style={{
+								width: 200,
+								height: 200,
+								borderRadius: 100,
+							}}
+							source={
+								this.state.isAuth
+									? { uri: this.state.profile.user.photoUrl }
+									: anonimProfile
+							}
+							// source={{
+							// 	uri: this.state.isAuth
+							// 		? this.state.profile.user.photoUrl
+							// 		: anonimProfile,
+							// }}
+						>
+							<Tile styleName="md-gutter-horizontal">
+								<Overlay
+									styleName="image-overlay"
+									style={{
+										padding: 2,
+									}}
+								>
+									<Heading>
+										{this.state.isAuth
+											? this.state.profile.user.name
+											: 'Авторизация'}
+									</Heading>
+								</Overlay>
+							</Tile>
+						</ImageBackground>
 					</TouchableOpacity>
 				</View>
 
@@ -175,8 +254,15 @@ export default class HomeScreen extends React.Component {
 				<AuthModal
 					isVisible={this.state.isModalVisible}
 					turnOffModal={this._turnOffModal}
+					handleAuth={this.authWithGoogle}
 				/>
 			</Screen>
 		);
 	}
 }
+
+const mapStateToProps = state => ({
+	categorys: state.categorys,
+});
+
+export default connect(mapStateToProps, null)(HomeScreen);

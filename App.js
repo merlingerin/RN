@@ -3,6 +3,8 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './src/navigation/RootNavigation';
+import { Provider } from 'react-redux';
+import store from './src/store';
 
 export default class App extends React.Component {
 	state = {
@@ -20,10 +22,14 @@ export default class App extends React.Component {
 			);
 		} else {
 			return (
-				<View style={styles.container}>
-					{Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-					<RootNavigation />
-				</View>
+				<Provider store={store}>
+					<View style={styles.container}>
+						{Platform.OS === 'ios' && (
+							<StatusBar barStyle="default" />
+						)}
+						<RootNavigation />
+					</View>
+				</Provider>
 			);
 		}
 	}
@@ -33,6 +39,12 @@ export default class App extends React.Component {
 			Asset.loadAsync([
 				require('./assets/images/robot-dev.png'),
 				require('./assets/images/robot-prod.png'),
+				require('./assets/images/categorys/00-min.jpg'),
+				require('./assets/images/categorys/01-min.jpg'),
+				require('./assets/images/categorys/02-min.jpg'),
+				require('./assets/images/categorys/03-min.jpg'),
+				require('./assets/images/categorys/04-min.jpg'),
+				require('./assets/images/anonimProfile.png'),
 			]),
 			Font.loadAsync({
 				// This is the font that we are using for our tab bar
