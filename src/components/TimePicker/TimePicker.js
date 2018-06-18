@@ -9,11 +9,10 @@ export default class TimePicker extends Component {
 	}
 
 	render() {
-		console.log('time', this.state.time);
 		return (
 			<DatePicker
 				style={{ width: 200, borderWidth: 0 }}
-				date={this.state.time}
+				date={this.props.time}
 				mode="time"
 				placeholder="select date"
 				confirmBtnText="Confirm"
@@ -32,9 +31,9 @@ export default class TimePicker extends Component {
 					},
 					// ... You can check the source to find the other keys.
 				}}
-				onDateChange={time => {
-					this.setState({ time: time });
-				}}
+				onDateChange={time =>
+					this.props.handleChange(time, this.props.idx)
+				}
 			/>
 		);
 	}

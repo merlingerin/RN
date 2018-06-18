@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, ListView, GridRow, Image, View } from '@shoutem/ui';
 import { Text, Icon, List, ListItem } from 'react-native-elements';
 import { ImagePicker, Permissions } from 'expo';
+import _ from 'lodash';
 
 export default class GoalsGallery extends Component {
 	constructor(props) {
@@ -103,7 +104,7 @@ export default class GoalsGallery extends Component {
 			quality: 0.1,
 		});
 
-		console.log(result);
+		// console.log(result);
 
 		if (!result.cancelled) {
 			this.props.getImage(result.uri);
@@ -112,7 +113,8 @@ export default class GoalsGallery extends Component {
 	};
 
 	render() {
-		const { images } = this.state;
+		const images = this.props.defaultImages;
+		let { image } = this.props;
 
 		const groupedData = GridRow.groupByRows(
 			this.props.defaultImages,
@@ -206,7 +208,7 @@ export default class GoalsGallery extends Component {
 								renderRow={this.renderRow}
 							/>
 						)}
-						{!!this.state.image.length ? (
+						{!!image ? (
 							<View
 								style={{
 									display: 'flex',

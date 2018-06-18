@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
+import { requestLogOut, checkIsAuth, logOut } from '../../ducks/profile';
+import { fetchGoalsSuccess } from '../../ducks/goals';
 import { connect } from 'react-redux';
 import { Platform } from 'react-native';
 import { Header } from 'react-native-elements';
@@ -26,17 +28,11 @@ import {
 } from '@shoutem/ui';
 import AuthModal from '../../components/AuthModal/AuthModal';
 import GoalsCard from '../../components/GoalsCard/GoalsCard';
-import { db, auth } from '../../services/api';
+import { fb } from '../../services/api';
 import Expo from 'expo';
 import { categorys } from '../../services/categorys';
-
-const credential = {
-	androidClientId:
-		'554183303492-7770qnitnolm6lfb1qsvnhn1nbfutm3a.apps.googleusercontent.com',
-	iosClientId:
-		'554183303492-omjg2o28ma84h5o3t1ee2nb07sfp3cab.apps.googleusercontent.com',
-	scopes: ['profile', 'email'],
-};
+import { createUser } from '../../services/api/user';
+import { subscribeToGoals } from '../../services/api/goals';
 
 const anonimProfile = require('../../../assets/images/anonimProfile.png');
 
@@ -50,33 +46,56 @@ class HomeScreen extends React.Component {
 		super(props);
 		this.renderRow = this.renderRow.bind(this);
 		this.state = {
-			isAuth: false,
-			profile: {},
 			isModalVisible: false,
-			categorys: this.props.categorys,
 		};
 	}
 
-	authWithGoogle = async () => {
-		try {
-			const result = await Expo.Google.logInAsync(credential);
+	componentDidMount() {
+		fb.auth().onAuthStateChanged(user => {
+			if (user) {
+				let profile = {
+					userPhoto: user.photoURL,
+					name: user.displayName,
+					email: user.email,
+				};
+				this.props.checkIsAuth(profile);
 
-			if (result.type === 'success') {
-				console.log('result', result);
-				this.setState({
-					isAuth: true,
-					profile: result,
-				});
-				return result.accessToken;
+				fb.database()
+					.ref(`users/${user.uid}/goals`)
+					.on('value', snapshot => {
+						const goals = _.keyBy(snapshot.val(), 'id');
+
+						this.props.fetchGoalsSuccess(goals);
+						createUser(user.uid, {
+							profile: profile,
+							goals: { ...this.props.goals, ...goals },
+						});
+					});
 			} else {
-				return { cancelled: true };
+				this.props.logOut();
 			}
-		} catch (e) {
-			console.log('error ', e);
-
-			return { error: true };
-		}
-	};
+		});
+		// if (!_.isEmpty(fb.auth().currentUser)) {
+		// 	let user = fb.auth().currentUser;
+		// let profile = {
+		// 	user: {
+		// 		userPhoto: user.photoURL,
+		// 		name: user.displayName,
+		// 		email: user.email,
+		// 	},
+		// };
+		// 	this.props.singIn(profile);
+		// }
+		// fb.auth().onAuthStateChanged(user => {
+		// 	if (user) {
+		// 		// this.props.navigation.goBack();
+		// 		console.log('auth!!!', user);
+		// 		this.props.singIn(user);
+		// 	} else {
+		// 		alert('No user signed in');
+		// 	}
+		// });
+	}
 
 	_handlePress = () => {
 		// auth
@@ -91,33 +110,6 @@ class HomeScreen extends React.Component {
 		// 		console.log(errorMessage);
 		// 	});
 	};
-
-	componentDidMount() {
-		// auth.onAuthStateChanged(function(user) {
-		// 	if (user) {
-		// 		// User is signed in.
-		// 		var displayName = user.displayName;
-		// 		var email = user.email;
-		// 		var emailVerified = user.emailVerified;
-		// 		var photoURL = user.photoURL;
-		// 		var isAnonymous = user.isAnonymous;
-		// 		var uid = user.uid;
-		// 		var providerData = user.providerData;
-		// 		console.log(displayName);
-		// 		console.log(email);
-		// 		console.log(photoURL);
-		// 		console.log(uid);
-		// 	}
-		// });
-		// db
-		// 	.collection('users')
-		// 	.get()
-		// 	.then(querySnapshot => {
-		// 		querySnapshot.forEach(doc => {
-		// 			console.log(`${doc.id} => ${doc.data().profile.email}`);
-		// 		});
-		// 	});
-	}
 
 	_toggleModal = () => {
 		this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -138,7 +130,11 @@ class HomeScreen extends React.Component {
 			let img = category.image.file;
 			return (
 				<TouchableOpacity
-					onPress={() => this._navTo(category.categoryId)}
+					onPress={() =>
+						this.props.isAuth
+							? this._navTo(category.categoryId)
+							: false
+					}
 					// onPress={
 					// 	this.state.isAuth
 					// 		? () => this._navTo(category.categoryId)
@@ -147,19 +143,29 @@ class HomeScreen extends React.Component {
 					key={category.categoryId}
 					styleName="flexible"
 				>
-					<Card styleName="flexible">
-						<Image styleName="medium-wide" source={img} />
-						<View styleName="content">
-							<Subtitle styleName="h-center" numberOfLines={4}>
-								{category.categoryTitle}
-							</Subtitle>
-						</View>
-						<View styleName="horizontal v-center">
-							<Button styleName="secondary">
-								<Icon name="plus-button" />
-								<Text>Поставить цель</Text>
-							</Button>
-						</View>
+					<Card styleName="flexible  vertical v-end">
+						<ImageBackground
+							styleName="medium-wide  vertical v-end"
+							style={{
+								height: 180,
+								justifyContent: 'flex-end',
+							}}
+							source={img}
+						>
+							<View
+								styleName="content  vertical v-end"
+								style={{ width: '100%' }}
+							>
+								<Overlay styleName="image-overlay  vertical v-end">
+									<Subtitle
+										styleName="h-center  vertical v-end"
+										numberOfLines={4}
+									>
+										{category.categoryTitle}
+									</Subtitle>
+								</Overlay>
+							</View>
+						</ImageBackground>
 					</Card>
 				</TouchableOpacity>
 			);
@@ -169,7 +175,7 @@ class HomeScreen extends React.Component {
 	}
 
 	render() {
-		const { categorys } = this.state;
+		const { profile, isAuth, categorys } = this.props;
 		let isFirstArticle = true;
 		const groupedData = GridRow.groupByRows(categorys, 2, () => {
 			return 1;
@@ -177,12 +183,12 @@ class HomeScreen extends React.Component {
 		return (
 			<Screen>
 				<Header
-					leftComponent={{ icon: 'menu', color: '#fff' }}
+					// leftComponent={{ icon: 'menu', color: '#fff' }}
 					centerComponent={{
 						text: 'Goals',
 						style: { color: '#fff' },
 					}}
-					rightComponent={{ icon: 'home', color: '#fff' }}
+					// rightComponent={{ icon: 'home', color: '#fff' }}
 				/>
 				<View
 					style={{
@@ -198,7 +204,10 @@ class HomeScreen extends React.Component {
 					}}
 				>
 					<TouchableOpacity
-						onPress={this._toggleModal}
+						// onPress={this._toggleModal}
+						onPress={() =>
+							this.props.navigation.navigate('ProfileScreen')
+						}
 						style={{
 							borderWidth: 1,
 							borderColor: 'rgba(0,0,0,0.2)',
@@ -206,8 +215,8 @@ class HomeScreen extends React.Component {
 							justifyContent: 'center',
 							margin: 'auto',
 
-							width: 200,
-							height: 200,
+							width: 130,
+							height: 130,
 							backgroundColor: '#fff',
 							borderRadius: 100,
 							zIndex: 10,
@@ -217,35 +226,32 @@ class HomeScreen extends React.Component {
 						<ImageBackground
 							styleName="medium-square"
 							style={{
-								width: 200,
-								height: 200,
+								width: 130,
+								height: 130,
 								borderRadius: 100,
+								justifyContent: 'flex-end',
+								paddingBottom: 20,
 							}}
 							source={
-								this.state.isAuth
-									? { uri: this.state.profile.user.photoUrl }
+								isAuth && profile.userPhoto
+									? { uri: profile.userPhoto }
 									: anonimProfile
 							}
-							// source={{
-							// 	uri: this.state.isAuth
-							// 		? this.state.profile.user.photoUrl
-							// 		: anonimProfile,
-							// }}
 						>
-							<Tile styleName="md-gutter-horizontal">
+							<View
+								styleName="content  vertical v-end"
+								style={{ width: '100%' }}
+							>
 								<Overlay
-									styleName="image-overlay"
 									style={{
 										padding: 2,
 									}}
 								>
-									<Heading>
-										{this.state.isAuth
-											? this.state.profile.user.name
-											: 'Авторизация'}
+									<Heading style={{ fontSize: 14 }}>
+										{isAuth ? profile.name : 'Авторизация'}
 									</Heading>
 								</Overlay>
-							</Tile>
+							</View>
 						</ImageBackground>
 					</TouchableOpacity>
 				</View>
@@ -254,7 +260,7 @@ class HomeScreen extends React.Component {
 				<AuthModal
 					isVisible={this.state.isModalVisible}
 					turnOffModal={this._turnOffModal}
-					handleAuth={this.authWithGoogle}
+					handleAuth={this.props.fetchProfile}
 				/>
 			</Screen>
 		);
@@ -263,6 +269,19 @@ class HomeScreen extends React.Component {
 
 const mapStateToProps = state => ({
 	categorys: state.categorys,
+	goals: state.goals,
+	isAuth: state.profile.isAuth,
+	profile: state.profile.profile,
 });
 
-export default connect(mapStateToProps, null)(HomeScreen);
+const mapDispatchToProps = {
+	requestLogOut,
+	checkIsAuth,
+	fetchGoalsSuccess,
+	logOut,
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(HomeScreen);

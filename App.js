@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './src/navigation/RootNavigation';
 import { Provider } from 'react-redux';
 import store from './src/store';
-
 export default class App extends React.Component {
 	state = {
 		isLoadingComplete: false,
@@ -45,6 +44,7 @@ export default class App extends React.Component {
 				require('./assets/images/categorys/03-min.jpg'),
 				require('./assets/images/categorys/04-min.jpg'),
 				require('./assets/images/anonimProfile.png'),
+				require('./assets/images/image-3.png'),
 			]),
 			Font.loadAsync({
 				// This is the font that we are using for our tab bar

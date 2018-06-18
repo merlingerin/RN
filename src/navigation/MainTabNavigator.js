@@ -9,7 +9,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ActivityScreen from '../screens/ActivityScreen/ActivityScreen';
 import GoalsScreen from '../screens/GoalsScreen/GoalsScreen';
 import StatisticScreen from '../screens/StatisticScreen/StatisticScreen';
-import AccountScreen from '../screens/AccountScreen/AccountScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 
 export default TabNavigator(
 	{
@@ -19,14 +19,14 @@ export default TabNavigator(
 		GoalsScreen: {
 			screen: GoalsScreen,
 		},
-		ActivityScreen: {
-			screen: ActivityScreen,
-		},
+		// ActivityScreen: {
+		// 	screen: ActivityScreen,
+		// },
 		StatisticScreen: {
 			screen: StatisticScreen,
 		},
-		AccountScreen: {
-			screen: AccountScreen,
+		ProfileScreen: {
+			screen: ProfileScreen,
 		},
 	},
 	{
@@ -53,7 +53,7 @@ export default TabNavigator(
 								? `ios-calendar${focused ? '' : '-outline'}`
 								: 'ios-calendar';
 						break;
-					case 'AccountScreen':
+					case 'ProfileScreen':
 						iconName =
 							Platform.OS === 'ios'
 								? `ios-contact${focused ? '' : '-outline'}`

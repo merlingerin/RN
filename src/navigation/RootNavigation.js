@@ -5,18 +5,31 @@ import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import GoalForm from '../screens/GoalForm/GoalForm';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import SignInScreen from '../screens/SignInScreen/SignInScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import ActivityScreen from '../screens/ActivityScreen/ActivityScreen';
 import registerForPushNotificationsAsync from '../../api/registerForPushNotificationsAsync';
+import { connect } from 'react-redux';
 
-const RootStackNavigator = StackNavigator(
+const AuthRootStackNavigator = StackNavigator(
 	{
 		Main: {
 			screen: MainTabNavigator,
 		},
 		HomeScreen: {
-			screen: HomeScreen
+			screen: HomeScreen,
 		},
 		GoalForm: {
 			screen: GoalForm,
+		},
+		SignInScreen: {
+			screen: SignInScreen,
+		},
+		ProfileScreen: {
+			screen: ProfileScreen,
+		},
+		ActivityScreen: {
+			screen: ActivityScreen,
 		},
 	},
 	{
@@ -28,7 +41,34 @@ const RootStackNavigator = StackNavigator(
 	},
 );
 
-export default class RootNavigator extends React.Component {
+const RootStackNavigator = StackNavigator(
+	{
+		// Main: {
+		// 	screen: MainTabNavigator,
+		// },
+		HomeScreen: {
+			screen: HomeScreen,
+		},
+		// GoalForm: {
+		// 	screen: GoalForm,
+		// },
+		SignInScreen: {
+			screen: SignInScreen,
+		},
+		ProfileScreen: {
+			screen: ProfileScreen,
+		},
+	},
+	{
+		navigationOptions: () => ({
+			headerTitleStyle: {
+				fontWeight: 'normal',
+			},
+		}),
+	},
+);
+
+class RootNavigator extends React.Component {
 	componentDidMount() {
 		this._notificationSubscription = this._registerForPushNotifications();
 	}
@@ -39,6 +79,9 @@ export default class RootNavigator extends React.Component {
 	}
 
 	render() {
+		if (this.props.isAuth) {
+			return <AuthRootStackNavigator />;
+		}
 		return <RootStackNavigator />;
 	}
 
@@ -61,3 +104,9 @@ export default class RootNavigator extends React.Component {
 		);
 	};
 }
+
+const mapStateToProps = state => ({
+	isAuth: state.profile.isAuth,
+});
+
+export default connect(mapStateToProps)(RootNavigator);

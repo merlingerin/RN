@@ -58,9 +58,9 @@ export default class GoalsCollapse extends React.Component {
 	render() {
 		const CollapseItem = ({ goal }) => (
 			<TouchableOpacity
-				style={{ marginLeft: 10, marginRight: 10 }}
+				style={{ marginLeft: 5, marginRight: 5 }}
 				onPress={() =>
-					this.props.navigation.navigate('GoalForm', {
+					this.props.navigation.navigate('ActivityScreen', {
 						goal: goal,
 					})
 				}
@@ -68,20 +68,33 @@ export default class GoalsCollapse extends React.Component {
 				<Tile styleName="small">
 					<Image styleName="medium" source={{ uri: goal.image }} />
 					<View styleName="content">
-						<Subtitle numberOfLines={3}>{goal.goalTitle}</Subtitle>
+						<Subtitle
+							style={{ textAlign: 'center' }}
+							numberOfLines={3}
+						>
+							{goal.goalTitle}
+						</Subtitle>
 					</View>
 				</Tile>
 			</TouchableOpacity>
 		);
 
-		const renderRow = category => (
-			<Row key={category.categoryId}>
+		const renderRow = (category, active = false) => (
+			<Row
+				key={category.categoryId}
+				style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 5 }}
+			>
 				<Image
 					styleName="small rounded-corners"
 					source={category.image.file}
 				/>
-				<Title styleName="top">{category.categoryTitle}</Title>
-				<Icon styleName="disclosure" name="right-arrow" />
+				<Title style={{ alignSelf: 'center' }} styleName="top">
+					{category.categoryTitle}
+				</Title>
+				<Icon
+					styleName="disclosure"
+					name={active ? 'down-arrow' : 'up-arrow'}
+				/>
 			</Row>
 		);
 
@@ -91,9 +104,16 @@ export default class GoalsCollapse extends React.Component {
 					<Card key={item.categoryId}>
 						<CardItem
 							button
-							onPress={() => this._handleClick(item.categoryId)}
+							onPress={() =>
+								this.props.isAuth
+									? this._handleClick(item.categoryId)
+									: false
+							}
 						>
-							{renderRow(item)}
+							{renderRow(
+								item,
+								this.state.activeIndex !== item.categoryId,
+							)}
 						</CardItem>
 						<Collapsible
 							collapsed={

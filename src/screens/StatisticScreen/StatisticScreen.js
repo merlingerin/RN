@@ -33,7 +33,7 @@ import {
 	Input,
 } from 'native-base';
 import DatePicker from 'react-native-datepicker';
-import { Title, View, Subtitle } from '@shoutem/ui';
+import { Title, Heading, Screen, View, Subtitle } from '@shoutem/ui';
 import GoalTitleInput from '../../components/GoalTitleInput/GoalTitleInput';
 import DeadlinePicker from '../../components/DeadlinePicker/DeadlinePicker';
 // import LabelSelect from 'react-native-label-select';
@@ -248,7 +248,29 @@ export default class GoalForm extends React.Component {
 
 	render() {
 		return (
-			<Container>
+			<Screen styleName="paper">
+				<Header
+					centerComponent={{
+						text: 'No page',
+						style: { color: '#fff' },
+					}}
+					rightComponent={{
+						icon: 'home',
+						color: '#fff',
+						onPress: () =>
+							this.props.navigation.navigate('HomeScreen'),
+					}}
+				/>
+				<View classNames="horizontal h-center">
+					{' '}
+					<Heading style={{ textAlign: 'center' }}>No page</Heading>
+				</View>
+			</Screen>
+		);
+	}
+}
+{
+	/*<Container>
 				<Header
 					leftComponent={{
 						icon: 'navigate-before',
@@ -398,7 +420,5 @@ export default class GoalForm extends React.Component {
 						</Button>
 					</View>
 				</Content>
-			</Container>
-		);
-	}
+						</Container>*/
 }
