@@ -22,9 +22,9 @@ export default TabNavigator(
 		// ActivityScreen: {
 		// 	screen: ActivityScreen,
 		// },
-		StatisticScreen: {
-			screen: StatisticScreen,
-		},
+		// StatisticScreen: {
+		// 	screen: StatisticScreen,
+		// },
 		ProfileScreen: {
 			screen: ProfileScreen,
 		},

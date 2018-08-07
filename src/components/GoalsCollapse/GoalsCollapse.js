@@ -1,35 +1,18 @@
 import React from 'react';
 import _ from 'lodash';
-import { FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
+import { Card, CardItem } from 'native-base';
 import {
-	Header,
-	Container,
-	// Title,
-	Content,
-	Tabs,
-	Left,
-	Right,
-	Body,
-	// Text,
-	Card,
-	Button,
-	H1,
-	CardItem,
-} from 'native-base';
-import {
-	ImageBackground,
 	Title,
+	Text,
 	Tile,
 	TouchableOpacity,
 	Image,
 	Row,
 	Subtitle,
-	ListView,
 	View,
 	Icon,
 } from '@shoutem/ui';
-import { List, ListItem } from 'react-native-elements';
-import { WebBrowser } from 'expo';
 import Collapsible from 'react-native-collapsible';
 
 export default class GoalsCollapse extends React.Component {
@@ -59,14 +42,27 @@ export default class GoalsCollapse extends React.Component {
 		const CollapseItem = ({ goal }) => (
 			<TouchableOpacity
 				style={{ marginLeft: 5, marginRight: 5 }}
-				onPress={() =>
-					this.props.navigation.navigate('ActivityScreen', {
+				onPress={() => {
+					if (goal.defaultGoal) {
+						return this.props.navigation.navigate('GoalForm', {
+							goal: goal,
+						});
+					}
+					return this.props.navigation.navigate('ActivityScreen', {
 						goal: goal,
-					})
-				}
+					});
+				}}
 			>
 				<Tile styleName="small">
-					<Image styleName="medium" source={{ uri: goal.image }} />
+					<Image
+						styleName="medium"
+						source={{
+							uri:
+								goal.image.indexOf('http') > -1
+									? goal.image
+									: `data:image/jpeg;base64,${goal.image}`,
+						}}
+					/>
 					<View styleName="content">
 						<Subtitle
 							style={{ textAlign: 'center' }}
@@ -79,24 +75,42 @@ export default class GoalsCollapse extends React.Component {
 			</TouchableOpacity>
 		);
 
-		const renderRow = (category, active = false) => (
-			<Row
-				key={category.categoryId}
-				style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 5 }}
-			>
-				<Image
-					styleName="small rounded-corners"
-					source={category.image.file}
-				/>
-				<Title style={{ alignSelf: 'center' }} styleName="top">
-					{category.categoryTitle}
-				</Title>
-				<Icon
-					styleName="disclosure"
-					name={active ? 'down-arrow' : 'up-arrow'}
-				/>
-			</Row>
-		);
+		const renderRow = (category, active = false) => {
+			const categoryGoals = _.filter(this.props.goals, goal => {
+				return +goal.goalCategory.categoryId === +category.categoryId;
+			});
+
+			return (
+				<Row
+					key={category.categoryId}
+					style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 5 }}
+				>
+					<Image
+						styleName="small rounded-corners"
+						source={category.image.file}
+					/>
+					<Subtitle
+						style={{ alignSelf: 'center', flex: 1 }}
+						styleName="top"
+					>
+						{category.categoryTitle}
+					</Subtitle>
+					<Text
+						style={{
+							justifyContent: 'flex-end',
+							flex: 0,
+							paddingRight: 15,
+						}}
+					>
+						{categoryGoals && _.values(categoryGoals).length}
+					</Text>
+					<Icon
+						styleName="disclosure"
+						name={active ? 'down-arrow' : 'up-arrow'}
+					/>
+				</Row>
+			);
+		};
 
 		return (
 			<React.Fragment>

@@ -93,8 +93,7 @@ export const resetError = () => {
 };
 
 export const requestLogOut = () => async dispatch => {
-	fb
-		.auth()
+	fb.auth()
 		.signOut()
 		.then(function() {
 			dispatch(logOut);
@@ -105,22 +104,26 @@ export const requestLogOut = () => async dispatch => {
 };
 
 export const checkIsAuth = profile => dispatch => {
-	console.log('profile', profile);
 	dispatch(fetchProfileSuccess(profile));
 };
 
-export const signIn = (email, password) => async dispatch => {
+export const signIn = (email, password, name) => async dispatch => {
 	dispatch(fetchProfileRequest);
-	fb
-		.auth()
+
+	fb.auth()
 		.createUserWithEmailAndPassword(email, password)
 		.then(res => {
-			console.log('res', res);
 			let profile = {
-				userPhoto: res.user.photoURL,
-				name: res.user.displayName,
-				email: res.user.email,
+				userPhoto: null,
+				name: name,
+				email: email,
 			};
+			const user = fb.auth().currentUser;
+
+			user.updateProfile({
+				displayName: name,
+			});
+			console.log('profile ducks', profile);
 			dispatch(fetchProfileSuccess(profile));
 		})
 		.catch(error => {
@@ -133,11 +136,9 @@ export const signIn = (email, password) => async dispatch => {
 
 export const authWithEmail = (email, password) => async dispatch => {
 	dispatch(fetchProfileRequest);
-	fb
-		.auth()
+	fb.auth()
 		.signInWithEmailAndPassword(email, password)
 		.then(res => {
-			console.log('res', res);
 			let profile = {
 				userPhoto: res.user.photoURL,
 				name: res.user.displayName,
@@ -165,8 +166,7 @@ export const signInWithGoogle = () => async dispatch => {
 				result.accessToken,
 			);
 			console.log('credential', credential);
-			fb
-				.auth()
+			fb.auth()
 				.signInAndRetrieveDataWithCredential(credential)
 				.then(res => {
 					console.log('res', res);

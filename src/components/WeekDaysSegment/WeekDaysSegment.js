@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform } from 'react-native';
-// import {  } from 'react-native-elements';
+import _ from 'lodash';
 import { Button, Segment, Text } from 'native-base';
 
 const styles = {
@@ -17,54 +17,48 @@ const styles = {
 const weekDays = [
 	{
 		id: '0',
-		title: 'Вс',
+		title: 'Пн',
 	},
 	{
 		id: '1',
-		title: 'Пт',
-	},
-	{
-		id: '2',
 		title: 'Вт',
 	},
 	{
-		id: '3',
+		id: '2',
 		title: 'Ср',
 	},
 	{
-		id: '4',
+		id: '3',
 		title: 'Чт',
 	},
 	{
-		id: '5',
+		id: '4',
 		title: 'Пт',
 	},
 	{
-		id: '6',
+		id: '5',
 		title: 'Сб',
+	},
+	{
+		id: '6',
+		title: 'Вс',
 	},
 ];
 
 export default class WeekDaysSegment extends Component {
 	state = {
-		notification: true,
-		goalTitle: 'Чиканить мяч 20 минут',
 		pickedWeekDays: [1, 5],
 	};
 
 	toggleWeekButton = id => {
 		let { pickedWeekDays } = this.state;
-		console.log(_.some(this.state.pickedWeekDays, item => id === item));
-		if (_.some(this.state.pickedWeekDays, item => id === item)) {
+		if (_.some(pickedWeekDays, item => id === item)) {
 			this.setState({
-				pickedWeekDays: _.filter(
-					this.state.pickedWeekDays,
-					item => item !== id,
-				),
+				pickedWeekDays: _.filter(pickedWeekDays, item => item !== id),
 			});
 		} else {
 			this.setState({
-				pickedWeekDays: [...this.state.pickedWeekDays, id],
+				pickedWeekDays: [...pickedWeekDays, id],
 			});
 		}
 	};
@@ -78,7 +72,7 @@ export default class WeekDaysSegment extends Component {
 				}}
 			>
 				{Platform.OS === 'ios'
-					? weekDays.map(day => (
+					? _.map(weekDays, day => (
 							<Button
 								key={day.id}
 								onPress={() =>
@@ -93,8 +87,6 @@ export default class WeekDaysSegment extends Component {
 										: false
 								}
 								style={{
-									// borderWidth: 1,
-									// borderColor: '#000',
 									paddingLeft: 0,
 									paddingRight: 0,
 								}}
@@ -111,7 +103,7 @@ export default class WeekDaysSegment extends Component {
 								</Text>
 							</Button>
 					  ))
-					: weekDays.map(day => (
+					: _.map(weekDays, day => (
 							<Button
 								key={day.id}
 								onPress={() =>

@@ -204,7 +204,6 @@ export default class GoalForm extends React.Component {
 	};
 
 	onCategoryChange = value => {
-		console.log('value', value);
 		this.setState({
 			categoryKey: value,
 		});
@@ -224,8 +223,6 @@ export default class GoalForm extends React.Component {
 	toggleShown = () => this.setState({ isShown: !this.state.isShown });
 
 	toggleWeekButton = id => {
-		let { pickedWeekDays } = this.state;
-		console.log(_.some(this.state.pickedWeekDays, item => id === item));
 		if (_.some(this.state.pickedWeekDays, item => id === item)) {
 			this.setState({
 				pickedWeekDays: _.filter(

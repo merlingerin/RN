@@ -104,25 +104,52 @@ class ProfileScreen extends React.Component {
 			signInWithGoogle,
 			authWithEmail,
 		} = this.props;
+		const activeGoals = _.filter(goals, item => {
+			return item.defaultGoal !== true && item.active === 1;
+		});
 		const sport = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 0;
+			return (
+				item.goalCategory.categoryId === 0 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
 		const finance = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 1;
+			return (
+				item.goalCategory.categoryId === 1 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
 		const careare = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 2;
+			return (
+				item.goalCategory.categoryId === 2 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
 		const enviroment = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 3;
+			return (
+				item.goalCategory.categoryId === 3 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
 		const selfExpression = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 4;
+			return (
+				item.goalCategory.categoryId === 4 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
 		const family = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 5;
+			return (
+				item.goalCategory.categoryId === 5 &&
+				item.defaultGoal !== true &&
+				item.active === 1
+			);
 		});
-		console.log('ERROR', this.props.isError ? this.props.error.code : null);
+
 		if (!isAuth) {
 			return (
 				<Screen styleName="paper">
@@ -220,11 +247,11 @@ class ProfileScreen extends React.Component {
 						text: 'Профиль',
 						style: { color: '#fff' },
 					}}
-					rightComponent={{
-						icon: 'home',
-						color: '#fff',
-						onPress: () => console.log(fb.auth().currentUser),
-					}}
+					// rightComponent={{
+					// 	icon: 'home',
+					// 	color: '#fff',
+					// 	onPress: () => console.log(fb.auth().currentUser),
+					// }}
 				/>
 				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
 					<Image
@@ -232,17 +259,30 @@ class ProfileScreen extends React.Component {
 						source={
 							isAuth && profile.userPhoto
 								? {
-										uri: profile.userPhoto,
+										uri:
+											profile.userPhoto ||
+											fb.auth().currentUser.providerData
+												.photoURL,
 								  }
 								: require('../../../assets/images/image-3.png')
 						}
 					/>
-					<Heading>{isAuth ? profile.name : ''}</Heading>
-					<Title>{isAuth ? profile.email : ''}</Title>
+					<Heading>
+						{isAuth
+							? fb.auth().currentUser.providerData.displayName ||
+							  profile.name
+							: ''}
+					</Heading>
+					<Title>
+						{isAuth
+							? fb.auth().currentUser.providerData.email ||
+							  profile.email
+							: ''}
+					</Title>
 				</View>
 				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
 					<Heading style={{ paddingBottom: 10 }}>
-						Всего активных целей: {_.values(goals).length}
+						Всего активных целей: {_.values(activeGoals).length}
 					</Heading>
 					<Title>Спорт, Здоровье: {_.values(sport).length}</Title>
 					<Title>Финансы: {_.values(finance).length}</Title>
@@ -253,22 +293,14 @@ class ProfileScreen extends React.Component {
 					</Title>
 					<Title>Семья: {_.values(family).length}</Title>
 				</View>
-				<View
-					style={{
-						display: 'flex',
-						flexDirection: 'row',
-						justifyContent: 'center',
-					}}
+				<Button
+					error
+					block
+					style={styles.button}
+					onPress={() => this.props.requestLogOut()}
 				>
-					<Button
-						error
-						block
-						style={styles.button}
-						onPress={() => this.props.requestLogOut()}
-					>
-						<Text style={styles.buttonText}> Log Out </Text>
-					</Button>
-				</View>
+					<Text style={styles.buttonText}> Выйти </Text>
+				</Button>
 			</Screen>
 		);
 	}

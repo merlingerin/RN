@@ -3,7 +3,6 @@ export const authWithGoogle = async () => {
 		const result = await Expo.Google.logInAsync(credential);
 
 		if (result.type === 'success') {
-			console.log('result', result);
 			this.setState({
 				isAuth: true,
 				profile: result,

@@ -33,6 +33,7 @@ class SignInScreen extends Component {
 	state = {
 		email: '',
 		password: '',
+		name: '',
 	};
 
 	componentDidMount() {
@@ -55,11 +56,14 @@ class SignInScreen extends Component {
 		});
 	};
 
+	_handleInputUsername = value => {
+		this.props.resetError();
+		this.setState({
+			name: value,
+		});
+	};
+
 	render() {
-		console.log(
-			'isError',
-			this.props.isError ? this.props.error.message : null,
-		);
 		if (this.props.isAuth) {
 			this.props.navigation.goBack();
 		}
@@ -104,6 +108,15 @@ class SignInScreen extends Component {
 							value={this.state.password}
 						/>
 					</Item>
+					<Item floatingLabel error={this.props.isError}>
+						<Label>Name</Label>
+						<Input
+							autoCapitalize="none"
+							autoCorrect={false}
+							onChangeText={this._handleInputUsername}
+							value={this.state.name}
+						/>
+					</Item>
 					<View
 						style={{
 							paddingTop: 30,
@@ -120,6 +133,7 @@ class SignInScreen extends Component {
 								this.props.signIn(
 									this.state.email,
 									this.state.password,
+									this.state.name,
 								)
 							}
 						>
@@ -145,4 +159,7 @@ const mapDispatchToProps = {
 	resetError,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignInScreen);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(SignInScreen);

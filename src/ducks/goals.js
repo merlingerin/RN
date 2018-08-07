@@ -38,7 +38,6 @@ const goals = (state = initialState || {}, action) => {
 };
 
 export const addNewGoal = goal => {
-	console.log('ADDED');
 	return {
 		type: ADD_NEW_GOAL,
 		payload: goal,

@@ -1,15 +1,23 @@
 import { Notifications } from 'expo';
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
-
+import { StackNavigator, DrawerNavigator } from 'react-navigation';
+import { Root } from 'native-base';
 import MainTabNavigator from './MainTabNavigator';
 import GoalForm from '../screens/GoalForm/GoalForm';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignInScreen from '../screens/SignInScreen/SignInScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import ActivityScreen from '../screens/ActivityScreen/ActivityScreen';
+
+import AboutScreen from '../screens/Drawer/Screens/AboutScreen';
+import FAQScreen from '../screens/Drawer/Screens/FAQScreen';
+import FeedbackScreen from '../screens/Drawer/Screens/FeedbackScreen';
+import SupportScreen from '../screens/Drawer/Screens/SupportScreen';
+import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
+
 import registerForPushNotificationsAsync from '../../api/registerForPushNotificationsAsync';
 import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const AuthRootStackNavigator = StackNavigator(
 	{
@@ -34,6 +42,7 @@ const AuthRootStackNavigator = StackNavigator(
 	},
 	{
 		navigationOptions: () => ({
+			title: 'Главная страница',
 			headerTitleStyle: {
 				fontWeight: 'normal',
 			},
@@ -43,15 +52,10 @@ const AuthRootStackNavigator = StackNavigator(
 
 const RootStackNavigator = StackNavigator(
 	{
-		// Main: {
-		// 	screen: MainTabNavigator,
-		// },
 		HomeScreen: {
 			screen: HomeScreen,
 		},
-		// GoalForm: {
-		// 	screen: GoalForm,
-		// },
+
 		SignInScreen: {
 			screen: SignInScreen,
 		},
@@ -61,12 +65,34 @@ const RootStackNavigator = StackNavigator(
 	},
 	{
 		navigationOptions: () => ({
+			title: 'Редактировать Цель',
 			headerTitleStyle: {
 				fontWeight: 'normal',
 			},
 		}),
 	},
 );
+
+const Drawer = DrawerNavigator({
+	AuthRootStackNavigator: {
+		screen: AuthRootStackNavigator,
+	},
+	AboutScreen: {
+		screen: AboutScreen,
+	},
+	FAQScreen: {
+		screen: FAQScreen,
+	},
+	FeedbackScreen: {
+		screen: FeedbackScreen,
+	},
+	SupportScreen: {
+		screen: SupportScreen,
+	},
+	TermsOfUseScreen: {
+		screen: TermsOfUseScreen,
+	},
+});
 
 class RootNavigator extends React.Component {
 	componentDidMount() {
@@ -80,7 +106,16 @@ class RootNavigator extends React.Component {
 
 	render() {
 		if (this.props.isAuth) {
-			return <AuthRootStackNavigator />;
+			return (
+				<Root>
+					<Spinner
+						visible={this.props.loading}
+						textContent={'Loading...'}
+						textStyle={{ color: '#FFF' }}
+					/>
+					<Drawer />
+				</Root>
+			);
 		}
 		return <RootStackNavigator />;
 	}
@@ -107,6 +142,7 @@ class RootNavigator extends React.Component {
 
 const mapStateToProps = state => ({
 	isAuth: state.profile.isAuth,
+	loading: state.loader.isShown,
 });
 
 export default connect(mapStateToProps)(RootNavigator);

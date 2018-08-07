@@ -1,5 +1,6 @@
 import React from 'react';
 import DatePicker from 'react-native-datepicker';
+import moment from 'moment';
 
 const DeadlinePicker = ({ date, onDateChange }) => (
 	<DatePicker
@@ -10,11 +11,11 @@ const DeadlinePicker = ({ date, onDateChange }) => (
 			borderColor: '#000',
 		}}
 		showIcon={false}
-		date={date}
+		date={moment(date).format('DD-MM-YYYY')}
 		mode="date"
 		placeholder="select date"
-		format="YYYY-MM-DD"
-		minDate="2018-04-01"
+		format="DD-MM-YYYY"
+		minDate={moment().format('DD-MM-YYYY')}
 		confirmBtnText="Confirm"
 		cancelBtnText="Cancel"
 		customStyles={{

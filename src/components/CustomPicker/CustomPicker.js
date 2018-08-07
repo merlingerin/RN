@@ -5,27 +5,27 @@ import { Icon } from 'react-native-elements';
 
 const categorys = [
 	{
-		label: 'Спорт, Здоровье',
+		label: 'Самореализация / Драйв',
 		key: 0,
 	},
 	{
-		label: 'Финансы',
+		label: 'Карьера / Развитие',
 		key: 1,
 	},
 	{
-		label: 'Карьера, развитие',
+		label: 'Семья',
 		key: 2,
 	},
 	{
-		label: 'Окружение',
+		label: 'Финансы',
 		key: 3,
 	},
 	{
-		label: 'Самовыражение',
+		label: 'Окружение / Друзья',
 		key: 4,
 	},
 	{
-		label: 'Семья',
+		label: 'Энергия / Отдых',
 		key: 5,
 	},
 ];

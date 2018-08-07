@@ -5,46 +5,21 @@ import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
 import { saveNewGoal } from '../../services/api/goals';
 import { addNewGoal, removeGoal } from '../../ducks/goals';
-import { FlatList, Image, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import TimePicker from '../../components/TimePicker/TimePicker';
 import GoalsGallery from '../../components/GoalsGallery/GoalsGallery';
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import WeekDaysSegment from '../../components/WeekDaysSegment/WeekDaysSegment';
 import { fb } from '../../services/api';
-import {
-	Header,
-	List,
-	ListItem,
-	Text,
-	CheckBox,
-	Tile,
-	Icon,
-	Slider,
-} from 'react-native-elements';
-import {
-	Container,
-	Content,
-	Tabs,
-	Left,
-	Right,
-	Body,
-	Card,
-	H1,
-	CardItem,
-	Badge,
-	Picker,
-	Segment,
-	Item,
-	Label,
-	Input,
-	Button,
-	Switch,
-} from 'native-base';
-import DatePicker from 'react-native-datepicker';
-import { Title, View, Subtitle, Heading } from '@shoutem/ui';
+import { Header, List, ListItem, Text } from 'react-native-elements';
+import { Container, Content, Button } from 'native-base';
+import { View, Heading } from '@shoutem/ui';
 import GoalTitleInput from '../../components/GoalTitleInput/GoalTitleInput';
 import DeadlinePicker from '../../components/DeadlinePicker/DeadlinePicker';
-// import LabelSelect from 'react-native-label-select';
+import { activityRepeatTypeParser } from '../../utils/parsers';
+import MonthCalendar from '../../components/MonthCalendar/MonthCalendar';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { showLoader, hideLoader } from '../../ducks/loader';
 
 styles1 = StyleSheet.create({
 	subtitleView: {
@@ -62,38 +37,27 @@ styles1 = StyleSheet.create({
 	},
 });
 
-const styles = {
-	container: {
-		inline: {
-			display: 'flex',
-			flex: 1,
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-		},
-	},
-};
-
 const defaultGoal = {
 	active: 0,
-	defaultGoal: false,
+	defaultGoal: true,
 	activityRepeat: {
-		days: [],
+		weekDays: [],
+		monthDays: {},
 		id: 1,
 		remidner: false,
 		time: ['7:50'],
 		title: 'каждый день',
 	},
-	goalTitle: 'Новая цель',
-	deadline: '2021-08-31',
+	goalTitle: '',
+	deadline: moment().format(),
 	goalCategory: {
 		categoryId: 0,
 		categoryTitle: 'Спорт, Здоровье',
 		color: '#F38181',
 	},
-	// id: 'd001',
 	image:
 		'https://img.freepik.com/free-vector/business-concept-businessman-standing-on-the-arrows-that-are-shot-for-goal_1362-74.jpg?size=338&ext=jpg',
-	timestamp: new Date(),
+	timestamp: moment().format(),
 };
 
 class GoalForm extends React.Component {
@@ -104,7 +68,7 @@ class GoalForm extends React.Component {
 			...(this.props.goal ? this.props.goal : {}),
 			sliderValue: 1,
 		};
-		this.defaultGoalState = this.state = {
+		this.defaultGoalState = {
 			...defaultGoal,
 			...(this.props.goal ? this.props.goal : {}),
 		};
@@ -118,7 +82,7 @@ class GoalForm extends React.Component {
 
 	_onDeadlineChange = date => {
 		this.setState({
-			deadline: date,
+			deadline: moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD HH:mm:ssZ'),
 		});
 	};
 
@@ -130,10 +94,6 @@ class GoalForm extends React.Component {
 			},
 		});
 	};
-
-	componentWillReceiveProps(nextProps) {
-		console.log('nextProps', nextProps);
-	}
 
 	removeTimePicker = id => {
 		let times = _.filter(this.state.activityRepeat.time, (item, idx) => {
@@ -178,10 +138,18 @@ class GoalForm extends React.Component {
 	};
 
 	onReminderIntervalChange = value => {
-		this.setState({
+		const repeatType = activityRepeatTypeParser(+value);
+		if (repeatType) {
+			return this.setState({
+				activityRepeat: {
+					...this.state.activityRepeat,
+					...repeatType,
+				},
+			});
+		}
+		return this.setState({
 			activityRepeat: {
 				...this.state.activityRepeat,
-				id: +value,
 			},
 		});
 	};
@@ -196,24 +164,45 @@ class GoalForm extends React.Component {
 
 	toggleShown = () => this.setState({ isShown: !this.state.isShown });
 
-	toggleWeekButton = id => {
-		let { days } = this.state.activityRepeat;
+	toggleMonthDays = day => {
+		let days = this.state.activityRepeat.monthDays || {};
 
-		if (_.some(days, item => id === item)) {
+		if (_.some(days, item => day.id === item.id)) {
 			this.setState({
 				activityRepeat: {
 					...this.state.activityRepeat,
-					days: _.filter(
-						this.state.activityRepeat.days,
-						item => item !== id,
-					),
+					monthDays: _.pickBy(days, item => item.id !== day.id),
 				},
 			});
 		} else {
 			this.setState({
 				activityRepeat: {
 					...this.state.activityRepeat,
-					days: [...this.state.activityRepeat.days, id],
+					monthDays: {
+						...days,
+						[day.dateString]: {
+							...day,
+						},
+					},
+				},
+			});
+		}
+	};
+
+	toggleWeekButton = id => {
+		let days = this.state.activityRepeat.weekDays || [];
+		if (_.some(days, item => id === item)) {
+			this.setState({
+				activityRepeat: {
+					...this.state.activityRepeat,
+					weekDays: _.filter(days, item => item !== id),
+				},
+			});
+		} else {
+			this.setState({
+				activityRepeat: {
+					...this.state.activityRepeat,
+					weekDays: [...days, id],
 				},
 			});
 		}
@@ -228,55 +217,68 @@ class GoalForm extends React.Component {
 	_setImage = uri => this.setState({ image: uri });
 
 	_createNewGoal = async () => {
+		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
-		goal.defaultGoal = _.isEqual(goal, this.defaultGoalState);
-		goal.id ? false : (goal.id = uuidv4());
-		// goal.timestamp = moment().format();
-		// this.props.addNewGoal(goal);
-		await saveNewGoal({
-			...this.props.goals,
-			[goal.id]: goal,
-		});
+		goal.active = 1;
+		goal.lastModofiedDate = moment().format();
+		if (this.state.defaultGoal) {
+			goal.defaultGoal = false;
+			goal.id = uuidv4();
+			goal.createdDate = moment().format();
+		}
+
+		await fb
+			.database()
+			.ref(`/users/${fb.auth().currentUser.uid}/goals/${goal.id}`)
+			.set({
+				...goal,
+			});
+		this.props.hideLoader();
 		this.props.navigation.goBack();
 	};
 
 	_deleteGoal = async () => {
-		let { id } = this.state;
+		this.props.showLoader();
+		let { id } = this.props.goal;
 		let goals = _.filter(this.props.goals, goal => goal.id !== id);
 		let byId = _.keyBy(goals, 'id');
 		this.props.removeGoal(byId);
 		await saveNewGoal({ ...byId });
-		this.props.navigation.goBack();
+		this.props.hideLoader();
+		this.props.navigation.navigate('HomeScreen');
 	};
 
 	_finishedGoal = async () => {
+		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
-
+		goal.active = 2;
 		await fb
 			.database()
 			.ref(`/users/${fb.auth().currentUser.uid}/goals/${goal.id}`)
 			.set({
 				...goal,
-				active: 2,
 			});
+		this.props.hideLoader();
 		this.setState({ active: 2 });
 	};
 
 	_restartGoal = async () => {
+		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
-
+		goal.active = 1;
 		await fb
 			.database()
 			.ref(`/users/${fb.auth().currentUser.uid}/goals/${goal.id}`)
 			.set({
 				...goal,
-				active: 0,
 			});
-		this.setState({ active: 0 });
+		this.props.hideLoader();
+		this.setState({ active: 1 });
 	};
 
 	render() {
 		let goal = _.omit(this.state, ['sliderValue']);
+
 		if (this.state.active === 2) {
 			return (
 				<Container>
@@ -288,10 +290,11 @@ class GoalForm extends React.Component {
 							onPress: () => this.props.navigation.goBack(),
 						}}
 						centerComponent={{
-							text: 'Редактировать цель',
+							text: goal.goalTitle,
 							style: { color: '#fff' },
 						}}
 					/>
+
 					<List>
 						<ListItem
 							// title="Включить достижение цели"
@@ -301,7 +304,7 @@ class GoalForm extends React.Component {
 									classNames="h-center"
 									style={{ textAlign: 'center' }}
 								>
-									Цель завершена
+									Цель достигнута
 								</Heading>
 							}
 						/>
@@ -339,41 +342,13 @@ class GoalForm extends React.Component {
 						onPress: () => this.props.navigation.goBack(),
 					}}
 					centerComponent={{
-						text: 'Редактировать цель',
+						text: goal.goalTitle,
 						style: { color: '#fff' },
 					}}
 				/>
 				<Content>
-					<Text h4 style={{ paddingLeft: 10 }}>
-						Описание
-					</Text>
+
 					<List>
-						{this.state.id && (
-							<ListItem
-								// title="Включить достижение цели"
-								hideChevron={true}
-								subtitle={
-									<View
-										styleName="horizontal space-between"
-										style={{ padding: 15 }}
-									>
-										<Subtitle>Приостановить цель</Subtitle>
-										<Switch
-											onValueChange={value =>
-												this.setState({
-													active: value ? 1 : 0,
-												})
-											}
-											value={
-												this.state.active === 1
-													? true
-													: false
-											}
-										/>
-									</View>
-								}
-							/>
-						)}
 						<ListItem
 							title="Категория цели"
 							hideChevron={true}
@@ -399,14 +374,13 @@ class GoalForm extends React.Component {
 								/>
 							}
 						/>
+
 						<ListItem
 							title="Срок достижения"
 							hideChevron={true}
 							subtitle={
 								<DeadlinePicker
-									date={moment(this.state.deadline).format(
-										'YYYY-MM-DD',
-									)}
+									date={this.state.deadline}
 									onDateChange={this._onDeadlineChange}
 								/>
 							}
@@ -418,6 +392,9 @@ class GoalForm extends React.Component {
 					<List>
 						<ListItem
 							title="Повторять активность"
+							style={{
+								borderBottomWidth: 0,
+							}}
 							hideChevron={true}
 							subtitle={
 								<CustomPicker
@@ -429,6 +406,12 @@ class GoalForm extends React.Component {
 								/>
 							}
 						/>
+						{this.state.activityRepeat.id === 5 && (
+							<MonthCalendar
+								markedDays={goal.activityRepeat.monthDays || {}}
+								toggleMonthDays={this.toggleMonthDays}
+							/>
+						)}
 						{this.state.activityRepeat.id === 4 && (
 							<ListItem
 								title="Дни активности"
@@ -437,7 +420,7 @@ class GoalForm extends React.Component {
 									<WeekDaysSegment
 										toggleWeekButton={this.toggleWeekButton}
 										pickedWeekDays={
-											this.state.activityRepeat.days
+											this.state.activityRepeat.weekDays
 										}
 									/>
 								}
@@ -523,7 +506,6 @@ class GoalForm extends React.Component {
 						image={this.state.image}
 						getImage={this._setImage}
 					/>
-
 					<View
 						style={{
 							display: 'flex',
@@ -532,17 +514,22 @@ class GoalForm extends React.Component {
 							padding: 10,
 						}}
 					>
-						<Button
-							iconLeft
-							block
-							primary
-							disabled={_.isEqual(goal, this.defaultGoalState)}
-							style={{ width: '100%', marginBottom: 10 }}
-							onPress={this._createNewGoal}
-						>
-							<Text style={{ color: '#fff' }}>Сохранить</Text>
-						</Button>
-						{this.state.id &&
+						{!_.isEqual(goal, this.defaultGoalState) &&
+							!!goal.goalTitle.length && (
+								<Button
+									iconLeft
+									block
+									primary
+									style={{ width: '100%', marginBottom: 10 }}
+									onPress={this._createNewGoal}
+								>
+									<Text style={{ color: '#fff' }}>
+										Сохранить
+									</Text>
+								</Button>
+							)}
+
+						{/*this.state.id &&
 							!this.state.defaultGoal && (
 								<React.Fragment>
 									<Button
@@ -556,7 +543,7 @@ class GoalForm extends React.Component {
 										onPress={this._finishedGoal}
 									>
 										<Text style={{ color: '#fff' }}>
-											Завершить
+											Достигнуть
 										</Text>
 									</Button>
 									<Button
@@ -574,7 +561,7 @@ class GoalForm extends React.Component {
 										</Text>
 									</Button>
 								</React.Fragment>
-							)}
+						)*/}
 					</View>
 				</Content>
 			</Container>
@@ -591,11 +578,17 @@ const mapStateToProps = (state, ownProps) => ({
 		: {},
 	categorys: state.categorys,
 	profile: state.profile,
+	loading: state.loader.isShown,
 });
 
 const mapDispatchToProps = {
 	addNewGoal,
 	removeGoal,
+	showLoader,
+	hideLoader,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GoalForm);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(GoalForm);

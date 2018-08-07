@@ -102,13 +102,12 @@ export default class GoalsGallery extends Component {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: 'Images',
 			quality: 0.1,
+			base64: true,
 		});
 
-		// console.log(result);
-
 		if (!result.cancelled) {
-			this.props.getImage(result.uri);
-			this.setState({ image: result.uri });
+			this.props.getImage(result.base64);
+			this.setState({ image: result.base64 });
 		}
 	};
 
@@ -223,7 +222,15 @@ export default class GoalsGallery extends Component {
 								</Text>
 								<Image
 									styleName="small"
-									source={{ uri: this.state.image }}
+									source={{
+										uri:
+											this.state.image.indexOf('http') >
+											-1
+												? this.state.image
+												: `data:image/jpeg;base64,${
+														this.state.image
+												  }`,
+									}}
 								/>
 							</View>
 						) : null}

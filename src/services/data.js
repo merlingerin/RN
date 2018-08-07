@@ -9,7 +9,7 @@ const users = {
 		},
 		goals: {
 			d001: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [0, 1, 2, 3, 4, 5, 6],
 					id: 1,
@@ -18,7 +18,7 @@ const users = {
 					title: 'каждый день',
 				},
 				deadline: moment()
-					.month(1)
+					.add(1, 'month')
 					.format(),
 				goalCategory: {
 					categoryId: 0,
@@ -31,7 +31,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d002: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [3, 6],
 					id: 2,
@@ -42,7 +42,7 @@ const users = {
 					title: 'каждую неделю',
 				},
 				deadline: moment()
-					.month(1)
+					.add(1, 'month')
 					.format(),
 				goalCategory: {
 					categoryId: 0,
@@ -56,7 +56,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d003: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [0, 1, 2, 3, 4, 5, 6],
 					id: 1,
@@ -65,7 +65,7 @@ const users = {
 					title: 'каждый день',
 				},
 				deadline: moment()
-					.month(1)
+					.add(1, 'month')
 					.format(),
 				goalCategory: {
 					categoryId: 0,
@@ -79,7 +79,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d004: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [3, 6],
 					id: 2,
@@ -90,7 +90,7 @@ const users = {
 					title: 'каждую неделю',
 				},
 				deadline: moment()
-					.month(1)
+					.add(1, 'month')
 					.format(),
 				goalCategory: {
 					categoryId: 0,
@@ -104,7 +104,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d010: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 3,
@@ -127,7 +127,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d011: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 3,
@@ -150,7 +150,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d011: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 3,
@@ -173,7 +173,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d012: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 3,
@@ -196,7 +196,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d020: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 3,
@@ -219,7 +219,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d021: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [2, 4],
 					id: 2,
@@ -242,7 +242,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d022: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [],
 					id: 2,
@@ -265,7 +265,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d023: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [1, 3, 5],
 					id: 2,
@@ -286,7 +286,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d030: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [1, 3, 5],
 					id: 2,
@@ -306,7 +306,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d031: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [1, 3, 5],
 					id: 2,
@@ -327,7 +327,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d032: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [1, 3, 5],
 					id: 2,
@@ -347,7 +347,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d040: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [1, 4],
 					id: 2,
@@ -368,7 +368,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d041: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [2, 5],
 					id: 2,
@@ -388,7 +388,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d042: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [0],
 					id: 2,
@@ -409,7 +409,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d043: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [0],
 					id: 2,
@@ -430,7 +430,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d050: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [0],
 					id: 2,
@@ -451,7 +451,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d051: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [6],
 					id: 2,
@@ -472,7 +472,7 @@ const users = {
 				timestamp: moment().format(),
 			},
 			d052: {
-				active: false,
+				active: 1,
 				activityRepeat: {
 					days: [6],
 					id: 2,
