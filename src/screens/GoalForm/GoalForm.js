@@ -3,8 +3,9 @@ import moment from 'moment';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
-import { saveNewGoal } from '../../services/api/goals';
+// import { saveNewGoal } from '../../services/api/goals';
 import { addNewGoal, removeGoal } from '../../ducks/goals';
+import { saveNewGoal } from '../../ducks/goalsOffline';
 import { StyleSheet } from 'react-native';
 import TimePicker from '../../components/TimePicker/TimePicker';
 import GoalsGallery from '../../components/GoalsGallery/GoalsGallery';
@@ -20,6 +21,7 @@ import { activityRepeatTypeParser } from '../../utils/parsers';
 import MonthCalendar from '../../components/MonthCalendar/MonthCalendar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { showLoader, hideLoader } from '../../ducks/loader';
+import { goals } from '../../services/goals';
 
 styles1 = StyleSheet.create({
 	subtitleView: {
@@ -217,28 +219,22 @@ class GoalForm extends React.Component {
 	_setImage = uri => this.setState({ image: uri });
 
 	_createNewGoal = async () => {
-		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
 		goal.active = 1;
 		goal.lastModofiedDate = moment().format();
+		goal.uid = this.props.profile.uid;
 		if (this.state.defaultGoal) {
 			goal.defaultGoal = false;
 			goal.id = uuidv4();
 			goal.createdDate = moment().format();
 		}
 
-		await fb
-			.database()
-			.ref(`/users/${fb.auth().currentUser.uid}/goals/${goal.id}`)
-			.set({
-				...goal,
-			});
-		this.props.hideLoader();
+		this.props.saveNewGoal(goal);
+
 		this.props.navigation.goBack();
 	};
 
 	_deleteGoal = async () => {
-		this.props.showLoader();
 		let { id } = this.props.goal;
 		let goals = _.filter(this.props.goals, goal => goal.id !== id);
 		let byId = _.keyBy(goals, 'id');
@@ -249,7 +245,6 @@ class GoalForm extends React.Component {
 	};
 
 	_finishedGoal = async () => {
-		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
 		goal.active = 2;
 		await fb
@@ -263,7 +258,6 @@ class GoalForm extends React.Component {
 	};
 
 	_restartGoal = async () => {
-		this.props.showLoader();
 		let goal = _.omit(this.state, ['sliderValue']);
 		goal.active = 1;
 		await fb
@@ -347,7 +341,6 @@ class GoalForm extends React.Component {
 					}}
 				/>
 				<Content>
-
 					<List>
 						<ListItem
 							title="Категория цели"
@@ -502,7 +495,7 @@ class GoalForm extends React.Component {
 					</Text>
 
 					<GoalsGallery
-						defaultImages={this.props.goals}
+						defaultImages={{ ...this.props.goals, ...goals }}
 						image={this.state.image}
 						getImage={this._setImage}
 					/>
@@ -570,14 +563,13 @@ class GoalForm extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-	goals: state.goals,
+	goals: state.goalsOffline,
 	goal: ownProps.navigation.getParam('goal')
-		? _.find(state.goals, {
-				id: ownProps.navigation.getParam('goal').id,
-		  })
+		? state.goalsOffline[ownProps.navigation.getParam('goal').id] ||
+		  goals[ownProps.navigation.getParam('goal').id]
 		: {},
 	categorys: state.categorys,
-	profile: state.profile,
+	profile: state.profile.profile,
 	loading: state.loader.isShown,
 });
 
@@ -586,6 +578,7 @@ const mapDispatchToProps = {
 	removeGoal,
 	showLoader,
 	hideLoader,
+	saveNewGoal,
 };
 
 export default connect(

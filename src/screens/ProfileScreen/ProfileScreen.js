@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { fb } from '../../services/api';
 
 import { connect } from 'react-redux';
-import { Platform } from 'react-native';
 import {
 	signInWithGoogle,
 	authWithEmail,
@@ -11,16 +10,7 @@ import {
 	resetError,
 } from '../../ducks/profile';
 import { Header, Icon } from 'react-native-elements';
-import {
-	Screen,
-	View,
-	Image,
-	Subtitle,
-	Title,
-	Caption,
-	Text,
-	Heading,
-} from '@shoutem/ui';
+import { Screen, View, Image, Title, Text, Heading } from '@shoutem/ui';
 import { Form, Button, Item, Label, Input } from 'native-base';
 
 const styles = {
@@ -104,9 +94,12 @@ class ProfileScreen extends React.Component {
 			signInWithGoogle,
 			authWithEmail,
 		} = this.props;
+		console.log('goals', goals);
+
 		const activeGoals = _.filter(goals, item => {
 			return item.defaultGoal !== true && item.active === 1;
 		});
+
 		const sport = _.filter(goals, item => {
 			return (
 				item.goalCategory.categoryId === 0 &&
@@ -150,7 +143,7 @@ class ProfileScreen extends React.Component {
 			);
 		});
 
-		if (!isAuth) {
+		if (!fb.auth().currentUser) {
 			return (
 				<Screen styleName="paper">
 					<Header
@@ -257,7 +250,7 @@ class ProfileScreen extends React.Component {
 					<Image
 						styleName="medium-avatar"
 						source={
-							isAuth && profile.userPhoto
+							fb.auth().currentUser && profile.userPhoto
 								? {
 										uri:
 											profile.userPhoto ||
@@ -268,13 +261,13 @@ class ProfileScreen extends React.Component {
 						}
 					/>
 					<Heading>
-						{isAuth
+						{fb.auth().currentUser
 							? fb.auth().currentUser.providerData.displayName ||
 							  profile.name
 							: ''}
 					</Heading>
 					<Title>
-						{isAuth
+						{fb.auth().currentUser
 							? fb.auth().currentUser.providerData.email ||
 							  profile.email
 							: ''}

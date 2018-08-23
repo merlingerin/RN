@@ -1,6 +1,6 @@
 import { db, fb } from '../api';
-import _ from 'lodash';
 import moment from 'moment';
+import withOffline from '../../utils/networkDetector';
 
 export const subscribeToGoals = async (userId, fetchGoals) => {
 	db.ref(`users/${userId}/goals`).on('value', snapshot => {
@@ -29,6 +29,13 @@ export const toggleNotification = async (goalId, uid, activityRepeat) => {
 		)
 		.update(activityRepeat);
 };
+
+// const test = async () => {
+// 	console.log('dispatch redux action');
+// 	return true;
+// };
+// export const toggleNotification = (goalId, uid, activityRepeat) =>
+// 	withOffline(() => apiToggleNotification(goalId, uid, activityRepeat), test);
 
 export const addActivity = async (id, goal, uid) => {
 	const activity = {

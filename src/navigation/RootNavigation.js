@@ -1,8 +1,8 @@
 import { Notifications } from 'expo';
 import React from 'react';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
-import { Root } from 'native-base';
 import MainTabNavigator from './MainTabNavigator';
+import { Drawer1 } from './Drawer';
 import GoalForm from '../screens/GoalForm/GoalForm';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignInScreen from '../screens/SignInScreen/SignInScreen';
@@ -19,7 +19,7 @@ import registerForPushNotificationsAsync from '../../api/registerForPushNotifica
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const AuthRootStackNavigator = StackNavigator(
+export const AuthRootStackNavigator = StackNavigator(
 	{
 		Main: {
 			screen: MainTabNavigator,
@@ -73,7 +73,7 @@ const RootStackNavigator = StackNavigator(
 	},
 );
 
-const Drawer = DrawerNavigator({
+export const Drawer = DrawerNavigator({
 	AuthRootStackNavigator: {
 		screen: AuthRootStackNavigator,
 	},
@@ -107,14 +107,14 @@ class RootNavigator extends React.Component {
 	render() {
 		if (this.props.isAuth) {
 			return (
-				<Root>
+				<React.Fragment>
 					<Spinner
 						visible={this.props.loading}
 						textContent={'Loading...'}
 						textStyle={{ color: '#FFF' }}
 					/>
 					<Drawer />
-				</Root>
+				</React.Fragment>
 			);
 		}
 		return <RootStackNavigator />;

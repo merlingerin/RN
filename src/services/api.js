@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
-require('firebase/firestore');
+// import firebase from 'react-native-firebase';
+// require('firebase/firestore');
 
 // Initialize Firebase
 const config = {

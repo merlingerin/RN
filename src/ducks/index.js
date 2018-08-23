@@ -4,13 +4,15 @@ import goals from './goals';
 import categorys from './categorys';
 import loader from './loader';
 import filterGoals from './filterGoals';
+import goalsOffline from './goalsOffline';
 
 const rootReducer = combineReducers({
 	profile,
-	goals,
+	// goals,
 	categorys,
 	loader,
 	filterGoals,
+	goalsOffline,
 });
 
 export default rootReducer;

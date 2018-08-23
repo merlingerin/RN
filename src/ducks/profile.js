@@ -1,5 +1,16 @@
-import Expo from 'expo';
 import { fb } from '../services/api';
+import {
+	FETCH_GOALS_REQUEST,
+	FETCH_GOALS_SUCCESS,
+	FETCH_GOALS_FAILURE,
+	SAVE_NEW_GOAL,
+	REMOVE_GOAL,
+	TOGGLE_NOTIFICATION,
+	ADD_ACTIVITY,
+	REMOVE_ACTIVITY,
+	UPDATE_ACTIVITY,
+	CHANGE_GOAL_ACTIVE,
+} from './goalsOffline';
 
 const credential = {
 	androidClientId:
@@ -15,23 +26,7 @@ const FETCH_PROFILE_FAILURE = 'FETCH_PROFILE_FAILURE';
 export const LOG_OUT = 'LOG_OUT';
 const SET_PROFILE = 'SET_PROFILE';
 const RESET_ERROR = 'RESET_ERROR';
-
-// Action creators
-// ============================================================
-
-const fetchProfileRequest = {
-	type: FETCH_PROFILE_REQUEST,
-};
-
-const fetchProfileSuccess = response => ({
-	type: FETCH_PROFILE_SUCCESS,
-	payload: response,
-});
-
-const fetchProfileFailure = error => ({
-	type: FETCH_PROFILE_FAILURE,
-	payload: error,
-});
+const SET_LAST_DATA_UPDATE = 'profile/set_last_data_update';
 
 const initialState = {
 	isLoading: false,
@@ -44,9 +39,23 @@ const initialState = {
 
 const profile = (state = initialState || {}, action) => {
 	switch (action.type) {
+		case SAVE_NEW_GOAL ||
+			ADD_ACTIVITY ||
+			REMOVE_ACTIVITY ||
+			UPDATE_ACTIVITY ||
+			REMOVE_GOAL ||
+			CHANGE_GOAL_ACTIVE ||
+			TOGGLE_NOTIFICATION:
+			return {
+				...state,
+				lastLocalUpdate: new Date().getTime(),
+			};
 		case FETCH_PROFILE_REQUEST:
 			return {
 				...state,
+				profile: {
+					name: action.payload,
+				},
 				isLoading: true,
 			};
 		case FETCH_PROFILE_SUCCESS:
@@ -54,7 +63,10 @@ const profile = (state = initialState || {}, action) => {
 				...state,
 				isLoading: false,
 				isAuth: true,
-				profile: action.payload,
+				profile: {
+					...state.profile,
+					...action.payload,
+				},
 			};
 		case FETCH_PROFILE_FAILURE:
 			return {
@@ -81,22 +93,41 @@ const profile = (state = initialState || {}, action) => {
 	}
 };
 
+// Action creators
+// ============================================================
+
+export const fetchProfileRequest = name => ({
+	type: FETCH_PROFILE_REQUEST,
+	payload: name,
+});
+
+const fetchProfileSuccess = response => ({
+	type: FETCH_PROFILE_SUCCESS,
+	payload: response,
+});
+
+const fetchProfileFailure = error => ({
+	type: FETCH_PROFILE_FAILURE,
+	payload: error,
+});
+
 export const logOut = () => ({
 	type: LOG_OUT,
 });
 
 export const resetError = () => {
-	console.log('reset');
 	return {
 		type: RESET_ERROR,
 	};
 };
 
 export const requestLogOut = () => async dispatch => {
-	fb.auth()
+	await fb
+		.auth()
 		.signOut()
 		.then(function() {
 			dispatch(logOut);
+			dispatch({ type: 'RESET_GOALS' });
 		})
 		.catch(function(error) {
 			// An error happened.
@@ -108,9 +139,10 @@ export const checkIsAuth = profile => dispatch => {
 };
 
 export const signIn = (email, password, name) => async dispatch => {
-	dispatch(fetchProfileRequest);
+	dispatch(fetchProfileRequest(name));
 
-	fb.auth()
+	await fb
+		.auth()
 		.createUserWithEmailAndPassword(email, password)
 		.then(res => {
 			let profile = {
@@ -118,12 +150,7 @@ export const signIn = (email, password, name) => async dispatch => {
 				name: name,
 				email: email,
 			};
-			const user = fb.auth().currentUser;
 
-			user.updateProfile({
-				displayName: name,
-			});
-			console.log('profile ducks', profile);
 			dispatch(fetchProfileSuccess(profile));
 		})
 		.catch(error => {
@@ -165,17 +192,16 @@ export const signInWithGoogle = () => async dispatch => {
 				result.idToken,
 				result.accessToken,
 			);
-			console.log('credential', credential);
+
 			fb.auth()
 				.signInAndRetrieveDataWithCredential(credential)
 				.then(res => {
-					console.log('res', res);
 					// user res, create your user, do whatever you want
 				})
 				.catch(error => {
 					console.log('firebase cred err:', error);
 				});
-			console.log('result.user', result.user);
+
 			return dispatch(fetchProfileSuccess(result.user));
 		} else {
 			console.log('error');

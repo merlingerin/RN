@@ -1,13 +1,57 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import {
+	Platform,
+	StatusBar,
+	StyleSheet,
+	NetInfo,
+	View,
+	Text,
+} from 'react-native';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './src/navigation/RootNavigation';
 import { Provider } from 'react-redux';
-import store from './src/store';
+import configureStore from './src/store';
+import { Root } from 'native-base';
+import Spinner from 'react-native-loading-spinner-overlay';
+export const { store, persistor } = configureStore();
+
 export default class App extends React.Component {
 	state = {
 		isLoadingComplete: false,
+		isOffline: false,
+	};
+
+	componentDidMount() {
+		NetInfo.addEventListener('connectionChange', status =>
+			this._handleFirstConnectivityChange(status),
+		);
+	}
+
+	componentWillUnmount() {
+		NetInfo.removeEventListener('connectionChange', status =>
+			this._handleFirstConnectivityChange(status),
+		);
+	}
+
+	_handleFirstConnectivityChange = status => {
+		if (!status) {
+			return this.setState({
+				isOffline: true,
+			});
+		}
+		const isOffline = status.type === 'none' || status.type === 'unknown';
+		if (!isOffline && this.state.isOffline) {
+			setTimeout(() => {
+				this.setState({
+					isOffline: isOffline,
+				});
+			}, 3000);
+		}
+		this.setState({
+			isOffline: isOffline,
+		});
 	};
 
 	render() {
@@ -22,12 +66,26 @@ export default class App extends React.Component {
 		} else {
 			return (
 				<Provider store={store}>
-					<View style={styles.container}>
-						{Platform.OS === 'ios' && (
-							<StatusBar barStyle="default" />
-						)}
-						<RootNavigation />
-					</View>
+					<PersistGate
+						loading={
+							<Spinner
+								visible={true}
+								textContent={'Loading...'}
+								textStyle={{ color: '#FFF' }}
+							/>
+						}
+						persistor={persistor}
+					>
+						<View style={styles.container}>
+							{Platform.OS === 'ios' && (
+								<StatusBar barStyle="default" />
+							)}
+							<Root>
+								<RootNavigation />
+								{/* {this.state.isOffline && <NoConnection />} */}
+							</Root>
+						</View>
+					</PersistGate>
 				</Provider>
 			);
 		}

@@ -5,13 +5,20 @@ import { fb } from '../../services/api';
 import {
 	addActivity,
 	removeActivity,
-	updatePhisicalActivity,
 	toggleNotification,
-} from '../../services/api/goals';
+	changeGoalActive,
+	removeGoal,
+} from '../../ducks/goalsOffline';
+// import {
+// 	addActivity,
+// 	removeActivity,
+// 	updatePhisicalActivity,
+// 	toggleNotification,
+// } from '../../services/api/goals';
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
 import { ScrollView, Alert } from 'react-native';
-import { removeGoal } from '../../ducks/goals';
+// import { removeGoal, goalToggleNotification } from '../../ducks/goals';
 import { saveNewGoal } from '../../services/api/goals';
 import { showLoader, hideLoader } from '../../ducks/loader';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -46,82 +53,49 @@ class ActivityScreen extends React.Component {
 		physicalActivity: {},
 	};
 
-	_addActivity = async (id, goal, uid) => {
-		this.props.showLoader();
-		await addActivity(id, goal, uid);
-		this.props.hideLoader();
+	_addActivity = id => {
+		const activity = {
+			id: id,
+			date: moment().format(),
+			createdDate: moment().format(),
+		};
+
+		this.props.addActivity(activity, this.props.goal.id);
 	};
 
-	_removeActivity = async (id, goal, uid) => {
-		this.props.showLoader();
-		await removeActivity(id, goal, uid);
-		this.props.hideLoader();
+	_removeActivity = id => {
+		this.props.removeActivity(id, this.props.goal.id);
+	};
+
+	_updatePhisicalActivity = (id, date) => {
+		const activity = {
+			...this.props.goal.activityRepeat,
+			id: id,
+			date: moment(date, 'DD-MM-YYYY HH:mm').format(),
+		};
+		this.props.addActivity(activity, this.props.goal.id);
+	};
+
+	_toggleNotifications = () => {
+		this.props.toggleNotification(this.props.goal.id);
 	};
 
 	_pausedGoal = async id => {
-		this.props.showLoader();
-		await fb
-			.database()
-			.ref(
-				`users/${
-					this.uid ? this.uid : fb.auth().currentUser.uid
-				}/goals/${this.props.goal.id}`,
-			)
-			.set({
-				...this.props.goal,
-				active: 0,
-			});
-		this.props.hideLoader();
+		this.props.changeGoalActive(0, this.props.goal.id);
 	};
 
 	_startGoal = async id => {
-		this.props.showLoader();
-		await fb
-			.database()
-			.ref(
-				`users/${
-					this.uid ? this.uid : fb.auth().currentUser.uid
-				}/goals/${this.props.goal.id}`,
-			)
-			.set({
-				...this.props.goal,
-				active: 1,
-			});
-		this.props.hideLoader();
+		this.props.changeGoalActive(1, this.props.goal.id);
 	};
 
-	_deleteGoal = async () => {
-		this.props.showLoader();
-		let { id } = this.props.goal;
-		let goals = _.filter(this.props.goals, goal => goal.id !== id);
-		let byId = _.keyBy(goals, 'id');
-		this.props.removeGoal(byId);
-		await saveNewGoal({ ...byId });
-		this.props.hideLoader();
+	_deleteGoal = () => {
+		this.props.removeGoal(this.props.goal.id);
 
 		this.props.navigation.navigate('GoalsScreen', { selectedIndex: 1 });
 	};
 
-	_toggleNotifications = async activityRepeat => {
-		this.props.showLoader();
-		await toggleNotification(this.props.goal.id, this.uid, activityRepeat);
-		this.props.hideLoader();
-	};
-
 	_finishedGoal = async () => {
-		this.props.showLoader();
-		await fb
-			.database()
-			.ref(
-				`users/${
-					this.uid ? this.uid : fb.auth().currentUser.uid
-				}/goals/${this.props.goal.id}`,
-			)
-			.set({
-				...this.props.goal,
-				active: 2,
-			});
-		this.props.hideLoader();
+		this.props.changeGoalActive(2, this.props.goal.id);
 	};
 
 	_renderDays = () => {
@@ -184,8 +158,6 @@ class ActivityScreen extends React.Component {
 								this.props.navigation.navigate('HomeScreen'),
 						}}
 					/>
-
-					{/* <Heading>Цель удалена</Heading> */}
 				</Screen>
 			);
 		}
@@ -507,10 +479,7 @@ class ActivityScreen extends React.Component {
 							<Title>Напоминание: </Title>
 							<Switch
 								onValueChange={value =>
-									this._toggleNotifications({
-										...goal.activityRepeat,
-										reminder: value,
-									})
+									this._toggleNotifications()
 								}
 								value={goal.activityRepeat.reminder}
 							/>
@@ -583,10 +552,8 @@ class ActivityScreen extends React.Component {
 												},
 											}}
 											onDateChange={date =>
-												updatePhisicalActivity(
+												this._updatePhisicalActivity(
 													item.id,
-													goal,
-													this.uid,
 													date,
 												)
 											}
@@ -626,20 +593,19 @@ class ActivityScreen extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-	goals: state.goals,
 	goal: ownProps.navigation.getParam('goal')
-		? _.find(state.goals, {
-				id: ownProps.navigation.getParam('goal').id,
-		  })
+		? state.goalsOffline[ownProps.navigation.getParam('goal').id]
 		: null,
 	isAuth: state.profile.isAuth,
-	profile: state.profile.profile,
 	loading: state.loader.isShown,
 });
 
 const mapDispatchToProps = {
 	removeGoal,
 	toggleNotification,
+	addActivity,
+	removeActivity,
+	changeGoalActive,
 	showLoader,
 	hideLoader,
 };

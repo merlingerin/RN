@@ -7,6 +7,7 @@ import { Screen, Heading } from '@shoutem/ui';
 import { Container, Text, Icon, Button, Fab } from 'native-base';
 import GoalsCollapse from '../../components/GoalsCollapse/GoalsCollapse';
 import { setSelectedFilter, setOpenedCategory } from '../../ducks/filterGoals';
+import { goals } from '../../services/goals';
 
 const buttons = ['Шаблоны', 'Мои цели', 'Архив'];
 
@@ -203,7 +204,7 @@ class GoalsScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-	goals: state.goals,
+	goals: { ...goals, ...state.goalsOffline },
 	categorys: state.categorys,
 	isAuth: state.profile.isAuth,
 	selectedFilter: state.filterGoals.selectedFilter,

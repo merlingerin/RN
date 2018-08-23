@@ -1,11 +1,14 @@
 import React from 'react';
+import { NetInfo } from 'react-native';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import moment from 'moment';
 import * as Animatable from 'react-native-animatable';
 import { requestLogOut, checkIsAuth, logOut } from '../../ducks/profile';
-import { fetchGoalsSuccess } from '../../ducks/goals';
+// import { fetchGoalsSuccess } from '../../ducks/goals';
 import { setSelectedFilter, setOpenedCategory } from '../../ducks/filterGoals';
+import { fetchGoalsSuccess, addActivity } from '../../ducks/goalsOffline';
+
 import { connect } from 'react-redux';
 import Toast from 'react-native-easy-toast';
 import { Header, Icon, Avatar } from 'react-native-elements';
@@ -22,8 +25,11 @@ import {
 	Heading,
 } from '@shoutem/ui';
 import { fb } from '../../services/api';
-import { addActivity } from '../../services/api/goals';
+// import { addActivity } from '../../services/api/goals';
 import { createUser } from '../../services/api/user';
+import DrawerToggle from '../../components/DrawerToggle/DrawerToggle';
+import { store } from '../../../App';
+import saveState from '../../utils/persistStoreFirebase';
 
 const anonimProfile = require('../../../assets/images/anonimProfile.png');
 
@@ -41,34 +47,60 @@ class HomeScreen extends React.Component {
 		};
 	}
 
+	persistStateWithFirebase(isConnected) {
+		if (!isConnected) {
+			return false;
+		}
+		return saveState(store.getState(), undefined, 'from mount');
+	}
+
 	componentDidMount() {
+		let that = this;
+
+		NetInfo.isConnected.addEventListener(
+			'connectionChange',
+			this.persistStateWithFirebase,
+		);
+
 		fb.auth().onAuthStateChanged(async user => {
 			if (user) {
 				let profile = {
 					userPhoto: user.photoURL,
-					name: user.displayName || this.props.profile.name || '',
 					email: user.email,
 				};
-				this.uid = user.uid;
+				profile.uid = user.uid;
+				profile.name = this.props.profile.name;
+
+				if (user.displayName && user.displayName.length > 1) {
+					profile.name = user.displayName;
+				}
+
 				this.props.checkIsAuth(profile);
 
-				await fb
-					.database()
-					.ref(`users/${user.uid}/goals`)
-					.on('value', snapshot => {
-						const goals = _.keyBy(snapshot.val(), 'id');
+				//New code
+				// ============================================================
+				saveState(
+					store.getState(),
+					this.props.fetchGoalsSuccess,
+					'auth',
+				);
+				// await fb
+				// 	.database()
+				// 	.ref(`goals/${user.uid}`)
+				// 	.once('value', snapshot => {
+				// 		// console.log('snapshot.val()', snapshot.val());
 
-						this.props.fetchGoalsSuccess(goals);
-						createUser(user.uid, {
-							profile: profile,
-							goals: { ...goals },
-						});
-					});
-				await fb
-					.database()
-					.ref(`users/${user.uid}/goals`)
-					.update({ ...this.props.goals });
+				// 		// this.props.fetchGoalsSuccess(snapshot.val());
+				// 	});
+
+				//End new code
+				// ============================================================
+
+				that.unsubscribe = store.subscribe(() => {
+					saveState(store.getState());
+				});
 			} else {
+				// this.unsubscribe();
 				this.props.logOut();
 			}
 		});
@@ -94,6 +126,13 @@ class HomeScreen extends React.Component {
 		// });
 	}
 
+	componentWillUnmount() {
+		NetInfo.isConnected.removeEventListener(
+			'connectionChange',
+			this.persistStateWithFirebase,
+		);
+	}
+
 	_handlePress = () => {
 		// auth
 		// 	.signInWithEmailAndPassword('test@test.com', '123123')
@@ -106,6 +145,16 @@ class HomeScreen extends React.Component {
 		// 		var errorMessage = error.message;
 		// 		console.log(errorMessage);
 		// 	});
+	};
+
+	_addActivity = goalId => {
+		const activity = {
+			id: uuidv4(),
+			date: moment().format(),
+			createdDate: moment().format(),
+		};
+
+		this.props.addActivity(activity, goalId);
 	};
 
 	_isHideActivityButton = activity =>
@@ -227,13 +276,8 @@ class HomeScreen extends React.Component {
 												type="material-community"
 												color="#50ad4f"
 												reverse
-												onPress={async () => {
-													const id = uuidv4();
-													await addActivity(
-														id,
-														item,
-														this.uid,
-													);
+												onPress={() => {
+													this._addActivity(item.id);
 													return this.refs.toast.show(
 														'Активность добавлена',
 														2000,
@@ -273,10 +317,13 @@ class HomeScreen extends React.Component {
 		const groupedData = GridRow.groupByRows(renderedData(), 2, () => {
 			return 1;
 		});
+
 		return (
 			<Screen>
 				<Header
-					// leftComponent={{ icon: 'menu', color: '#fff' }}
+					leftComponent={
+						<DrawerToggle navigation={this.props.navigation} />
+					}
 					centerComponent={{
 						text: 'Goals',
 						style: { color: '#fff' },
@@ -390,11 +437,10 @@ class HomeScreen extends React.Component {
 
 const mapStateToProps = state => ({
 	categorys: state.categorys,
-	goals: state.goals,
+	goals: state.goalsOffline,
 	isAuth: state.profile.isAuth,
 	profile: state.profile.profile,
-	filteredGoals: _
-		.chain(state.goals)
+	filteredGoals: _.chain(state.goalsOffline)
 		.filter({ defaultGoal: false, active: 1 })
 		.groupBy(value => {
 			return value.goalCategory.categoryId;
@@ -415,6 +461,7 @@ const mapDispatchToProps = {
 	logOut,
 	setSelectedFilter,
 	setOpenedCategory,
+	addActivity,
 };
 
 export default connect(

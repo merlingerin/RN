@@ -1,14 +1,30 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import { composeWithDevTools } from 'remote-redux-devtools';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import ReduxThunk from 'redux-thunk';
+import logger from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import rootReducer from '../ducks';
+const middlewares = [ReduxThunk];
 
-const middleware = [thunk];
-const enhancer = composeWithDevTools(
-	applyMiddleware(...middleware),
-	// other store enhancers if any
-);
+// if (process.env.NODE_ENV === 'development') {
+// 	middlewares.push(logger);
+// }
 
-const store = createStore(rootReducer, enhancer);
+const persistConfig = {
+	key: 'root2',
+	storage,
+	whitelist: ['profile', 'goalsOffline'],
+};
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export default () => {
+	const store = createStore(
+		persistedReducer,
+		// rootReducer,
+		composeWithDevTools(applyMiddleware(...middlewares)),
+	);
+	const persistor = persistStore(store);
+	return { store, persistor };
+};
