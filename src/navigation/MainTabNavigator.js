@@ -38,7 +38,7 @@ export default TabNavigator(
 					case 'HomeScreen':
 						iconName =
 							Platform.OS === 'ios'
-								? `ios-albums${focused ? '' : '-outline'}`
+								? `ios-map${focused ? '' : '-outline'}`
 								: `ios-albums${focused ? '' : '-outline'}`;
 						break;
 					case 'GoalsScreen':
@@ -68,7 +68,7 @@ export default TabNavigator(
 				return (
 					<Ionicons
 						name={iconName}
-						size={28}
+						size={30}
 						style={{ marginBottom: -3, width: 25 }}
 						color={
 							focused
@@ -83,5 +83,18 @@ export default TabNavigator(
 		tabBarPosition: 'bottom',
 		animationEnabled: true,
 		swipeEnabled: false,
+		tabBarOptions: {
+			upperCaseLabel: true,
+			inactiveTintColor: '#000',
+			activeTintColor: '#8700ca',
+			labelStyle: {
+				fontSize: 12,
+				fontFamily: 'M-Bold',
+			},
+			style: {
+				borderTopWidth: 0,
+				backgroundColor: '#ffffff',
+			},
+		},
 	},
 );

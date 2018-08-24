@@ -103,6 +103,22 @@ export default class App extends React.Component {
 				require('./assets/images/categorys/04-min.jpg'),
 				require('./assets/images/anonimProfile.png'),
 				require('./assets/images/image-3.png'),
+				/** TEMPLATE IMAGES*/
+				require('./assets/images/template/categorys/category-0.png'),
+				require('./assets/images/template/categorys/category-1.png'),
+				require('./assets/images/template/categorys/category-2.png'),
+				require('./assets/images/template/categorys/category-3.png'),
+				require('./assets/images/template/categorys/category-4.png'),
+				require('./assets/images/template/categorys/category-5.png'),
+
+				require('./assets/images/template/categorys/backgrounds/1.png'),
+				require('./assets/images/template/categorys/backgrounds/2.png'),
+				require('./assets/images/template/categorys/backgrounds/3.png'),
+				require('./assets/images/template/categorys/backgrounds/4.png'),
+				require('./assets/images/template/categorys/backgrounds/5.png'),
+				require('./assets/images/template/categorys/backgrounds/6.png'),
+
+				// ============================================================
 			]),
 			Font.loadAsync({
 				// This is the font that we are using for our tab bar
@@ -112,6 +128,13 @@ export default class App extends React.Component {
 				Roboto: require('./assets/fonts/Roboto.ttf'),
 				Roboto_medium: require('./assets/fonts/Roboto_medium.ttf'),
 				Ionicons: require('./assets/fonts/Ionicons.ttf'),
+
+				/**TEMPLATE FONTS*/
+				'M-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+				'M-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+				'MA-Bold': require('./assets/fonts/MontserratAlternates-Bold.ttf'),
+				'MA-Regular': require('./assets/fonts/MontserratAlternates-Regular.ttf'),
+				// ============================================================
 
 				'Rubik-Regular': require('./assets/fonts/Rubik/Rubik-Regular.ttf'),
 				'rubicon-icon-font': require('./assets/fonts/Rubik/rubicon-icon-font.ttf'),

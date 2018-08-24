@@ -1,17 +1,17 @@
 import React from 'react';
 import { NetInfo } from 'react-native';
+import { LinearGradient } from 'expo';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import moment from 'moment';
 import * as Animatable from 'react-native-animatable';
 import { requestLogOut, checkIsAuth, logOut } from '../../ducks/profile';
-// import { fetchGoalsSuccess } from '../../ducks/goals';
 import { setSelectedFilter, setOpenedCategory } from '../../ducks/filterGoals';
 import { fetchGoalsSuccess, addActivity } from '../../ducks/goalsOffline';
-
 import { connect } from 'react-redux';
 import Toast from 'react-native-easy-toast';
-import { Header, Icon, Avatar } from 'react-native-elements';
+import { Icon, Avatar } from 'react-native-elements';
+import Header from '../../components/CustomHeader/CustomHeader';
 import {
 	TouchableOpacity,
 	ImageBackground,
@@ -22,14 +22,18 @@ import {
 	Card,
 	View,
 	Overlay,
-	Heading,
+	Tile,
+	Image,
+	// Heading,
+	// Button,
+	// Caption,
+	// Title,
+	// Text,
 } from '@shoutem/ui';
 import { fb } from '../../services/api';
-// import { addActivity } from '../../services/api/goals';
-import { createUser } from '../../services/api/user';
-import DrawerToggle from '../../components/DrawerToggle/DrawerToggle';
 import { store } from '../../../App';
 import saveState from '../../utils/persistStoreFirebase';
+import Styles from '../../styles/styles';
 
 const anonimProfile = require('../../../assets/images/anonimProfile.png');
 
@@ -55,8 +59,7 @@ class HomeScreen extends React.Component {
 	}
 
 	componentDidMount() {
-		let that = this;
-
+		const that = this;
 		NetInfo.isConnected.addEventListener(
 			'connectionChange',
 			this.persistStateWithFirebase,
@@ -69,61 +72,37 @@ class HomeScreen extends React.Component {
 					email: user.email,
 				};
 				profile.uid = user.uid;
-				profile.name = this.props.profile.name;
+				profile.name = this.props.profile.name || '';
+				await fb
+					.database()
+					.ref(`users/${profile.uid}`)
+					.once('value')
+					.then(snap => {
+						const value = snap.val();
+						if (value && value.profile && value.profile.name) {
+							profile.name = value.profile.name;
+						}
+					});
 
 				if (user.displayName && user.displayName.length > 1) {
-					profile.name = user.displayName;
+					profile.name = user.displayName || '';
 				}
 
 				this.props.checkIsAuth(profile);
 
-				//New code
-				// ============================================================
 				saveState(
 					store.getState(),
 					this.props.fetchGoalsSuccess,
 					'auth',
 				);
-				// await fb
-				// 	.database()
-				// 	.ref(`goals/${user.uid}`)
-				// 	.once('value', snapshot => {
-				// 		// console.log('snapshot.val()', snapshot.val());
-
-				// 		// this.props.fetchGoalsSuccess(snapshot.val());
-				// 	});
-
-				//End new code
-				// ============================================================
 
 				that.unsubscribe = store.subscribe(() => {
 					saveState(store.getState());
 				});
 			} else {
-				// this.unsubscribe();
 				this.props.logOut();
 			}
 		});
-		// if (!_.isEmpty(fb.auth().currentUser)) {
-		// 	let user = fb.auth().currentUser;
-		// let profile = {
-		// 	user: {
-		// 		userPhoto: user.photoURL,
-		// 		name: user.displayName,
-		// 		email: user.email,
-		// 	},
-		// };
-		// 	this.props.singIn(profile);
-		// }
-		// fb.auth().onAuthStateChanged(user => {
-		// 	if (user) {
-		// 		// this.props.navigation.goBack();
-		// 		console.log('auth!!!', user);
-		// 		this.props.singIn(user);
-		// 	} else {
-		// 		alert('No user signed in');
-		// 	}
-		// });
 	}
 
 	componentWillUnmount() {
@@ -132,20 +111,6 @@ class HomeScreen extends React.Component {
 			this.persistStateWithFirebase,
 		);
 	}
-
-	_handlePress = () => {
-		// auth
-		// 	.signInWithEmailAndPassword('test@test.com', '123123')
-		// 	.then(user => {
-		// 		console.log('user', user);
-		// 	})
-		// 	.catch(function(error) {
-		// 		// Handle Errors here.
-		// 		var errorCode = error.code;
-		// 		var errorMessage = error.message;
-		// 		console.log(errorMessage);
-		// 	});
-	};
 
 	_addActivity = goalId => {
 		const activity = {
@@ -182,8 +147,8 @@ class HomeScreen extends React.Component {
 		});
 	};
 
-	renderRow(rowData, sectionId, index) {
-		const cellViews = _.map(rowData, (item, id) => {
+	renderRow(rowData) {
+		const cellViews = _.map(rowData, item => {
 			if (!item.active) {
 				let img = item.image.file;
 				return (
@@ -191,8 +156,16 @@ class HomeScreen extends React.Component {
 						animation="fadeInUpBig"
 						easing="ease-out"
 						key={item.categoryId}
+						style={{
+							borderRadius: 9,
+							overflow: 'hidden',
+						}}
 					>
 						<TouchableOpacity
+							style={{
+								borderRadius: 9,
+								overflow: 'hidden',
+							}}
 							onPress={() =>
 								this.props.isAuth
 									? this._navTo(item.categoryId)
@@ -200,28 +173,33 @@ class HomeScreen extends React.Component {
 							}
 							styleName="flexible"
 						>
-							<Card styleName="flexible  vertical v-end">
+							<Card styleName="flexible v-center h-center">
 								<ImageBackground
-									styleName="medium-wide  vertical v-end"
+									styleName="medium-wide"
 									style={{
 										height: 180,
 										justifyContent: 'flex-end',
 									}}
 									source={img}
 								>
-									<View
-										styleName="content  vertical v-end"
-										style={{ width: '100%' }}
+									<Tile
+										styleName="clear fill-parent"
+										style={Styles.homePage.categorys.tile}
 									>
-										<Overlay styleName="image-overlay  vertical v-end">
-											<Subtitle
-												styleName="h-center  vertical v-end"
-												numberOfLines={4}
-											>
-												{item.categoryTitle}
-											</Subtitle>
-										</Overlay>
-									</View>
+										<Image
+											styleName="small h-center v-center"
+											source={item.icon}
+										/>
+										<Subtitle
+											styleName="h-center v-center"
+											numberOfLines={2}
+											style={
+												Styles.homePage.categorys.title
+											}
+										>
+											{item.categoryTitle}
+										</Subtitle>
+									</Tile>
 								</ImageBackground>
 							</Card>
 						</TouchableOpacity>
@@ -237,8 +215,16 @@ class HomeScreen extends React.Component {
 					animation="bounceIn"
 					easing="ease-out"
 					key={item.id}
+					style={{
+						borderRadius: 9,
+						overflow: 'hidden',
+					}}
 				>
 					<TouchableOpacity
+						style={{
+							borderRadius: 9,
+							overflow: 'hidden',
+						}}
 						onPress={() =>
 							this.props.isAuth
 								? this.props.navigation.navigate(
@@ -257,6 +243,8 @@ class HomeScreen extends React.Component {
 								style={{
 									height: 180,
 									justifyContent: 'flex-end',
+									borderRadius: 9,
+									overflow: 'hidden',
 								}}
 								source={{
 									uri: image,
@@ -320,116 +308,63 @@ class HomeScreen extends React.Component {
 
 		return (
 			<Screen>
-				<Header
-					leftComponent={
-						<DrawerToggle navigation={this.props.navigation} />
-					}
-					centerComponent={{
-						text: 'Goals',
-						style: { color: '#fff' },
-					}}
-					statusBarProps={{
-						barStyle: 'light-content',
-					}}
-					// rightComponent={{
-					// 	icon: 'person',
-					// 	color: '#fff',
-					// 	underlayColor: 'transparent',
-					// 	onPress: () =>
-					// 		this.props.navigation.navigate('ProfileScreen'),
-					// }}
-					rightComponent={
-						<Animatable.View animation="zoomIn" easing="ease-out">
-							<Avatar
-								small
-								rounded
-								source={
-									isAuth && profile.userPhoto
-										? { uri: profile.userPhoto }
-										: anonimProfile
-								}
-								onPress={() =>
-									this.props.navigation.navigate(
-										'ProfileScreen',
-									)
-								}
-								activeOpacity={0.7}
-							/>
-						</Animatable.View>
-					}
-				/>
-				{/*<View
-					style={{
-						position: 'absolute',
-						top: '50%',
-						width: 130,
-						height: 130,
-						backgroundColor: 'transparent',
-						alignItems: 'center',
-						justifyContent: 'center',
-						alignSelf: 'center',
-						zIndex: 10,
-					}}
+				<LinearGradient
+					style={{ flex: 1 }}
+					colors={['#ffffff', '#edf3ff', '#edf3ff']}
 				>
-					<Animatable.View animation="zoomIn" easing="ease-out">
-						<TouchableOpacity
-							// onPress={this._toggleModal}
-							onPress={() =>
-								this.props.navigation.navigate('ProfileScreen')
-							}
-							style={{
-								borderWidth: 1,
-								borderColor: 'rgba(0,0,0,0.2)',
-								alignItems: 'center',
-								justifyContent: 'center',
-								margin: 'auto',
-
-								width: 130,
-								height: 130,
-								backgroundColor: '#fff',
-								borderRadius: 100,
-								zIndex: 10,
-								overflow: 'hidden',
-							}}
-						>
-							<ImageBackground
-								styleName="medium-square"
-								style={{
-									width: 130,
-									height: 130,
-									borderRadius: 100,
-									justifyContent: 'flex-end',
-									paddingBottom: 20,
-								}}
-								source={
-									isAuth && profile.userPhoto
-										? { uri: profile.userPhoto }
-										: anonimProfile
-								}
+					<Header
+						leftComponent={{
+							icon: 'menu',
+							color: '#fff',
+							underlayColor: 'transparent',
+							onPress: () =>
+								this.props.navigation.navigate('DrawerOpen'),
+						}}
+						centerComponent={{
+							text: 'Цели',
+							style: Styles.header.centerComponent,
+						}}
+						statusBarProps={{
+							barStyle: 'light-content',
+						}}
+						rightComponent={
+							<Animatable.View
+								animation="zoomIn"
+								easing="ease-out"
 							>
-								<View
-									styleName="content  vertical v-end"
-									style={{ width: '100%' }}
-								>
-									<Overlay
-										style={{
-											padding: 2,
-										}}
-									>
-										<Heading style={{ fontSize: 14 }}>
-											{isAuth ? '' : 'Авторизация'}
-										</Heading>
-									</Overlay>
-								</View>
-							</ImageBackground>
-						</TouchableOpacity>
-					</Animatable.View>
-									</View>*/}
+								<Avatar
+									small
+									rounded
+									source={
+										isAuth && profile.userPhoto
+											? { uri: profile.userPhoto }
+											: anonimProfile
+									}
+									onPress={() =>
+										this.props.navigation.navigate(
+											'ProfileScreen',
+										)
+									}
+									activeOpacity={0.7}
+								/>
+							</Animatable.View>
+						}
+					/>
+					<ListView
+						style={{
+							list: {
+								backgroundColor: 'transparent',
+							},
+							listContent: {
+								backgroundColor: 'transparent',
+							},
+						}}
+						data={groupedData}
+						renderRow={this.renderRow}
+					/>
 
-				{/*<ListView data={groupedData} renderRow={this.renderRow} />*/}
-				<ListView data={groupedData} renderRow={this.renderRow} />
-
-				<Toast ref="toast" />
+					<Toast ref="toast" />
+				</LinearGradient>
 			</Screen>
 		);
 	}

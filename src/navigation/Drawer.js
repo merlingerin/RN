@@ -1,24 +1,64 @@
-import { StackNavigator, DrawerNavigator } from 'react-navigation';
+import { DrawerNavigator } from 'react-navigation';
+import MainTabNavigator from './MainTabNavigator';
 import AboutScreen from '../screens/Drawer/Screens/AboutScreen';
 import FAQScreen from '../screens/Drawer/Screens/FAQScreen';
 import FeedbackScreen from '../screens/Drawer/Screens/FeedbackScreen';
 import SupportScreen from '../screens/Drawer/Screens/SupportScreen';
 import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
 
-export const Drawer1 = DrawerNavigator({
-	AboutScreen: {
-		screen: AboutScreen,
+export const AuthDrawer = DrawerNavigator(
+	{
+		Main: {
+			screen: MainTabNavigator,
+		},
+		AboutScreen: {
+			screen: AboutScreen,
+		},
+		FAQScreen: {
+			screen: FAQScreen,
+		},
+		FeedbackScreen: {
+			screen: FeedbackScreen,
+		},
+		SupportScreen: {
+			screen: SupportScreen,
+		},
+		TermsOfUseScreen: {
+			screen: TermsOfUseScreen,
+		},
 	},
-	FAQScreen: {
-		screen: FAQScreen,
+	{
+		initialRouteName: 'Main',
+		drawerWidth: 300,
+		header: null,
 	},
-	FeedbackScreen: {
-		screen: FeedbackScreen,
+);
+
+export const GuestDrawer = DrawerNavigator(
+	{
+		HomeScreen: {
+			screen: HomeScreen,
+		},
+		AboutScreen: {
+			screen: AboutScreen,
+		},
+		FAQScreen: {
+			screen: FAQScreen,
+		},
+		FeedbackScreen: {
+			screen: FeedbackScreen,
+		},
+		SupportScreen: {
+			screen: SupportScreen,
+		},
+		TermsOfUseScreen: {
+			screen: TermsOfUseScreen,
+		},
 	},
-	SupportScreen: {
-		screen: SupportScreen,
+	{
+		initialRouteName: 'HomeScreen',
+		drawerWidth: 300,
+		header: null,
 	},
-	TermsOfUseScreen: {
-		screen: TermsOfUseScreen,
-	},
-});
+);

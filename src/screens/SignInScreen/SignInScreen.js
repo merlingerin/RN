@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
-import { fb } from '../../services/api';
 import { connect } from 'react-redux';
 import { signIn, resetError } from '../../ducks/profile';
-import { Header, Icon } from 'react-native-elements';
-import {
-	Screen,
-	View,
-	Image,
-	Subtitle,
-	Title,
-	Caption,
-	Text,
-	Heading,
-} from '@shoutem/ui';
+import Header from '../../components/CustomHeader/CustomHeader';
+import { Screen, View, Text } from '@shoutem/ui';
 
 import { Form, Button, Item, Label, Input } from 'native-base';
 

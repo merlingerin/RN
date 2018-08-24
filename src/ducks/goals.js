@@ -37,8 +37,6 @@ const goals = (state = initialState || {}, action) => {
 			return goalsData;
 		case GOAL_TOGGLE_NOTIFICATION:
 			const { goalId, activityRepeat } = action.payload;
-			console.log('goalId', goalId);
-			console.log('activityRepeat', activityRepeat);
 			// return {
 			// 	...state,
 			// 	[goalId]: {

@@ -139,8 +139,6 @@ export const checkIsAuth = profile => dispatch => {
 };
 
 export const signIn = (email, password, name) => async dispatch => {
-	dispatch(fetchProfileRequest(name));
-
 	await fb
 		.auth()
 		.createUserWithEmailAndPassword(email, password)
@@ -183,7 +181,6 @@ export const authWithEmail = (email, password) => async dispatch => {
 
 export const signInWithGoogle = () => async dispatch => {
 	dispatch(fetchProfileRequest);
-	console.log('Start fetch');
 	try {
 		const result = await Expo.Google.logInAsync(credential);
 		console.log('re', result);

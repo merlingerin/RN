@@ -1,7 +1,6 @@
 import { fb } from '../services/api';
 
-const saveState = async (state, asyncStoreWithDb, from) => {
-	console.log(from);
+const saveState = async (state, asyncStoreWithDb) => {
 	try {
 		const connectedRef = await fb.database().ref('.info/connected');
 		const { uid } = fb.auth().currentUser;
@@ -34,13 +33,13 @@ const saveState = async (state, asyncStoreWithDb, from) => {
 							.set(state.goalsOffline);
 
 						if (state.profile.isAuth) {
-							let userData = {};
-							userData.lastUpdate = new Date().getTime();
-							userData.profile = state.profile.profile;
 							await fb
 								.database()
 								.ref('users/' + uid)
-								.set(userData);
+								.set({
+									profile: state.profile.profile,
+									lastUpdate: new Date().getTime(),
+								});
 						}
 					}
 				} else {

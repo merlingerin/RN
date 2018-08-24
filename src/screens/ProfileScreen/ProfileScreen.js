@@ -9,7 +9,8 @@ import {
 	requestLogOut,
 	resetError,
 } from '../../ducks/profile';
-import { Header, Icon } from 'react-native-elements';
+import Header from '../../components/CustomHeader/CustomHeader';
+import { Icon } from 'react-native-elements';
 import { Screen, View, Image, Title, Text, Heading } from '@shoutem/ui';
 import { Form, Button, Item, Label, Input } from 'native-base';
 
