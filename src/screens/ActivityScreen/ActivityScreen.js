@@ -9,19 +9,11 @@ import {
 	changeGoalActive,
 	removeGoal,
 } from '../../ducks/goalsOffline';
-// import {
-// 	addActivity,
-// 	removeActivity,
-// 	updatePhisicalActivity,
-// 	toggleNotification,
-// } from '../../services/api/goals';
+
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
 import { ScrollView, Alert } from 'react-native';
-// import { removeGoal, goalToggleNotification } from '../../ducks/goals';
-import { saveNewGoal } from '../../services/api/goals';
 import { showLoader, hideLoader } from '../../ducks/loader';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 // UTILS
 // ============================================================

@@ -6,11 +6,12 @@ import FeedbackScreen from '../screens/Drawer/Screens/FeedbackScreen';
 import SupportScreen from '../screens/Drawer/Screens/SupportScreen';
 import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import GoalForm from '../screens/GoalForm/GoalForm';
 
 export const AuthDrawer = DrawerNavigator(
 	{
 		Main: {
-			screen: MainTabNavigator,
+			screen: GoalForm,
 		},
 		AboutScreen: {
 			screen: AboutScreen,

@@ -9,6 +9,15 @@ export default {
 			fontFamily: 'MA-Regular',
 		},
 	},
+	GoalsScreen: {
+		addGoalButton: {
+			text: {
+				color: '#000',
+				fontSize: 14,
+				fontFamily: 'MA-Regular',
+			},
+		},
+	},
 	homePage: {
 		categorys: {
 			title: {

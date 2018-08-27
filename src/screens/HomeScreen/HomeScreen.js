@@ -24,11 +24,6 @@ import {
 	Overlay,
 	Tile,
 	Image,
-	// Heading,
-	// Button,
-	// Caption,
-	// Title,
-	// Text,
 } from '@shoutem/ui';
 import { fb } from '../../services/api';
 import { store } from '../../../App';
@@ -320,34 +315,41 @@ class HomeScreen extends React.Component {
 							onPress: () =>
 								this.props.navigation.navigate('DrawerOpen'),
 						}}
-						centerComponent={{
-							text: 'Цели',
-							style: Styles.header.centerComponent,
-						}}
+						label={'Цели'}
 						statusBarProps={{
 							barStyle: 'light-content',
 						}}
 						rightComponent={
-							<Animatable.View
-								animation="zoomIn"
-								easing="ease-out"
-							>
-								<Avatar
-									small
-									rounded
-									source={
-										isAuth && profile.userPhoto
-											? { uri: profile.userPhoto }
-											: anonimProfile
-									}
-									onPress={() =>
+							isAuth && profile.userPhoto ? (
+								<Animatable.View
+									animation="zoomIn"
+									easing="ease-out"
+								>
+									<Avatar
+										small
+										rounded
+										source={{ uri: profile.userPhoto }}
+										onPress={() =>
+											this.props.navigation.navigate(
+												'ProfileScreen',
+											)
+										}
+										activeOpacity={0.7}
+									/>
+								</Animatable.View>
+							) : (
+								{
+									icon: 'user-circle-o',
+									type: 'font-awesome',
+									color: '#fff',
+									underlayColor: '#fff',
+									reverseColor: '#8700ca',
+									onPress: () =>
 										this.props.navigation.navigate(
 											'ProfileScreen',
-										)
-									}
-									activeOpacity={0.7}
-								/>
-							</Animatable.View>
+										),
+								}
+							)
 						}
 					/>
 					<ListView

@@ -236,16 +236,23 @@ class ProfileScreen extends React.Component {
 		return (
 			<Screen styleName="paper">
 				<Header
-					leftComponent={{ icon: 'menu', color: '#fff' }}
+					leftComponent={{
+						icon: 'menu',
+						color: '#fff',
+						underlayColor: 'transparent',
+						onPress: () =>
+							this.props.navigation.navigate('DrawerOpen'),
+					}}
 					centerComponent={{
 						text: 'Профиль',
 						style: { color: '#fff' },
 					}}
-					// rightComponent={{
-					// 	icon: 'home',
-					// 	color: '#fff',
-					// 	onPress: () => console.log(fb.auth().currentUser),
-					// }}
+					rightComponent={{
+						icon: 'home',
+						color: '#fff',
+						onPress: () =>
+							this.props.navigation.navigate('HomeScreen'),
+					}}
 				/>
 				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
 					<Image
