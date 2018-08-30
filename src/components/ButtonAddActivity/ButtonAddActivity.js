@@ -6,14 +6,27 @@ const ButtonAddActivity = ({ handleClick, buttonText, withIcons, ...rest }) => (
 		style={{
 			marginHorizontal: 20,
 			marginVertical: 10,
+			// width: '100%',
+			marginBottom: 10,
+			backgroundColor: '#8700ca',
+			shadowColor: '#8700ca',
+			shadowRadius: 15,
 		}}
 		iconLeft
 		{...rest}
 		block
 		onPress={handleClick}
 	>
-		{withIcons && <Icon name="ios-add-circle-outline" />}
-		<Text style={{ color: '#fff' }}>{buttonText}</Text>
+		{withIcons && <Icon name="ios-add" />}
+		<Text
+			style={{
+				color: '#fff',
+				fontFamily: 'M-Regular',
+				fontSize: 12,
+			}}
+		>
+			{buttonText}
+		</Text>
 	</Button>
 );
 

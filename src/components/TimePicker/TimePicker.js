@@ -11,7 +11,7 @@ export default class TimePicker extends Component {
 	render() {
 		return (
 			<DatePicker
-				style={{ width: 200, borderWidth: 0 }}
+				style={{ width: '100%', borderWidth: 0 }}
 				date={this.props.time}
 				mode="time"
 				placeholder="select date"
@@ -25,11 +25,21 @@ export default class TimePicker extends Component {
 						top: 4,
 						marginLeft: 0,
 					},
+					placeholderText: {
+						color: '#8700ca',
+						fontFamily: 'MA-Regular',
+						fontSize: 14,
+					},
+					dateText: {
+						color: '#8700ca',
+						fontFamily: 'MA-Regular',
+						fontSize: 14,
+					},
 					dateInput: {
-						marginLeft: 36,
+						marginLeft: 'auto',
+						// marginRight: 25,
 						borderWidth: 0,
 					},
-					// ... You can check the source to find the other keys.
 				}}
 				onDateChange={time =>
 					this.props.handleChange(time, this.props.idx)

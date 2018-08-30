@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Picker } from 'native-base';
 import _ from 'lodash';
-import { Icon } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
+
+/** Style*/
+import Styles from '../../styles/styles';
 
 const categorys = [
 	{
@@ -62,13 +65,30 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 		case 'categorys':
 			return (
 				<Picker
+					renderHeader={backAction => (
+						<Header
+							leftComponent={{
+								icon: 'navigate-before',
+								color: '#fff',
+								underlayColor: 'transparent',
+								onPress: backAction,
+							}}
+							centerComponent={{
+								text: 'Категория цели',
+								style: Styles.header.centerComponent,
+							}}
+							backgroundColor={'#8700ca'}
+						/>
+					)}
 					mode="dropdown"
-					iosHeader="Категория цели"
-					iosIcon={<Icon name="keyboard-arrow-down" />}
 					style={{
-						width: undefined,
+						width: 200,
 						borderWidth: 0,
 						borderColor: '#000',
+					}}
+					itemTextStyle={{
+						fontFamily: 'MA-Regular',
+						fontSize: 14,
 					}}
 					selectedValue={selected}
 					onValueChange={onValueChange}
@@ -85,13 +105,39 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 		case 'reminder':
 			return (
 				<Picker
+					renderHeader={backAction => (
+						<Header
+							leftComponent={{
+								icon: 'navigate-before',
+								color: '#fff',
+								underlayColor: 'transparent',
+								onPress: backAction,
+							}}
+							centerComponent={{
+								text: 'Повторять',
+								style: Styles.header.centerComponent,
+							}}
+							backgroundColor={'#8700ca'}
+						/>
+					)}
 					mode="dropdown"
-					iosHeader="Повторять активность"
-					iosIcon={<Icon name="keyboard-arrow-down" />}
 					style={{
-						width: undefined,
+						width: 200,
+						// marginLeft: 'auto',
 						borderWidth: 0,
 						borderColor: '#000',
+					}}
+					textStyle={{
+						fontFamily: 'MA-Regular',
+						fontSize: 14,
+					}}
+					itemStyle={{
+						backgroundColor: 'rgba(135, 0, 202, .1)',
+					}}
+					itemTextStyle={{
+						fontFamily: 'MA-Regular',
+						fontSize: 14,
+						color: '#8700ca',
 					}}
 					selectedValue={selected}
 					onValueChange={onValueChange}

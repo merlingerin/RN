@@ -39,7 +39,7 @@ export default TabNavigator(
 						iconName =
 							Platform.OS === 'ios'
 								? `ios-map${focused ? '' : '-outline'}`
-								: `ios-albums${focused ? '' : '-outline'}`;
+								: `ios-map${focused ? '' : '-outline'}`;
 						break;
 					case 'GoalsScreen':
 						iconName =

@@ -1,4 +1,5 @@
 import { fb } from '../services/api';
+import { Platform } from 'react-native';
 import {
 	FETCH_GOALS_REQUEST,
 	FETCH_GOALS_SUCCESS,
@@ -11,6 +12,7 @@ import {
 	UPDATE_ACTIVITY,
 	CHANGE_GOAL_ACTIVE,
 } from './goalsOffline';
+import uuidv4 from 'uuid/v4';
 
 const credential = {
 	androidClientId:
@@ -27,11 +29,14 @@ export const LOG_OUT = 'LOG_OUT';
 const SET_PROFILE = 'SET_PROFILE';
 const RESET_ERROR = 'RESET_ERROR';
 const SET_LAST_DATA_UPDATE = 'profile/set_last_data_update';
+const CREATE_SESSION = 'CREATE_SESSION';
+const REMOVE_SESSION = 'REMOVE_SESSION';
 
 const initialState = {
 	isLoading: false,
 	isAuth: false,
 	profile: {},
+	session: null,
 	canceled: false,
 	isError: false,
 	error: null,
@@ -39,13 +44,13 @@ const initialState = {
 
 const profile = (state = initialState || {}, action) => {
 	switch (action.type) {
-		case SAVE_NEW_GOAL ||
-			ADD_ACTIVITY ||
-			REMOVE_ACTIVITY ||
-			UPDATE_ACTIVITY ||
-			REMOVE_GOAL ||
-			CHANGE_GOAL_ACTIVE ||
-			TOGGLE_NOTIFICATION:
+		case SAVE_NEW_GOAL:
+		case ADD_ACTIVITY:
+		case REMOVE_ACTIVITY:
+		case UPDATE_ACTIVITY:
+		case REMOVE_GOAL:
+		case CHANGE_GOAL_ACTIVE:
+		case TOGGLE_NOTIFICATION:
 			return {
 				...state,
 				lastLocalUpdate: new Date().getTime(),
@@ -65,8 +70,11 @@ const profile = (state = initialState || {}, action) => {
 				isAuth: true,
 				profile: {
 					...state.profile,
-					...action.payload,
+					...action.payload.profile,
 				},
+				session: action.payload.session
+					? action.payload.session
+					: state.session,
 			};
 		case FETCH_PROFILE_FAILURE:
 			return {
@@ -76,18 +84,20 @@ const profile = (state = initialState || {}, action) => {
 				...action.payload,
 			};
 		case LOG_OUT:
-			return {
-				...state,
-				isLoading: false,
-				isAuth: false,
-				profile: {},
-			};
+			return initialState;
 		case RESET_ERROR:
 			return {
 				...state,
 				isError: false,
 				error: null,
 			};
+		case CREATE_SESSION:
+			return {
+				...state,
+				session: action.payload,
+			};
+		case REMOVE_SESSION:
+			return initialState;
 		default:
 			return state;
 	}
@@ -95,15 +105,23 @@ const profile = (state = initialState || {}, action) => {
 
 // Action creators
 // ============================================================
+export const createSession = session => ({
+	type: CREATE_SESSION,
+	payload: session,
+});
+
+export const removeSession = session => ({
+	type: REMOVE_SESSION,
+});
 
 export const fetchProfileRequest = name => ({
 	type: FETCH_PROFILE_REQUEST,
 	payload: name,
 });
 
-const fetchProfileSuccess = response => ({
+const fetchProfileSuccess = (profile, session) => ({
 	type: FETCH_PROFILE_SUCCESS,
-	payload: response,
+	payload: { profile, session },
 });
 
 const fetchProfileFailure = error => ({
@@ -122,6 +140,11 @@ export const resetError = () => {
 };
 
 export const requestLogOut = () => async dispatch => {
+	// await fb
+	// 	.database()
+	// 	.ref(`sessions/${fb.auth().currentUser.uid}`)
+	// 	.set(null);
+
 	await fb
 		.auth()
 		.signOut()
@@ -134,7 +157,37 @@ export const requestLogOut = () => async dispatch => {
 		});
 };
 
-export const checkIsAuth = profile => dispatch => {
+export const checkIsAuth = (profile, pushToken = null) => async (
+	dispatch,
+	getState,
+) => {
+	// let session = null;
+	// if (store().profile.session) {
+	// 	return dispatch(fetchProfileSuccess(profile, sessionData));
+	// }
+	// const sessionId = uuidv4();
+
+	// sessionData = {
+	// 	// sessionId: sessionId,
+	// 	platform: Platform.OS === 'ios' ? 'ios' : 'android',
+	// 	pushToken: pushToken,
+	// };
+
+	console.log('isAuth', getState().profile.isAuth);
+	if (!getState().profile.isAuth || !getState().profile.session) {
+		const sessionId = uuidv4();
+		session = {
+			sessionId: sessionId,
+			platform: Platform.OS === 'ios' ? 'ios' : 'android',
+			pushToken: pushToken,
+		};
+		await fb
+			.database()
+			.ref(`sessions/${profile.uid}/${sessionId}`)
+			.set(session);
+
+		dispatch(createSession(session));
+	}
 	dispatch(fetchProfileSuccess(profile));
 };
 

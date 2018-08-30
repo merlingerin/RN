@@ -3,25 +3,26 @@ import moment from 'moment';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
-// import { saveNewGoal } from '../../services/api/goals';
+import Styles from '../../styles/styles';
 import { addNewGoal, removeGoal } from '../../ducks/goals';
 import { saveNewGoal } from '../../ducks/goalsOffline';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import TimePicker from '../../components/TimePicker/TimePicker';
 import GoalsGallery from '../../components/GoalsGallery/GoalsGallery';
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import WeekDaysSegment from '../../components/WeekDaysSegment/WeekDaysSegment';
 import { fb } from '../../services/api';
-import { Header, List, ListItem, Text } from 'react-native-elements';
-import { Container, Content, Button } from 'native-base';
-import { View, Heading } from '@shoutem/ui';
+import Header from '../../components/CustomHeader/CustomHeader';
+import { List, ListItem, Text, Icon } from 'react-native-elements';
+import { Container, Button } from 'native-base';
+import { View, Heading, Screen, TouchableOpacity } from '@shoutem/ui';
 import GoalTitleInput from '../../components/GoalTitleInput/GoalTitleInput';
 import DeadlinePicker from '../../components/DeadlinePicker/DeadlinePicker';
 import { activityRepeatTypeParser } from '../../utils/parsers';
 import MonthCalendar from '../../components/MonthCalendar/MonthCalendar';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { showLoader, hideLoader } from '../../ducks/loader';
 import { goals } from '../../services/goals';
+import recurrenceCreator from '../../utils/recurrenceCreator';
 
 styles1 = StyleSheet.create({
 	subtitleView: {
@@ -45,8 +46,8 @@ const defaultGoal = {
 	activityRepeat: {
 		weekDays: [],
 		monthDays: {},
-		id: 1,
-		remidner: false,
+		id: 4,
+		reminder: false,
 		time: ['7:50'],
 		title: 'каждый день',
 	},
@@ -228,6 +229,11 @@ class GoalForm extends React.Component {
 			goal.id = uuidv4();
 			goal.createdDate = moment().format();
 		}
+		const recurrence = recurrenceCreator({ ...goal });
+
+		if (recurrence !== null) {
+			goal.recurrence = recurrence;
+		}
 
 		this.props.saveNewGoal(goal);
 
@@ -272,7 +278,6 @@ class GoalForm extends React.Component {
 
 	render() {
 		let goal = _.omit(this.state, ['sliderValue']);
-
 		if (this.state.active === 2) {
 			return (
 				<Container>
@@ -283,10 +288,7 @@ class GoalForm extends React.Component {
 							underlayColor: 'transparent',
 							onPress: () => this.props.navigation.goBack(),
 						}}
-						centerComponent={{
-							text: goal.goalTitle,
-							style: { color: '#fff' },
-						}}
+						label={goal.goalTitle}
 					/>
 
 					<List>
@@ -327,7 +329,7 @@ class GoalForm extends React.Component {
 			);
 		}
 		return (
-			<Container>
+			<Screen styleName="paper">
 				<Header
 					leftComponent={{
 						icon: 'navigate-before',
@@ -335,61 +337,48 @@ class GoalForm extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
-					centerComponent={{
-						text: goal.goalTitle,
-						style: { color: '#fff' },
-					}}
+					label={goal.goalTitle}
 				/>
-				<Content>
-					<List>
-						<ListItem
-							title="Категория цели"
-							hideChevron={true}
-							subtitle={
-								<CustomPicker
-									selected={
-										this.state.goalCategory.categoryId
-									}
-									onValueChange={this.onCategoryChange}
-									type="categorys"
-								/>
-							}
-						/>
-						<ListItem
-							title="Цель"
-							hideChevron={true}
-							subtitle={
-								<GoalTitleInput
-									value={this.state.goalTitle}
-									onChangeText={text =>
-										this.setState({ goalTitle: text })
-									}
-								/>
-							}
-						/>
-
-						<ListItem
-							title="Срок достижения"
-							hideChevron={true}
-							subtitle={
-								<DeadlinePicker
-									date={this.state.deadline}
-									onDateChange={this._onDeadlineChange}
-								/>
-							}
-						/>
-					</List>
-					<Text h4 style={{ paddingLeft: 10 }}>
-						Активность
-					</Text>
-					<List>
-						<ListItem
-							title="Повторять активность"
-							style={{
-								borderBottomWidth: 0,
-							}}
-							hideChevron={true}
-							subtitle={
+				<ScrollView>
+					<GoalsGallery
+						defaultImages={{ ...this.props.goals, ...goals }}
+						image={this.state.image}
+						getImage={this._setImage}
+					/>
+					<View style={{ paddingLeft: 10 }}>
+						<View styleName="horizontal v-center space-between">
+							<Text style={Styles.GoalForm.rowTitle}>
+								КАТЕГОРИЯ ЦЕЛИ
+							</Text>
+							<CustomPicker
+								selected={this.state.goalCategory.categoryId}
+								onValueChange={this.onCategoryChange}
+								type="categorys"
+							/>
+						</View>
+						<View styleName="horizontal v-center space-between">
+							<Text style={Styles.GoalForm.rowTitle}>ЦЕЛЬ</Text>
+							<GoalTitleInput
+								value={this.state.goalTitle}
+								onChangeText={text =>
+									this.setState({ goalTitle: text })
+								}
+							/>
+						</View>
+						<View styleName="horizontal v-center space-between">
+							<Text style={Styles.GoalForm.rowTitle}>
+								СРОК ДОСТИЖЕНИЯ
+							</Text>
+							<DeadlinePicker
+								date={this.state.deadline}
+								onDateChange={this._onDeadlineChange}
+							/>
+						</View>
+						<View styleName="horizontal v-center space-between">
+							<Text style={Styles.GoalForm.rowTitle}>
+								АКТИВНОСТЬ
+							</Text>
+							<View style={{ marginLeft: 'auto' }}>
 								<CustomPicker
 									selected={this.state.activityRepeat.id}
 									onValueChange={
@@ -397,46 +386,31 @@ class GoalForm extends React.Component {
 									}
 									type="reminder"
 								/>
-							}
-						/>
+							</View>
+						</View>
 						{this.state.activityRepeat.id === 5 && (
-							<MonthCalendar
-								markedDays={goal.activityRepeat.monthDays || {}}
-								toggleMonthDays={this.toggleMonthDays}
-							/>
+							<View styleName="horizontal v-center space-between">
+								<MonthCalendar
+									markedDays={
+										goal.activityRepeat.monthDays || {}
+									}
+									toggleMonthDays={this.toggleMonthDays}
+								/>
+							</View>
 						)}
 						{this.state.activityRepeat.id === 4 && (
-							<ListItem
-								title="Дни активности"
-								hideChevron={true}
-								subtitle={
-									<WeekDaysSegment
-										toggleWeekButton={this.toggleWeekButton}
-										pickedWeekDays={
-											this.state.activityRepeat.weekDays
-										}
-									/>
-								}
-							/>
+							<View
+								styleName="horizontal v-center space-between"
+								style={{ margin: 'auto' }}
+							>
+								<WeekDaysSegment
+									toggleWeekButton={this.toggleWeekButton}
+									pickedWeekDays={
+										this.state.activityRepeat.weekDays
+									}
+								/>
+							</View>
 						)}
-
-						{/*this.state.activityRepeat.id !== 0 && (
-							<ListItem
-								hideChevron={true}
-								containerStyle={{
-									borderBottomWidth: 0,
-								}}
-								subtitle={
-									<CheckBox
-										title="Включить Напоминание"
-										onPress={this.toggleNotification}
-										checked={
-											this.state.activityRepeat.reminder
-										}
-									/>
-								}
-							/>
-						)*/}
 						{this.state.activityRepeat.id !== 0
 							? _.map(
 									this.state.activityRepeat.time,
@@ -447,19 +421,31 @@ class GoalForm extends React.Component {
 												borderTopWidth: 0,
 												borderBottomWidth: 0,
 											}}
-											hideChevron={
-												idx === 0 ? true : false
-											}
-											leftIcon={{ name: 'access-time' }}
+											hideChevron={false}
+											leftIcon={{
+												name: 'access-time',
+												color: '#8700ca',
+											}}
 											rightIcon={
 												idx === 0
-													? {}
+													? {
+															name:
+																'ios-close-circle',
+															color:
+																'transparent',
+															type: 'ionicon',
+													  }
 													: {
-															name: 'close',
+															name:
+																'ios-close-circle',
+															color: '#8700ca',
+															type: 'ionicon',
 													  }
 											}
 											onPressRightIcon={() =>
-												this.removeTimePicker(idx)
+												idx === 0
+													? null
+													: this.removeTimePicker(idx)
 											}
 											subtitle={
 												<View>
@@ -479,85 +465,111 @@ class GoalForm extends React.Component {
 							: null}
 						{this.state.activityRepeat.id !== 0 ? (
 							this.state.activityRepeat.time.length < 3 ? (
-								<ListItem
-									rightIcon={{ name: 'add' }}
-									onPressRightIcon={() =>
-										this.addTimePicker()
-									}
-									onPress={() => this.addTimePicker()}
-									subtitle={<Text>Добавить время</Text>}
-								/>
-							) : null
-						) : null}
-					</List>
-					<Text h4 style={{ paddingLeft: 10 }}>
-						Изображение цели
-					</Text>
-
-					<GoalsGallery
-						defaultImages={{ ...this.props.goals, ...goals }}
-						image={this.state.image}
-						getImage={this._setImage}
-					/>
-					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							justifyContent: 'space-between',
-							padding: 10,
-						}}
-					>
-						{!_.isEqual(goal, this.defaultGoalState) &&
-							!!goal.goalTitle.length && (
-								<Button
-									iconLeft
-									block
-									primary
-									style={{ width: '100%', marginBottom: 10 }}
-									onPress={this._createNewGoal}
+								<View
+									styleName="horizontal v-center h-center space-between"
+									style={{
+										width: 150,
+										margin: 'auto',
+									}}
 								>
-									<Text style={{ color: '#fff' }}>
-										Сохранить
-									</Text>
-								</Button>
-							)}
-
-						{/*this.state.id &&
-							!this.state.defaultGoal && (
-								<React.Fragment>
+									<TouchableOpacity
+										onPress={() => this.addTimePicker()}
+										style={{
+											display: 'flex',
+											flex: 1,
+											width: '100%',
+											flexDirection: 'row',
+											alignItems: 'center',
+											justifyContent: 'space-between',
+										}}
+									>
+										<Icon
+											name="md-add-circle"
+											type="ionicon"
+											style={{
+												shadowColor: '#8700ca',
+												shadowOffset: {
+													width: 0,
+													height: 0,
+												},
+												shadowOpacity: 0.2,
+												shadowRadius: 30,
+											}}
+											color="#8700ca"
+										/>
+										<Text
+											style={{
+												textAlign: 'center',
+												fontFamily: 'M-Regular',
+												fontSize: 12,
+												lineHeight: 12,
+											}}
+										>
+											ДОБАВИТЬ ВРЕМЯ
+										</Text>
+									</TouchableOpacity>
+								</View>
+							) : // <ListItem
+							// 	containerStyle={{
+							// 		borderBottomColor: 'transparent',
+							// 	}}
+							// 	hideChevron={true}
+							// 	leftIcon={{ name: 'add', color: '#8700ca' }}
+							// 	onPressRightIcon={() =>
+							// 		this.addTimePicker()
+							// 	}
+							// 	onPress={() => this.addTimePicker()}
+							// 	subtitle={
+							// 		<Text
+							// 			style={{
+							// 				textAlign: 'left',
+							// 				fontFamily: 'M-Regular',
+							// 			}}
+							// 		>
+							// 			ДОБАВИТЬ ВРЕМЯ
+							// 		</Text>
+							// 	}
+							// />
+							null
+						) : null}
+						<View
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'space-between',
+								padding: 10,
+							}}
+						>
+							{!_.isEqual(goal, this.defaultGoalState) &&
+								!!goal.goalTitle.length && (
 									<Button
 										iconLeft
 										block
-										success
+										primary
 										style={{
 											width: '100%',
 											marginBottom: 10,
+											backgroundColor: '#8700ca',
+											shadowColor: '#8700ca',
+											shadowRadius: 15,
 										}}
-										onPress={this._finishedGoal}
+										onPress={this._createNewGoal}
 									>
-										<Text style={{ color: '#fff' }}>
-											Достигнуть
+										<Text
+											style={{
+												color: '#fff',
+												fontFamily: 'M-Regular',
+												fontSize: 12,
+											}}
+										>
+											СОХРАНИТЬ
 										</Text>
 									</Button>
-									<Button
-										iconLeft
-										block
-										danger
-										style={{
-											width: '100%',
-											marginBottom: 10,
-										}}
-										onPress={this._deleteGoal}
-									>
-										<Text style={{ color: '#fff' }}>
-											Удалить
-										</Text>
-									</Button>
-								</React.Fragment>
-						)*/}
+								)}
+						</View>
 					</View>
-				</Content>
-			</Container>
+				</ScrollView>
+			</Screen>
 		);
 	}
 }

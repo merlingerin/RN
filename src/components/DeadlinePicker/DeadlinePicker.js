@@ -23,6 +23,22 @@ const DeadlinePicker = ({ date, onDateChange }) => (
 				borderWidth: 0,
 				borderColor: 'transparent',
 			},
+			placeholderText: {
+				color: '#8700ca',
+				textAlign: 'right',
+				fontFamily: 'MA-Regular',
+				fontSize: 14,
+			},
+			dateText: {
+				color: '#8700ca',
+				textAlign: 'right',
+				fontFamily: 'MA-Regular',
+				fontSize: 14,
+			},
+			dateInput: {
+				marginLeft: 32,
+				borderWidth: 0,
+			},
 		}}
 		onDateChange={onDateChange}
 	/>

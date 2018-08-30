@@ -13,7 +13,6 @@ const saveState = async (state, asyncStoreWithDb) => {
 				.then(snap => {
 					lastDatabaseUpdate = snap.val();
 				});
-
 			if (lastDatabaseUpdate > state.profile.lastLocalUpdate) {
 				await fb
 					.database()

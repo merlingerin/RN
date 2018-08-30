@@ -16,7 +16,7 @@ class MonthCalendar extends Component {
 						dateString: day.dateString,
 						time: ['6:30'],
 						selected: true,
-						selectedColor: 'blue',
+						selectedColor: 'rgba(135, 0, 202, .1)',
 					});
 				}}
 				disableMonthChange={true}
@@ -30,8 +30,18 @@ class MonthCalendar extends Component {
 				firstDay={1}
 				// Hide day names. Default = false
 				hideDayNames={true}
+				style={{
+					// margin: 'auto',
+					marginLeft: 'auto',
+					marginRight: 'auto',
+				}}
 				theme={{
 					monthTextColor: 'transparent',
+					// calendarBackground: 'rgba(207, 217, 237, .3)',
+					textSectionTitleColor: 'transparent',
+					selectedDayBackgroundColor: 'rgba(135, 0, 202, .1)',
+					dayTextColor: '#000',
+					selectedDayTextColor: '#8700ca',
 				}}
 			/>
 		);

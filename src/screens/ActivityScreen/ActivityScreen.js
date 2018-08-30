@@ -12,8 +12,9 @@ import {
 
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, Switch } from 'react-native';
 import { showLoader, hideLoader } from '../../ducks/loader';
+import Styles from '../../styles/styles';
 
 // UTILS
 // ============================================================
@@ -25,8 +26,9 @@ import {
 	requestLogOut,
 	resetError,
 } from '../../ducks/profile';
-import { Header, Icon, Text, CheckBox } from 'react-native-elements';
-import { Screen, View, Image, Title, Heading, Switch } from '@shoutem/ui';
+import Header from '../../components/CustomHeader/CustomHeader';
+import { Icon, Text, CheckBox } from 'react-native-elements';
+import { Screen, View, Image, Title, Heading } from '@shoutem/ui';
 import { ActionSheet } from 'native-base';
 import DatePicker from 'react-native-datepicker';
 import ButtonAddActivity from '../../components/ButtonAddActivity/ButtonAddActivity';
@@ -97,7 +99,12 @@ class ActivityScreen extends React.Component {
 		if (id === 4) {
 			return _.map(weekDays, id => {
 				const day = activityRepeatDaysParser(id);
-				return <Title key={day.id}>{`${day.title}, `}</Title>;
+				return (
+					<Title
+						style={{ ...Styles.defaultTextTitle }}
+						key={day.id}
+					>{`${day.title}, `}</Title>
+				);
 			});
 		}
 		if (id === 5) {
@@ -106,7 +113,12 @@ class ActivityScreen extends React.Component {
 			}
 			return _.map(monthDays, item => {
 				const { dayNumber } = item;
-				return <Title key={dayNumber}>{`${dayNumber}, `}</Title>;
+				return (
+					<Title
+						style={{ ...Styles.defaultTextTitle }}
+						key={dayNumber}
+					>{`${dayNumber}, `}</Title>
+				);
 			});
 		}
 
@@ -123,6 +135,7 @@ class ActivityScreen extends React.Component {
 							text: 'Активность',
 							style: { color: '#fff' },
 						}}
+						label="Активность"
 						rightComponent={{
 							icon: 'home',
 							color: '#fff',
@@ -143,6 +156,7 @@ class ActivityScreen extends React.Component {
 							text: 'Активность',
 							style: { color: '#fff' },
 						}}
+						label="Активность"
 						rightComponent={{
 							icon: 'home',
 							color: '#fff',
@@ -276,6 +290,11 @@ class ActivityScreen extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
+					label={
+						goal.goalTitle.length > 20
+							? `${goal.goalTitle.slice(0, 20)}...`
+							: goal.goalTitle
+					}
 					centerComponent={{
 						text:
 							goal.goalTitle.length > 20
@@ -307,11 +326,30 @@ class ActivityScreen extends React.Component {
 							}
 						/>
 						<View
-							style={{ paddingHorizontal: 15 }}
-							styleName="horizontal v-start space-around"
+							style={{
+								paddingHorizontal: 15,
+								width: '100%',
+							}}
+							styleName="horizontal v-center h-center"
+						>
+							<Title style={{ ...Styles.defaultTextTitle }}>
+								{goal.goalCategory.categoryTitle}
+							</Title>
+						</View>
+						<View
+							style={{
+								paddingHorizontal: 15,
+								paddingVertical: 15,
+							}}
+							styleName="horizontal v-center space-around"
 						>
 							<CheckBox
 								checked={goal.active !== 2 ? false : true}
+								iconType="material"
+								checkedIcon="check-box"
+								uncheckedIcon="check-box-outline-blank"
+								checkedColor="#8700ca"
+								size={32}
 								onPress={() => {
 									if (goal.active !== 2) {
 										return Alert.alert(
@@ -355,16 +393,17 @@ class ActivityScreen extends React.Component {
 									marginLeft: 0,
 									marginRight: 0,
 									padding: 0,
-									paddingTop: 10,
 								}}
 							/>
 							<Title
 								style={{
 									textAlign: 'center',
-									paddingBottom: 20,
-									paddingTop: 10,
-									paddingHorizontal: 15,
-									fontSize: 24,
+									// paddingBottom: 20,
+									// paddingTop: 10,
+									paddingHorizontal: 5,
+									...Styles.defaultTextTitle,
+									fontSize: 16,
+									lineHeight: 20,
 								}}
 							>
 								{goal.goalTitle}
@@ -377,10 +416,10 @@ class ActivityScreen extends React.Component {
 									textAlign: 'center',
 									paddingBottom: 20,
 									paddingHorizontal: 15,
-									color: 'red',
+									...Styles.defaultTextTitle,
 								}}
 							>
-								Приостановлена
+								ПРИОСТАНОВЛЕНА
 							</Title>
 						)}
 						{goal.active === 2 && (
@@ -389,34 +428,37 @@ class ActivityScreen extends React.Component {
 									textAlign: 'center',
 									paddingBottom: 20,
 									paddingHorizontal: 15,
-									color: 'lightgreen',
+									...Styles.defaultTextTitle,
 								}}
 							>
-								Достигнута
+								ДОСТИГНУТА
 							</Title>
 						)}
 						<View
-							style={{ paddingHorizontal: 15, width: '100%' }}
+							style={{
+								paddingHorizontal: 15,
+								width: '100%',
+							}}
 							styleName="horizontal v-center space-between"
 						>
-							<Title>Категория:</Title>
-							<Title>{goal.goalCategory.categoryTitle}</Title>
-						</View>
-						<View
-							style={{ paddingHorizontal: 15, width: '100%' }}
-							styleName="horizontal v-center space-between"
-						>
-							<Title>Дата создания цели: </Title>
-							<Title>
+							<Title style={{ ...Styles.defaultText }}>
+								ДАТА СОЗДАНИЯ ЦЕЛИ:
+							</Title>
+							<Title style={{ ...Styles.defaultTextTitle }}>
 								{moment(goal.timestamp).format('DD.MM.YYYY')}
 							</Title>
 						</View>
 						<View
-							style={{ paddingHorizontal: 15, width: '100%' }}
+							style={{
+								paddingHorizontal: 15,
+								width: '100%',
+							}}
 							styleName="horizontal v-center space-between"
 						>
-							<Title>Срок достижения цели: </Title>
-							<Title>
+							<Title style={{ ...Styles.defaultText }}>
+								СРОК ДОСТЖЕНИЯ ЦЕЛИ:
+							</Title>
+							<Title style={{ ...Styles.defaultTextTitle }}>
 								{moment(goal.deadline).format('DD.MM.YYYY')}
 							</Title>
 						</View>
@@ -431,45 +473,63 @@ class ActivityScreen extends React.Component {
 					>
 						<View
 							style={{ width: '100%' }}
-							styleName="horizontal h-start"
+							styleName="horizontal v-center space-between"
 						>
-							<Title style={{ fontSize: 20 }}>
-								Запланированы активности
+							<Title style={{ ...Styles.defaultText }}>
+								ЗАПЛАНИРОВАНЫ АКТИВНОСТИ
 							</Title>
-						</View>
-						<View
-							style={{ paddingVertical: 10, width: '100%' }}
-							styleName="horizontal h-start"
-						>
-							<Title>{goal.activityRepeat.title}</Title>
+							<Title style={{ ...Styles.defaultTextTitle }}>
+								{goal.activityRepeat.title}
+							</Title>
 						</View>
 						{(goal.activityRepeat.id === 4 ||
 							goal.activityRepeat.id === 5) &&
 							(!_.isEmpty(goal.activityRepeat.weekDays) ||
 								!_.isEmpty(goal.activityRepeat.monthDays)) && (
 								<View
-									styleName="horizontal h-start"
+									styleName="horizontal v-center space-between"
 									style={{ width: '100%', flexWrap: 'wrap' }}
 								>
-									<Title>Дни: </Title>
-									{this._renderDays()}
+									<Title style={{ ...Styles.defaultText }}>
+										ДНИ:
+									</Title>
+									<View styleName="horizontal v-center h-start">
+										{this._renderDays()}
+									</View>
 								</View>
 							)}
 						<View
-							styleName="horizontal h-start"
+							styleName="horizontal v-center space-between"
 							style={{ width: '100%', flexWrap: 'wrap' }}
 						>
-							<Title>Напоминание: </Title>
-							{_.map(goal.activityRepeat.time, item => (
-								<Title key={uuidv4()}>{`${item}, `}</Title>
-							))}
+							<Title style={{ ...Styles.defaultText }}>
+								НАПОМИНАНИЕ:
+							</Title>
+							<View styleName="horizontal v-center h-start">
+								{_.map(goal.activityRepeat.time, item => (
+									<Title
+										style={{ ...Styles.defaultTextTitle }}
+										key={uuidv4()}
+									>{`${item}, `}</Title>
+								))}
+							</View>
 						</View>
 						<View
-							style={{ width: '100%', flexWrap: 'wrap' }}
+							style={{
+								width: '80%',
+								flexWrap: 'wrap',
+								margin: 'auto',
+								marginVertical: 15,
+							}}
 							styleName="horizontal v-center space-between"
 						>
-							<Title>Напоминание: </Title>
+							<Title style={{ ...Styles.defaultText }}>
+								НАПОМИНАНИЕ:
+							</Title>
 							<Switch
+								onTintColor="#eacbf9"
+								thumbTintColor="#8700ca"
+								tintColor="#eacbf9"
 								onValueChange={value =>
 									this._toggleNotifications()
 								}
@@ -488,17 +548,10 @@ class ActivityScreen extends React.Component {
 										this.uid,
 									);
 								}}
-								buttonText="Добавить активность"
+								buttonText="ДОБАВИТЬ АКТИВНОСТЬ"
 							/>
 						)}
-						<View
-							styleName="vertical h-start"
-							style={{ width: '100%', paddingTop: 20 }}
-						>
-							<Title style={{ fontSize: 20 }}>
-								Журнал активностей
-							</Title>
-						</View>
+
 						<View
 							styleName="vertical h-center"
 							style={{
@@ -509,7 +562,14 @@ class ActivityScreen extends React.Component {
 							}}
 						>
 							{_.isEmpty(physicalActivity) ? (
-								<Text>Список пуст</Text>
+								<Text
+									style={{
+										width: '100%',
+										textAlign: 'center',
+									}}
+								>
+									Список пуст
+								</Text>
 							) : (
 								_.map(physicalActivity, item => (
 									<View
@@ -542,6 +602,14 @@ class ActivityScreen extends React.Component {
 													// marginLeft: 36,
 													borderWidth: 0,
 												},
+												placeholderText: {
+													textAlign: 'right',
+													...Styles.defaultTextTitle,
+												},
+												dateText: {
+													textAlign: 'right',
+													...Styles.defaultTextTitle,
+												},
 											}}
 											onDateChange={date =>
 												this._updatePhisicalActivity(
@@ -550,9 +618,18 @@ class ActivityScreen extends React.Component {
 												)
 											}
 										/>
-										<Text> Активность</Text>
+										<Text
+											style={{
+												...Styles.defaultText,
+												fontSize: 14,
+											}}
+										>
+											Активность
+										</Text>
 										<View style={{ padding: 10 }}>
 											<Icon
+												color="rgba(135, 0, 202, .1)"
+												type="ionicon"
 												onPress={() =>
 													this._removeActivity(
 														item.id,
@@ -560,23 +637,13 @@ class ActivityScreen extends React.Component {
 														this.uid,
 													)
 												}
-												name="close"
+												name="md-close-circle"
 											/>
 										</View>
 									</View>
 								))
 							)}
 						</View>
-
-						{/*goal.active !== 2 && (
-							<ButtonAddActivity
-								success
-								handleClick={() => {
-									return this._finishedGoal();
-								}}
-								buttonText="Достигнуть"
-							/>
-						)*/}
 					</View>
 				</ScrollView>
 			</Screen>

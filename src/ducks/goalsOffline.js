@@ -31,7 +31,7 @@ const goalsOffline = (state = initialState, { type, payload }) => {
 		case REMOVE_GOAL:
 			return _.omit(state, [payload]);
 		case TOGGLE_NOTIFICATION:
-			const toggledGoal = _.merge(state[payload.goalId], {
+			const toggledGoal = _.merge({}, state[payload.goalId], {
 				activityRepeat: {
 					reminder: !state[payload.goalId].activityRepeat.reminder,
 				},

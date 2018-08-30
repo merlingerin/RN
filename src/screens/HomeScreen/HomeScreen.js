@@ -1,6 +1,7 @@
 import React from 'react';
 import { NetInfo } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient, Notifications } from 'expo';
+
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import moment from 'moment';
@@ -29,6 +30,7 @@ import { fb } from '../../services/api';
 import { store } from '../../../App';
 import saveState from '../../utils/persistStoreFirebase';
 import Styles from '../../styles/styles';
+import registerForPushNotificationsAsync from '../../../api/registerForPushNotificationsAsync';
 
 const anonimProfile = require('../../../assets/images/anonimProfile.png');
 
@@ -52,6 +54,26 @@ class HomeScreen extends React.Component {
 		}
 		return saveState(store.getState(), undefined, 'from mount');
 	}
+
+	_registerForPushNotifications = async () => {
+		// Send our push token over to our backend so we can receive notifications
+		// You can comment the following line out if you want to stop receiving
+		// a notification every time you open the app. Check out the source
+		// for this function in api/registerForPushNotificationsAsync.js
+		const pushToken = await registerForPushNotificationsAsync();
+
+		return pushToken;
+		// Watch for incoming notifications
+		// this._notificationSubscription = Notifications.addListener(
+		// 	this._handleNotification,
+		// );
+	};
+
+	// _handleNotification = ({ origin, data }) => {
+	// 	console.log(
+	// 		`Push notification ${origin} with data: ${JSON.stringify(data)}`,
+	// 	);
+	// };
 
 	componentDidMount() {
 		const that = this;
@@ -82,8 +104,9 @@ class HomeScreen extends React.Component {
 				if (user.displayName && user.displayName.length > 1) {
 					profile.name = user.displayName || '';
 				}
+				const pushToken = await this._registerForPushNotifications();
 
-				this.props.checkIsAuth(profile);
+				this.props.checkIsAuth(profile, pushToken);
 
 				saveState(
 					store.getState(),
@@ -255,10 +278,11 @@ class HomeScreen extends React.Component {
 										>
 											<Icon
 												raised
-												name="pocket"
+												name="check-circle"
 												type="material-community"
-												color="#50ad4f"
+												color="rgba(103,161,37,.8)"
 												reverse
+												reverseColor="rgba(255,255,255,1)"
 												onPress={() => {
 													this._addActivity(item.id);
 													return this.refs.toast.show(

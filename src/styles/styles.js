@@ -2,6 +2,16 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 export default {
+	defaultText: {
+		fontFamily: 'M-Regular',
+		fontSize: 12,
+		color: '#000000',
+	},
+	defaultTextTitle: {
+		fontFamily: 'MA-Regular',
+		fontSize: 14,
+		color: '#8700ca',
+	},
 	header: {
 		centerComponent: {
 			color: '#fff',
@@ -16,6 +26,18 @@ export default {
 				fontSize: 14,
 				fontFamily: 'MA-Regular',
 			},
+		},
+	},
+	GoalForm: {
+		rowTitle: {
+			fontFamily: 'M-Regular',
+			fontSize: 12,
+			color: '#000000',
+		},
+		rowValue: {
+			fontFamily: 'MA-Regular',
+			fontSize: 14,
+			color: '#8700ca',
 		},
 	},
 	homePage: {

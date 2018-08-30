@@ -2,6 +2,7 @@ import React from 'react';
 import { LinearGradient } from 'expo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import * as Animatable from 'react-native-animatable';
 import { ScrollView } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
 import Header from '../../components/CustomHeader/CustomHeader';
@@ -174,7 +175,13 @@ class GoalsScreen extends React.Component {
 								: false
 						}
 					>
-						<Text style={Styles.GoalsScreen.addGoalButton.text}>
+						<Text
+							style={{
+								color: '#000',
+								fontSize: 14,
+								fontFamily: 'M-Regular',
+							}}
+						>
 							Добавить цель
 						</Text>
 						<Icon
