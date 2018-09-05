@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { fb } from '../../services/api';
-
+import { Dimensions, ListView } from 'react-native';
 import { connect } from 'react-redux';
 import {
 	signInWithGoogle,
@@ -10,9 +10,10 @@ import {
 	resetError,
 } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
-import { Icon } from 'react-native-elements';
+import { Icon, Avatar } from 'react-native-elements';
 import { Screen, View, Image, Title, Text, Heading } from '@shoutem/ui';
 import { Form, Button, Item, Label, Input } from 'native-base';
+import Styles from '../../styles/styles';
 
 const styles = {
 	button: {
@@ -22,6 +23,41 @@ const styles = {
 	},
 	buttonText: {
 		color: '#fff',
+	},
+	avatarBorder: {
+		width: 75,
+		height: 75,
+	},
+	userNameText: {
+		fontSize: 24,
+		lineHeight: 26,
+		color: '#000',
+		fontFamily: 'MA-Regular',
+	},
+	userEmailText: {
+		fontSize: 14,
+		fontFamily: 'MA-Regular',
+		color: '#8700ca',
+	},
+	listTitleText: {
+		fontSize: 18,
+		color: '#000',
+		fontFamily: 'MA-Regular',
+	},
+	listDefaultText: {
+		fontSize: 14,
+		color: '#000',
+		fontFamily: 'MA-Regular',
+	},
+	listDefaultTextDecorator: {
+		width: 20,
+		height: 20,
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#cfd9ed',
+		borderRadius: 7,
 	},
 };
 
@@ -95,7 +131,6 @@ class ProfileScreen extends React.Component {
 			signInWithGoogle,
 			authWithEmail,
 		} = this.props;
-		console.log('goals', goals);
 
 		const activeGoals = _.filter(goals, item => {
 			return item.defaultGoal !== true && item.active === 1;
@@ -103,7 +138,7 @@ class ProfileScreen extends React.Component {
 
 		const sport = _.filter(goals, item => {
 			return (
-				item.goalCategory.categoryId === 0 &&
+				item.goalCategory.categoryId === 5 &&
 				item.defaultGoal !== true &&
 				item.active === 1
 			);
@@ -117,34 +152,58 @@ class ProfileScreen extends React.Component {
 		});
 		const careare = _.filter(goals, item => {
 			return (
-				item.goalCategory.categoryId === 2 &&
+				item.goalCategory.categoryId === 3 &&
 				item.defaultGoal !== true &&
 				item.active === 1
 			);
 		});
 		const enviroment = _.filter(goals, item => {
 			return (
-				item.goalCategory.categoryId === 3 &&
+				item.goalCategory.categoryId === 4 &&
 				item.defaultGoal !== true &&
 				item.active === 1
 			);
 		});
 		const selfExpression = _.filter(goals, item => {
 			return (
-				item.goalCategory.categoryId === 4 &&
+				item.goalCategory.categoryId === 0 &&
 				item.defaultGoal !== true &&
 				item.active === 1
 			);
 		});
 		const family = _.filter(goals, item => {
 			return (
-				item.goalCategory.categoryId === 5 &&
+				item.goalCategory.categoryId === 2 &&
 				item.defaultGoal !== true &&
 				item.active === 1
 			);
 		});
 
-		if (!fb.auth().currentUser) {
+		const RenderListRow = ({ leftText, rightText, customStyles }) => {
+			return (
+				<View
+					style={{
+						paddingHorizontal: 15,
+						width: '100%',
+						paddingVertical: 4,
+						...Styles.borderBottom,
+						...customStyles,
+					}}
+					styleName="horizontal v-center space-between"
+				>
+					<Title style={styles.listDefaultText}>
+						{leftText && leftText.toUpperCase()}
+					</Title>
+					<View style={styles.listDefaultTextDecorator}>
+						<Title style={styles.listDefaultText}>
+							{rightText}
+						</Title>
+					</View>
+				</View>
+			);
+		};
+
+		if (!this.props.isAuth) {
 			return (
 				<Screen styleName="paper">
 					<Header
@@ -176,7 +235,9 @@ class ProfileScreen extends React.Component {
 								color: 'red',
 							}}
 						>
-							{this.props.isError ? this.props.error.message : ''}
+							{this.props.isError && this.props.error
+								? this.props.error.message
+								: ''}
 						</Text>
 						<Item floatingLabel error={this.props.isError}>
 							<Label>Password</Label>
@@ -189,7 +250,7 @@ class ProfileScreen extends React.Component {
 						</Item>
 						<View
 							style={{
-								paddingTop: 30,
+								paddingTop: 10,
 								width: '90%',
 								height: 150,
 							}}
@@ -234,7 +295,7 @@ class ProfileScreen extends React.Component {
 			);
 		}
 		return (
-			<Screen styleName="paper">
+			<Screen styleName="paper" style={{ backgroundColor: '#edf3ff' }}>
 				<Header
 					leftComponent={{
 						icon: 'menu',
@@ -254,61 +315,148 @@ class ProfileScreen extends React.Component {
 							this.props.navigation.navigate('HomeScreen'),
 					}}
 				/>
-				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
+				<View
+					styleName="vertical h-center"
+					style={{
+						paddingTop: 5,
+						backgroundColor: '#8700ca',
+						top: -1,
+						paddingBottom: 150,
+					}}
+				/>
+				<View
+					style={{
+						width: 159,
+						height: 159,
+						top: -190,
+						marginHorizontal: 'auto',
+						alignSelf: 'center',
+						borderColor: 'rgba(255,255,255, 0.15)',
+						borderWidth: 10,
+						borderRadius: 159 / 2,
+						zIndex: 9,
+						elevation: 1,
+						zIndex: 15,
+					}}
+					styleName="medium-avatar"
+				>
 					<Image
 						styleName="medium-avatar"
 						source={
-							fb.auth().currentUser && profile.userPhoto
+							this.props.isAuth && profile.userPhoto
 								? {
-										uri:
-											profile.userPhoto ||
-											fb.auth().currentUser.providerData
-												.photoURL,
+										uri: profile.userPhoto,
 								  }
 								: require('../../../assets/images/image-3.png')
 						}
 					/>
-					<Heading>
-						{fb.auth().currentUser
-							? fb.auth().currentUser.providerData.displayName ||
-							  profile.name
-							: ''}
+				</View>
+				<View
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						flexWrap: 'wrap',
+						width: '90%',
+						marginHorizontal: 'auto',
+						alignSelf: 'center',
+						justifyContent: 'center',
+						alignItems: 'center',
+						// position: 'absolute',
+						top: -270,
+						paddingTop: 80,
+						paddingBottom: 15,
+						backgroundColor: '#fff',
+						borderRadius: 7,
+						zIndex: 10,
+					}}
+				>
+					<Heading
+						style={{
+							...styles.userNameText,
+						}}
+					>
+						{profile.name}
 					</Heading>
-					<Title>
-						{fb.auth().currentUser
-							? fb.auth().currentUser.providerData.email ||
-							  profile.email
-							: ''}
+					<Title
+						style={{
+							...styles.userEmailText,
+						}}
+					>
+						{profile.email}
 					</Title>
 				</View>
-				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
-					<Heading style={{ paddingBottom: 10 }}>
+				<View
+					styleName="vertical h-center"
+					style={{
+						paddingTop: 50,
+						top: -315,
+						backgroundColor: '#edf3ff',
+						zIndex: 1,
+					}}
+				>
+					<Heading
+						style={{
+							paddingBottom: 10,
+							color: '#000',
+							fontSize: 15,
+							fontFamily: 'MA-Regular',
+						}}
+					>
 						Всего активных целей: {_.values(activeGoals).length}
 					</Heading>
-					<Title>Спорт, Здоровье: {_.values(sport).length}</Title>
-					<Title>Финансы: {_.values(finance).length}</Title>
-					<Title>Карьера, развитие: {_.values(careare).length}</Title>
-					<Title>Окружение: {_.values(enviroment).length}</Title>
-					<Title>
-						Самовыражение: {_.values(selfExpression).length}
-					</Title>
-					<Title>Семья: {_.values(family).length}</Title>
+					<RenderListRow
+						leftText="Самореализация / Драйв"
+						rightText={_.values(selfExpression).length}
+						customStyles={{
+							borderTopWidth: 1,
+							borderTopColor: '#dde5f5',
+						}}
+					/>
+					<RenderListRow
+						leftText="Карьера / Развитие"
+						rightText={_.values(careare).length}
+					/>
+					<RenderListRow
+						leftText="Семья"
+						rightText={_.values(family).length}
+					/>
+					<RenderListRow
+						leftText="Финансы"
+						rightText={_.values(finance).length}
+					/>
+					<RenderListRow
+						leftText="Окружение / Друзья"
+						rightText={_.values(enviroment).length}
+					/>
+					<RenderListRow
+						leftText="Энергия / Отдых"
+						rightText={_.values(sport).length}
+					/>
+					<Button
+						error
+						block
+						style={{
+							width: '80%',
+							alignSelf: 'center',
+							marginVertical: 10,
+							backgroundColor: '#8700ca',
+							shadowColor: '#8700ca',
+							shadowRadius: 15,
+							elevation: 3,
+							borderRadius: 7,
+						}}
+						onPress={() => this.props.requestLogOut()}
+					>
+						<Text style={styles.buttonText}> Выйти </Text>
+					</Button>
 				</View>
-				<Button
-					error
-					block
-					style={styles.button}
-					onPress={() => this.props.requestLogOut()}
-				>
-					<Text style={styles.buttonText}> Выйти </Text>
-				</Button>
 			</Screen>
 		);
 	}
 }
 
 const mapStateToProps = state => ({
-	goals: state.goals,
+	goals: state.goalsOffline,
 	isAuth: state.profile.isAuth,
 	profile: state.profile.profile,
 	isError: state.profile.isError,

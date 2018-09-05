@@ -12,15 +12,15 @@ const GoalTitleInput = ({ value, onChangeText }) => (
 		<Input
 			style={{
 				color: 'rgba(135, 0, 202, 1)',
-				fontSize: 14,
-				lineHeight: 14,
+				fontSize: 16,
+				lineHeight: 16,
 				textAlign: 'right',
 				paddingRight: 17,
 				fontFamily: 'MA-Regular',
 			}}
 			returnKeyType={'done'}
 			placeholderTextColor="rgba(135, 0, 202, 1)"
-			placeholderStyle={{ fontFamily: 'MA-Regular', fontSize: 14 }}
+			placeholderStyle={{ fontFamily: 'MA-Regular', fontSize: 16 }}
 			value={value}
 			onChangeText={onChangeText}
 			placeholder={!value.length ? 'Новая цель' : ''}

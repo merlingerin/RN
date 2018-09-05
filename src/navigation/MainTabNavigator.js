@@ -38,14 +38,18 @@ export default TabNavigator(
 					case 'HomeScreen':
 						iconName =
 							Platform.OS === 'ios'
-								? `ios-map${focused ? '' : '-outline'}`
-								: `ios-map${focused ? '' : '-outline'}`;
+								? `ios-map${focused ? '-outline' : '-outline'}`
+								: `ios-map${focused ? '-outline' : '-outline'}`;
 						break;
 					case 'GoalsScreen':
 						iconName =
 							Platform.OS === 'ios'
-								? `ios-list-box${focused ? '' : '-outline'}`
-								: 'ios-list-box';
+								? `ios-list-box${
+										focused ? '-outline' : '-outline'
+								  }`
+								: `ios-list-box${
+										focused ? '-outline' : '-outline'
+								  }`;
 						break;
 					case 'ActivityScreen':
 						iconName =
@@ -56,8 +60,12 @@ export default TabNavigator(
 					case 'ProfileScreen':
 						iconName =
 							Platform.OS === 'ios'
-								? `ios-contact${focused ? '' : '-outline'}`
-								: 'ios-contact';
+								? `ios-contact${
+										focused ? '-outline' : '-outline'
+								  }`
+								: `ios-contact${
+										focused ? '-outline' : '-outline'
+								  }`;
 						break;
 					case 'StatisticScreen':
 						iconName =

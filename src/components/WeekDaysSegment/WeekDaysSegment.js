@@ -69,7 +69,10 @@ export default class WeekDaysSegment extends Component {
 				style={{
 					...styles.container.inline,
 					backgroundColor: '#fff',
-					maxWidth: '90%',
+					maxWidth: '95%',
+					margin: 'auto',
+					padding: 10,
+					borderRadius: 7,
 				}}
 			>
 				{Platform.OS === 'ios'
@@ -90,6 +93,8 @@ export default class WeekDaysSegment extends Component {
 								style={{
 									paddingLeft: 0,
 									paddingRight: 0,
+									borderRadius: 7,
+									borderColor: 'transparent',
 									backgroundColor: _.some(
 										this.props.pickedWeekDays,
 										item => +day.id === item,
@@ -129,6 +134,8 @@ export default class WeekDaysSegment extends Component {
 									borderColor: '#000',
 									paddingLeft: 0,
 									paddingRight: 0,
+									borderRadius: 7,
+									borderColor: 'transparent',
 									backgroundColor: _.some(
 										this.props.pickedWeekDays,
 										item => +day.id === item,

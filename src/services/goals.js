@@ -18,7 +18,7 @@ export const goals = {
 			},
 			id: 1,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый день',
 		},
 		deadline: moment()
@@ -52,7 +52,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -87,7 +87,7 @@ export const goals = {
 			},
 			id: 1,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый день',
 		},
 		deadline: moment()
@@ -122,7 +122,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -157,7 +157,7 @@ export const goals = {
 			},
 			id: 5,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый месяц',
 		},
 		deadline: moment()
@@ -192,7 +192,7 @@ export const goals = {
 			},
 			id: 5,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый месяц',
 		},
 		deadline: moment()
@@ -227,7 +227,7 @@ export const goals = {
 			},
 			id: 5,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый месяц',
 		},
 		deadline: moment()
@@ -262,7 +262,7 @@ export const goals = {
 			},
 			id: 5,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый месяц',
 		},
 		deadline: moment()
@@ -297,7 +297,7 @@ export const goals = {
 			},
 			id: 5,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждый месяц',
 		},
 		deadline: moment()
@@ -332,7 +332,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -367,7 +367,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -401,7 +401,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -436,7 +436,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -470,7 +470,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -504,7 +504,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -538,7 +538,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -573,7 +573,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -607,7 +607,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -641,7 +641,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -676,7 +676,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -711,7 +711,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: true,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()
@@ -745,7 +745,7 @@ export const goals = {
 			},
 			id: 4,
 			reminder: false,
-			time: ['7:30'],
+			time: ['8:00'],
 			title: 'каждую неделю',
 		},
 		deadline: moment()

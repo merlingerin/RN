@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Animatable from 'react-native-animatable';
 import { ScrollView } from 'react-native';
-import { ButtonGroup } from 'react-native-elements';
+import { ButtonGroup, Avatar } from 'react-native-elements';
 import Header from '../../components/CustomHeader/CustomHeader';
 import { Screen, Heading, Button, Text } from '@shoutem/ui';
 import { Container, Fab, Icon } from 'native-base';
@@ -167,7 +167,8 @@ class GoalsScreen extends React.Component {
 							shadowColor: '#8700ca',
 							shadowOffset: { width: 0, height: 0 },
 							shadowOpacity: 0.3,
-							shadowRadius: 10,
+							shadowRadius: 30,
+							elevation: 5,
 						}}
 						onPress={() =>
 							this.props.isAuth
@@ -192,6 +193,7 @@ class GoalsScreen extends React.Component {
 								shadowOffset: { width: 0, height: 0 },
 								shadowOpacity: 0.2,
 								shadowRadius: 30,
+								elevation: 1,
 							}}
 							name="md-add-circle"
 						/>
@@ -215,6 +217,7 @@ class GoalsScreen extends React.Component {
 								shadowOpacity: 0.7,
 								shadowRadius: 10,
 								borderColor: 'transparent',
+								elevation: 3,
 							}}
 							buttonStyle={{
 								backgroundColor: 'rgba(207, 217, 237, .3)',

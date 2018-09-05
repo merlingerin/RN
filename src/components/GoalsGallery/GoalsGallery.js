@@ -11,8 +11,9 @@ import {
 	Row,
 } from '@shoutem/ui';
 import { Text, Icon, List, ListItem } from 'react-native-elements';
-import { ImagePicker, Permissions } from 'expo';
+import { ImagePicker, Permissions, LinearGradient } from 'expo';
 import _ from 'lodash';
+import { Button } from 'native-base';
 
 const Styles = {
 	row: {
@@ -44,6 +45,7 @@ export default class GoalsGallery extends Component {
 		this.state = {
 			isShow: false,
 			image: this.props.image,
+			savedImage: this.props.image,
 			images: this.props.defaultImages,
 			openedMenu: false,
 		};
@@ -75,8 +77,12 @@ export default class GoalsGallery extends Component {
 	};
 
 	_pickImage = uri => {
-		this.props.getImage(uri);
 		this.setState({ image: uri });
+	};
+
+	_getImage = () => {
+		this.props.getImage(this.state.image);
+		this.setState({ isShow: false });
 	};
 
 	_askPermissionsAsync = async () => {
@@ -94,7 +100,6 @@ export default class GoalsGallery extends Component {
 		});
 
 		if (!result.cancelled) {
-			this.props.getImage(result.base64);
 			this.setState({ image: result.base64 });
 			this._closeMenu();
 		}
@@ -111,6 +116,8 @@ export default class GoalsGallery extends Component {
 				return 1;
 			},
 		);
+
+		const renderButtons = this.props.image !== this.state.image;
 
 		return (
 			<View
@@ -140,6 +147,40 @@ export default class GoalsGallery extends Component {
 								}}
 								onPress={this._openMenu}
 							>
+								<Tile
+									style={{
+										position: 'absolute',
+										bottom: 0,
+										left: 0,
+										width: '100%',
+										backgroundColor: 'transparent',
+									}}
+								>
+									<LinearGradient
+										style={{
+											width: '100%',
+											paddingVertical: 15,
+										}}
+										start={[0.1, 0.1]}
+										end={[1, 1]}
+										colors={[
+											'rgba(252,145,93, .8)',
+											'rgba(252,211,116, .8)',
+										]}
+									>
+										<Text
+											style={{
+												width: '100%',
+												textAlign: 'center',
+												color: '#fff',
+												fontSize: 14,
+											}}
+										>
+											Кликните, что бы изменить
+											изображение цели
+										</Text>
+									</LinearGradient>
+								</Tile>
 								{this.state.openedMenu && (
 									<Tile
 										style={{
@@ -298,6 +339,70 @@ export default class GoalsGallery extends Component {
 						/>
 					)}
 				</View>
+				{renderButtons && (
+					<View
+						styleName="horizontal h-center v-center"
+						style={{
+							backgroundColor: '#edf3ff',
+							borderBottomWidth: 1,
+							borderBottomColor: '#dde5f5',
+							paddingVertical: 15,
+						}}
+					>
+						<Button
+							style={{
+								width: 70,
+								backgroundColor: '#8700ca',
+								shadowColor: '#8700ca',
+								shadowRadius: 15,
+								elevation: 3,
+								borderRadius: 7,
+							}}
+							onPress={this._getImage}
+						>
+							<Text
+								style={{
+									color: '#fff',
+									fontFamily: 'M-Regular',
+									fontSize: 12,
+									width: '100%',
+									textAlign: 'center',
+								}}
+							>
+								OK
+							</Text>
+						</Button>
+						<Button
+							style={{
+								width: 100,
+								marginLeft: 10,
+								backgroundColor: '#cfd9ed',
+								shadowColor: '#cfd9ed',
+								shadowRadius: 15,
+								elevation: 3,
+								borderRadius: 7,
+							}}
+							onPress={() =>
+								this.setState({
+									image: this.props.image,
+									isShow: false,
+								})
+							}
+						>
+							<Text
+								style={{
+									color: '#000000',
+									fontFamily: 'M-Regular',
+									fontSize: 12,
+									width: '100%',
+									textAlign: 'center',
+								}}
+							>
+								ОТМЕНА
+							</Text>
+						</Button>
+					</View>
+				)}
 			</View>
 		);
 	}

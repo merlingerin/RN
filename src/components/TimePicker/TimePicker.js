@@ -28,12 +28,12 @@ export default class TimePicker extends Component {
 					placeholderText: {
 						color: '#8700ca',
 						fontFamily: 'MA-Regular',
-						fontSize: 14,
+						fontSize: 16,
 					},
 					dateText: {
 						color: '#8700ca',
 						fontFamily: 'MA-Regular',
-						fontSize: 14,
+						fontSize: 16,
 					},
 					dateInput: {
 						marginLeft: 'auto',

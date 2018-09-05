@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import { ScrollView, Alert, Switch } from 'react-native';
 import { showLoader, hideLoader } from '../../ducks/loader';
 import Styles from '../../styles/styles';
-
 // UTILS
 // ============================================================
 import { activityRepeatDaysParser } from '../../utils/parsers';
@@ -27,7 +26,7 @@ import {
 	resetError,
 } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
-import { Icon, Text, CheckBox } from 'react-native-elements';
+import { Icon, Text, CheckBox, Avatar } from 'react-native-elements';
 import { Screen, View, Image, Title, Heading } from '@shoutem/ui';
 import { ActionSheet } from 'native-base';
 import DatePicker from 'react-native-datepicker';
@@ -40,7 +39,7 @@ class ActivityScreen extends React.Component {
 	};
 
 	componentWillMount() {
-		this.uid = fb.auth().currentUser.uid;
+		this.uid = this.props.isAuth;
 	}
 
 	state = {
@@ -304,11 +303,8 @@ class ActivityScreen extends React.Component {
 					}}
 					rightComponent={<RightComponent />}
 				/>
-				<ScrollView>
-					<View
-						styleName="vertical h-center"
-						style={{ paddingBottom: 20 }}
-					>
+				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
+					<View styleName="vertical h-center">
 						<Image
 							style={{ paddingBottom: 15 }}
 							styleName="large-banner"
@@ -332,7 +328,13 @@ class ActivityScreen extends React.Component {
 							}}
 							styleName="horizontal v-center h-center"
 						>
-							<Title style={{ ...Styles.defaultTextTitle }}>
+							<Title
+								style={{
+									...Styles.defaultTextTitle,
+									fontFamily: 'MA-Bold',
+									color: '#000',
+								}}
+							>
 								{goal.goalCategory.categoryTitle}
 							</Title>
 						</View>
@@ -404,6 +406,7 @@ class ActivityScreen extends React.Component {
 									...Styles.defaultTextTitle,
 									fontSize: 16,
 									lineHeight: 20,
+									fontFamily: 'MA-Bold',
 								}}
 							>
 								{goal.goalTitle}
@@ -438,6 +441,10 @@ class ActivityScreen extends React.Component {
 							style={{
 								paddingHorizontal: 15,
 								width: '100%',
+								...Styles.borderBottom,
+								paddingVertical: 10,
+								borderTopWidth: 1,
+								borderTopColor: '#dde5f5',
 							}}
 							styleName="horizontal v-center space-between"
 						>
@@ -452,10 +459,16 @@ class ActivityScreen extends React.Component {
 							style={{
 								paddingHorizontal: 15,
 								width: '100%',
+								paddingVertical: 10,
+								...Styles.borderBottom,
 							}}
 							styleName="horizontal v-center space-between"
 						>
-							<Title style={{ ...Styles.defaultText }}>
+							<Title
+								style={{
+									...Styles.defaultText,
+								}}
+							>
 								СРОК ДОСТЖЕНИЯ ЦЕЛИ:
 							</Title>
 							<Title style={{ ...Styles.defaultTextTitle }}>
@@ -463,188 +476,203 @@ class ActivityScreen extends React.Component {
 							</Title>
 						</View>
 					</View>
-					<View
-						styleName="vertical h-center"
+					{/* <View
+						styleName="horizontal h-center"
 						style={{
-							paddingBottom: 20,
 							width: '100%',
+							// paddingBottom: 20,
+							// paddingHorizontal: 15,
+						}}
+					> */}
+					<View
+						style={{
+							width: '100%',
+							...Styles.borderBottom,
+							paddingHorizontal: 15,
+							paddingVertical: 10,
+						}}
+						styleName="horizontal v-center space-between"
+					>
+						<Title
+							style={{
+								...Styles.defaultText,
+							}}
+						>
+							АКТИВНОСТИ
+						</Title>
+						<Title style={{ ...Styles.defaultTextTitle }}>
+							{goal.activityRepeat.title}
+						</Title>
+					</View>
+					{(goal.activityRepeat.id === 4 ||
+						goal.activityRepeat.id === 5) &&
+						(!_.isEmpty(goal.activityRepeat.weekDays) ||
+							!_.isEmpty(goal.activityRepeat.monthDays)) && (
+							<View
+								styleName="horizontal v-center space-between"
+								style={{
+									width: '100%',
+									flexWrap: 'wrap',
+									...Styles.borderBottom,
+									paddingVertical: 10,
+									paddingHorizontal: 15,
+								}}
+							>
+								<Title style={{ ...Styles.defaultText }}>
+									ДНИ:
+								</Title>
+								<View styleName="horizontal v-center h-start">
+									{this._renderDays()}
+								</View>
+							</View>
+						)}
+					<View
+						styleName="horizontal v-center space-between"
+						style={{
+							width: '100%',
+							flexWrap: 'wrap',
+							...Styles.borderBottom,
+							paddingVertical: 10,
 							paddingHorizontal: 15,
 						}}
 					>
-						<View
-							style={{ width: '100%' }}
-							styleName="horizontal v-center space-between"
-						>
-							<Title style={{ ...Styles.defaultText }}>
-								ЗАПЛАНИРОВАНЫ АКТИВНОСТИ
-							</Title>
-							<Title style={{ ...Styles.defaultTextTitle }}>
-								{goal.activityRepeat.title}
-							</Title>
-						</View>
-						{(goal.activityRepeat.id === 4 ||
-							goal.activityRepeat.id === 5) &&
-							(!_.isEmpty(goal.activityRepeat.weekDays) ||
-								!_.isEmpty(goal.activityRepeat.monthDays)) && (
-								<View
-									styleName="horizontal v-center space-between"
-									style={{ width: '100%', flexWrap: 'wrap' }}
-								>
-									<Title style={{ ...Styles.defaultText }}>
-										ДНИ:
-									</Title>
-									<View styleName="horizontal v-center h-start">
-										{this._renderDays()}
-									</View>
-								</View>
-							)}
-						<View
-							styleName="horizontal v-center space-between"
-							style={{ width: '100%', flexWrap: 'wrap' }}
-						>
-							<Title style={{ ...Styles.defaultText }}>
-								НАПОМИНАНИЕ:
-							</Title>
-							<View styleName="horizontal v-center h-start">
-								{_.map(goal.activityRepeat.time, item => (
-									<Title
-										style={{ ...Styles.defaultTextTitle }}
-										key={uuidv4()}
-									>{`${item}, `}</Title>
-								))}
-							</View>
-						</View>
-						<View
-							style={{
-								width: '80%',
-								flexWrap: 'wrap',
-								margin: 'auto',
-								marginVertical: 15,
-							}}
-							styleName="horizontal v-center space-between"
-						>
-							<Title style={{ ...Styles.defaultText }}>
-								НАПОМИНАНИЕ:
-							</Title>
-							<Switch
-								onTintColor="#eacbf9"
-								thumbTintColor="#8700ca"
-								tintColor="#eacbf9"
-								onValueChange={value =>
-									this._toggleNotifications()
-								}
-								value={goal.activityRepeat.reminder}
-							/>
-						</View>
-						{goal.active !== 2 && (
-							<ButtonAddActivity
-								warning
-								withIcons
-								handleClick={() => {
-									const id = uuidv4();
-									return this._addActivity(
-										id,
-										goal,
-										this.uid,
-									);
-								}}
-								buttonText="ДОБАВИТЬ АКТИВНОСТЬ"
-							/>
-						)}
-
-						<View
-							styleName="vertical h-center"
-							style={{
-								paddingVertical: 10,
-								// paddingHorizontal: 15,
-								width: '100%',
-								alignItems: 'stretch',
-							}}
-						>
-							{_.isEmpty(physicalActivity) ? (
-								<Text
-									style={{
-										width: '100%',
-										textAlign: 'center',
-									}}
-								>
-									Список пуст
-								</Text>
-							) : (
-								_.map(physicalActivity, item => (
-									<View
-										key={item.id}
-										style={{
-											width: '100%',
-										}}
-										styleName="horizontal v-center space-between"
-									>
-										<DatePicker
-											style={{
-												width: '50%',
-												borderWidth: 0,
-											}}
-											date={moment(item.date)}
-											format="DD-MM-YYYY HH:mm"
-											maxDate={new Date()}
-											mode="datetime"
-											confirmBtnText="Confirm"
-											cancelBtnText="Cancel"
-											showIcon={false}
-											customStyles={{
-												dateIcon: {
-													position: 'absolute',
-													left: 0,
-													top: 4,
-													marginLeft: 0,
-												},
-												dateInput: {
-													// marginLeft: 36,
-													borderWidth: 0,
-												},
-												placeholderText: {
-													textAlign: 'right',
-													...Styles.defaultTextTitle,
-												},
-												dateText: {
-													textAlign: 'right',
-													...Styles.defaultTextTitle,
-												},
-											}}
-											onDateChange={date =>
-												this._updatePhisicalActivity(
-													item.id,
-													date,
-												)
-											}
-										/>
-										<Text
-											style={{
-												...Styles.defaultText,
-												fontSize: 14,
-											}}
-										>
-											Активность
-										</Text>
-										<View style={{ padding: 10 }}>
-											<Icon
-												color="rgba(135, 0, 202, .1)"
-												type="ionicon"
-												onPress={() =>
-													this._removeActivity(
-														item.id,
-														goal,
-														this.uid,
-													)
-												}
-												name="md-close-circle"
-											/>
-										</View>
-									</View>
-								))
-							)}
+						<Title style={{ ...Styles.defaultText }}>
+							НАПОМИНАНИЕ:
+						</Title>
+						<View styleName="horizontal v-center h-start">
+							{_.map(goal.activityRepeat.time, item => (
+								<Title
+									style={{ ...Styles.defaultTextTitle }}
+									key={uuidv4()}
+								>{`${item}, `}</Title>
+							))}
 						</View>
 					</View>
+					<View
+						style={{
+							width: '80%',
+							flexWrap: 'wrap',
+							margin: 'auto',
+							marginVertical: 15,
+						}}
+						styleName="horizontal v-center space-between"
+					>
+						<Title style={{ ...Styles.defaultText }}>
+							НАПОМИНАНИЕ:
+						</Title>
+						<Switch
+							onTintColor="#eacbf9"
+							thumbTintColor="#8700ca"
+							tintColor="rgba(234,203,249,.7)"
+							onValueChange={value => this._toggleNotifications()}
+							value={goal.activityRepeat.reminder}
+						/>
+					</View>
+					{goal.active !== 2 && (
+						<ButtonAddActivity
+							warning
+							withIcons
+							handleClick={() => {
+								const id = uuidv4();
+								return this._addActivity(id, goal, this.uid);
+							}}
+							buttonText="ДОБАВИТЬ АКТИВНОСТЬ"
+						/>
+					)}
+
+					<View
+						styleName="vertical h-center"
+						style={{
+							paddingVertical: 10,
+							// paddingHorizontal: 15,
+							width: '100%',
+							alignItems: 'stretch',
+						}}
+					>
+						{_.isEmpty(physicalActivity) ? (
+							<Text
+								style={{
+									width: '100%',
+									textAlign: 'center',
+								}}
+							>
+								Список пуст
+							</Text>
+						) : (
+							_.map(physicalActivity, item => (
+								<View
+									key={item.id}
+									style={{
+										width: '100%',
+									}}
+									styleName="horizontal v-center space-between"
+								>
+									<DatePicker
+										style={{
+											width: '50%',
+											borderWidth: 0,
+										}}
+										date={moment(item.date)}
+										format="DD-MM-YYYY HH:mm"
+										maxDate={new Date()}
+										mode="datetime"
+										confirmBtnText="Confirm"
+										cancelBtnText="Cancel"
+										showIcon={false}
+										customStyles={{
+											dateIcon: {
+												position: 'absolute',
+												left: 0,
+												top: 4,
+												marginLeft: 0,
+											},
+											dateInput: {
+												// marginLeft: 36,
+												borderWidth: 0,
+											},
+											placeholderText: {
+												textAlign: 'right',
+												...Styles.defaultTextTitle,
+											},
+											dateText: {
+												textAlign: 'right',
+												...Styles.defaultTextTitle,
+											},
+										}}
+										onDateChange={date =>
+											this._updatePhisicalActivity(
+												item.id,
+												date,
+											)
+										}
+									/>
+									<Text
+										style={{
+											...Styles.defaultText,
+											fontSize: 14,
+										}}
+									>
+										Активность
+									</Text>
+									<View style={{ padding: 10 }}>
+										<Icon
+											color="rgba(135, 0, 202, 1)"
+											type="ionicon"
+											onPress={() =>
+												this._removeActivity(
+													item.id,
+													goal,
+													this.uid,
+												)
+											}
+											name="md-close-circle"
+										/>
+									</View>
+								</View>
+							))
+						)}
+					</View>
+					{/* </View> */}
 				</ScrollView>
 			</Screen>
 		);

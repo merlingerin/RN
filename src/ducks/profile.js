@@ -98,6 +98,11 @@ const profile = (state = initialState || {}, action) => {
 			};
 		case REMOVE_SESSION:
 			return initialState;
+		case 'LOG_IN_LOADING':
+			return {
+				...state,
+				isLoading: true,
+			};
 		default:
 			return state;
 	}
@@ -140,10 +145,10 @@ export const resetError = () => {
 };
 
 export const requestLogOut = () => async dispatch => {
-	// await fb
-	// 	.database()
-	// 	.ref(`sessions/${fb.auth().currentUser.uid}`)
-	// 	.set(null);
+	await fb
+		.database()
+		.ref(`sessions/${fb.auth().currentUser.uid}`)
+		.set(null);
 
 	await fb
 		.auth()
@@ -172,18 +177,22 @@ export const checkIsAuth = (profile, pushToken = null) => async (
 	// 	platform: Platform.OS === 'ios' ? 'ios' : 'android',
 	// 	pushToken: pushToken,
 	// };
+	const sessionId = pushToken && pushToken;
 
-	console.log('isAuth', getState().profile.isAuth);
 	if (!getState().profile.isAuth || !getState().profile.session) {
-		const sessionId = uuidv4();
 		session = {
-			sessionId: sessionId,
+			sessionId:
+				sessionId &&
+				sessionId.slice(
+					sessionId.search(/\[.+\]/) + 1,
+					sessionId.length - 1,
+				),
 			platform: Platform.OS === 'ios' ? 'ios' : 'android',
 			pushToken: pushToken,
 		};
 		await fb
 			.database()
-			.ref(`sessions/${profile.uid}/${sessionId}`)
+			.ref(`sessions/${profile.uid}/${session.sessionId}`)
 			.set(session);
 
 		dispatch(createSession(session));
@@ -236,7 +245,7 @@ export const signInWithGoogle = () => async dispatch => {
 	dispatch(fetchProfileRequest);
 	try {
 		const result = await Expo.Google.logInAsync(credential);
-		console.log('re', result);
+
 		if (result.type === 'success') {
 			const credential = await fb.auth.GoogleAuthProvider.credential(
 				result.idToken,

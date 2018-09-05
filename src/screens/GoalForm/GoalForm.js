@@ -48,7 +48,7 @@ const defaultGoal = {
 		monthDays: {},
 		id: 4,
 		reminder: false,
-		time: ['7:50'],
+		time: ['8:00'],
 		title: 'каждый день',
 	},
 	goalTitle: '',
@@ -93,7 +93,7 @@ class GoalForm extends React.Component {
 		this.setState({
 			activityRepeat: {
 				...this.state.activityRepeat,
-				time: [...this.state.activityRepeat.time, '21:12'],
+				time: [...this.state.activityRepeat.time, '20:00'],
 			},
 		});
 	};
@@ -280,7 +280,7 @@ class GoalForm extends React.Component {
 		let goal = _.omit(this.state, ['sliderValue']);
 		if (this.state.active === 2) {
 			return (
-				<Container>
+				<Container style={{ backgroundColor: 'blue' }}>
 					<Header
 						leftComponent={{
 							icon: 'navigate-before',
@@ -291,7 +291,7 @@ class GoalForm extends React.Component {
 						label={goal.goalTitle}
 					/>
 
-					<List>
+					<List style={{ backgroundColor: 'blue' }}>
 						<ListItem
 							// title="Включить достижение цели"
 							hideChevron={true}
@@ -339,15 +339,29 @@ class GoalForm extends React.Component {
 					}}
 					label={goal.goalTitle}
 				/>
-				<ScrollView>
+				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
 					<GoalsGallery
 						defaultImages={{ ...this.props.goals, ...goals }}
 						image={this.state.image}
 						getImage={this._setImage}
 					/>
-					<View style={{ paddingLeft: 10 }}>
-						<View styleName="horizontal v-center space-between">
-							<Text style={Styles.GoalForm.rowTitle}>
+					<View
+						style={
+							{
+								/**paddingLeft: 10*/
+							}
+						}
+					>
+						<View
+							styleName="horizontal v-center space-between"
+							style={{ ...Styles.borderBottom }}
+						>
+							<Text
+								style={{
+									...Styles.GoalForm.rowTitle,
+									paddingLeft: 10,
+								}}
+							>
 								КАТЕГОРИЯ ЦЕЛИ
 							</Text>
 							<CustomPicker
@@ -356,8 +370,18 @@ class GoalForm extends React.Component {
 								type="categorys"
 							/>
 						</View>
-						<View styleName="horizontal v-center space-between">
-							<Text style={Styles.GoalForm.rowTitle}>ЦЕЛЬ</Text>
+						<View
+							styleName="horizontal v-center space-between"
+							style={{ ...Styles.borderBottom }}
+						>
+							<Text
+								style={{
+									...Styles.GoalForm.rowTitle,
+									paddingLeft: 10,
+								}}
+							>
+								ЦЕЛЬ
+							</Text>
 							<GoalTitleInput
 								value={this.state.goalTitle}
 								onChangeText={text =>
@@ -365,8 +389,16 @@ class GoalForm extends React.Component {
 								}
 							/>
 						</View>
-						<View styleName="horizontal v-center space-between">
-							<Text style={Styles.GoalForm.rowTitle}>
+						<View
+							styleName="horizontal v-center space-between"
+							style={{ ...Styles.borderBottom }}
+						>
+							<Text
+								style={{
+									...Styles.GoalForm.rowTitle,
+									paddingLeft: 10,
+								}}
+							>
 								СРОК ДОСТИЖЕНИЯ
 							</Text>
 							<DeadlinePicker
@@ -374,8 +406,16 @@ class GoalForm extends React.Component {
 								onDateChange={this._onDeadlineChange}
 							/>
 						</View>
-						<View styleName="horizontal v-center space-between">
-							<Text style={Styles.GoalForm.rowTitle}>
+						<View
+							styleName="horizontal v-center space-between"
+							style={{ ...Styles.borderBottom }}
+						>
+							<Text
+								style={{
+									...Styles.GoalForm.rowTitle,
+									paddingLeft: 10,
+								}}
+							>
 								АКТИВНОСТЬ
 							</Text>
 							<View style={{ marginLeft: 'auto' }}>
@@ -400,8 +440,10 @@ class GoalForm extends React.Component {
 						)}
 						{this.state.activityRepeat.id === 4 && (
 							<View
-								styleName="horizontal v-center space-between"
-								style={{ margin: 'auto' }}
+								styleName="horizontal v-center h-center "
+								style={{
+									width: '100%',
+								}}
 							>
 								<WeekDaysSegment
 									toggleWeekButton={this.toggleWeekButton}
@@ -468,8 +510,13 @@ class GoalForm extends React.Component {
 								<View
 									styleName="horizontal v-center h-center space-between"
 									style={{
-										width: 150,
+										width: 200,
 										margin: 'auto',
+										backgroundColor: '#fff',
+										elevation: 3,
+										paddingHorizontal: 20,
+										paddingVertical: 7,
+										borderRadius: 7,
 									}}
 								>
 									<TouchableOpacity
@@ -537,6 +584,7 @@ class GoalForm extends React.Component {
 								display: 'flex',
 								flexDirection: 'column',
 								justifyContent: 'space-between',
+								alignItems: 'center',
 								padding: 10,
 							}}
 						>
@@ -552,6 +600,8 @@ class GoalForm extends React.Component {
 											backgroundColor: '#8700ca',
 											shadowColor: '#8700ca',
 											shadowRadius: 15,
+											elevation: 3,
+											borderRadius: 7,
 										}}
 										onPress={this._createNewGoal}
 									>

@@ -85,10 +85,12 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 						width: 200,
 						borderWidth: 0,
 						borderColor: '#000',
+						color: '#8700ca',
 					}}
 					itemTextStyle={{
 						fontFamily: 'MA-Regular',
-						fontSize: 14,
+						fontSize: 16,
+						color: '#8700ca',
 					}}
 					selectedValue={selected}
 					onValueChange={onValueChange}
@@ -126,17 +128,18 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 						// marginLeft: 'auto',
 						borderWidth: 0,
 						borderColor: '#000',
+						color: '#8700ca',
 					}}
 					textStyle={{
 						fontFamily: 'MA-Regular',
-						fontSize: 14,
+						fontSize: 16,
 					}}
-					itemStyle={{
-						backgroundColor: 'rgba(135, 0, 202, .1)',
-					}}
+					// itemStyle={{
+					// 	backgroundColor: 'rgba(135, 0, 202, .1)',
+					// }}
 					itemTextStyle={{
 						fontFamily: 'MA-Regular',
-						fontSize: 14,
+						fontSize: 16,
 						color: '#8700ca',
 					}}
 					selectedValue={selected}

@@ -6,7 +6,7 @@ import FeedbackScreen from '../screens/Drawer/Screens/FeedbackScreen';
 import SupportScreen from '../screens/Drawer/Screens/SupportScreen';
 import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
-import ActivityScreen from '../screens/ActivityScreen/ActivityScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 
 export const AuthDrawer = DrawerNavigator(
 	{
@@ -33,6 +33,18 @@ export const AuthDrawer = DrawerNavigator(
 		initialRouteName: 'Main',
 		drawerWidth: 300,
 		header: null,
+		contentOptions: {
+			activeBackgroundColor: 'transparent',
+			itemStyle: {
+				borderBottomWidth: 1,
+				borderBottomColor: '#dde5f5',
+			},
+			labelStyle: { fontFamily: 'M-Regular' },
+			activeTintColor: '#8700ca',
+			activeLabelStyle: {
+				fontFamily: 'MA-Regular',
+			},
+		},
 	},
 );
 

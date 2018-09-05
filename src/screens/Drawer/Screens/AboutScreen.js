@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Linking } from 'react-native';
-import { Header } from 'react-native-elements';
 import { Screen, View, Title } from '@shoutem/ui';
+import Header from '../../../components/CustomHeader/CustomHeader';
 
 class AboutScreen extends React.Component {
 	static navigationOptions = {
@@ -19,10 +19,11 @@ class AboutScreen extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
-					centerComponent={{
-						text: 'Информация о приложении',
-						style: { color: '#fff' },
-					}}
+					// centerComponent={{
+					// 	text: 'Информация о приложении',
+					// 	style: { color: '#fff' },
+					// }}
+					label="Информация о приложении"
 				/>
 				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
 					<Title>Информация о приложении</Title>

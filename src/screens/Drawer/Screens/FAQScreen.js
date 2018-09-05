@@ -1,7 +1,8 @@
 import React from 'react';
-import { Header } from 'react-native-elements';
 import { Screen, View, Title, Subtitle, Text } from '@shoutem/ui';
 import { ScrollView } from 'react-native';
+import Header from '../../../components/CustomHeader/CustomHeader';
+import Styles from '../../../styles/styles';
 
 class FAQScreen extends React.Component {
 	static navigationOptions = {
@@ -19,18 +20,29 @@ class FAQScreen extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
-					centerComponent={{
-						text: 'Ответы на часто задаваемые вопросы',
-						style: { color: '#fff' },
-					}}
+					// centerComponent={{
+					// 	text: 'Ответы на часто задаваемые вопросы',
+					// 	style: { color: '#fff' },
+					// }}
+					label="Ответы на часто задаваемые вопросы"
 				/>
-				<ScrollView>
+				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
 					<View style={{ paddingTop: 20, paddingHorizontal: 15 }}>
-						<Title styleName="vertical h-center">
-							Ответы на часто задаваемые вопросы
+						<Title
+							style={{
+								...Styles.defaultTitlePrime,
+								fontSize: 20,
+								color: '#000',
+								// paddingBottom: 20,
+							}}
+							styleName="vertical h-center"
+						>
+							{`Ответы на часто задаваемые вопросы`.toUpperCase()}
 						</Title>
-						<Subtitle>1. Как я могу поставить свою цель?</Subtitle>
-						<Text>
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`1. Как я могу поставить свою цель?`.toUpperCase()}
+						</Subtitle>
+						<Text style={Styles.defaultTextPrime}>
 							Выполните тап (однократное непродолжительное
 							нажатие) по картинке выбранной категории на
 							начальном экране. В новом окне выполните тап по
@@ -44,8 +56,10 @@ class FAQScreen extends React.Component {
 							вас на выполнение именно этой цели. Сохраните вашу
 							цель.{' '}
 						</Text>
-						<Subtitle>2. Что такое шаблоны целей?</Subtitle>
-						<Text>
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`2. Что такое шаблоны целей?`.toUpperCase()}
+						</Subtitle>
+						<Text style={Styles.defaultTextPrime}>
 							{' '}
 							Шаблоны целей упрощают процесс постановки целей. Они
 							созданы на основе наиболее распространенные целей
@@ -57,10 +71,10 @@ class FAQScreen extends React.Component {
 							активности. По желанию вы можете изменить картинку
 							цели.{' '}
 						</Text>
-						<Subtitle>
-							3. Как я могу поставить цель на основе шаблона
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`3. Как я могу поставить цель на основе шаблона`.toUpperCase()}
 						</Subtitle>
-						<Text>
+						<Text style={Styles.defaultTextPrime}>
 							{' '}
 							Чтобы добавить цель на основе шаблона, нужно
 							выполнить тап (однократное непродолжительное
@@ -73,12 +87,12 @@ class FAQScreen extends React.Component {
 							поля на свое усмотрение, установить срок достижения
 							цели, напоминания и сохранить цель.
 						</Text>
-						<Subtitle>
-							{' '}
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`{' '}`.toUpperCase()}
 							4. Как я могу поставить (изменить) напоминания для
 							цели
 						</Subtitle>
-						<Text>
+						<Text style={Styles.defaultTextPrime}>
 							{' '}
 							Для каждой цели можно настроить частоту и время
 							получения напоминаний про активность по цели в окне
@@ -89,51 +103,53 @@ class FAQScreen extends React.Component {
 							Отредактируйте поле Повторять активность Установите
 							Время напоминания для активностей. Сохраните цель.
 						</Text>
-						<Subtitle>
-							5. Как я могу посмотреть все свои активные цели
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`5. Как я могу посмотреть все свои активные цели`.toUpperCase()}
 						</Subtitle>
-						<Text>
+						<Text style={Styles.defaultTextPrime}>
 							Для того, чтобы увидеть свои цели, необходимо на
 							табе Цели открыть вкладку Мои цели. Здесь находятся
 							все цели пользователя, разбитые на категории. На
 							вкладке Архивные находятся цели, которые
 							пользователь уже достиг.
 						</Text>
-						<Subtitle>6. Что такое активность по цели</Subtitle>
-						<Text>
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`6. Что такое активность по цели`.toUpperCase()}
+						</Subtitle>
+						<Text style={Styles.defaultTextPrime}>
 							Активность по цели – это действия пользователя,
 							которые направлены на достижение цели. Активности
 							могут быть как запланированными, так и случайными,
 							т.е. пользователь может совершить действие по цели в
 							любое удобное ему время, и отметить эту активность.
 						</Text>
-						<Subtitle>
-							7. Как я могу отметить активность (действие) по цели
+						<Subtitle style={Styles.defaultTitlePrime}>
+							{`7. Как я могу отметить активность (действие) по цели`.toUpperCase()}
 						</Subtitle>
-						<Text>
+						<Text style={Styles.defaultTextPrime}>
 							Совершенные активности можно отметить любым удобным
 							способом:
-							<Text>
+							<Text style={Styles.defaultTextPrime}>
 								{'\n'}
 								1) При получении напоминания пользователь может
 								сразу отметить активность (по текущему времени)
 								или отложить напоминание на заранее настроенный
 								период отсрочки .
 							</Text>
-							<Text>
+							<Text style={Styles.defaultTextPrime}>
 								{'\n'}
 								2) С главного экрана приложения пользователь
 								может отметить активность по выбранной цели. Для
 								этого нужно выполнить клик по значку на картинке
 								цели.
 							</Text>
-							<Text>
+							<Text style={Styles.defaultTextPrime}>
 								{'\n'}
 								3) В самой карточке цели пользователь может
 								отметить активность, кликнув по кнопке
 								добавления активности.{' '}
 							</Text>
-							<Text>
+							<Text style={Styles.defaultTextPrime}>
 								{'\n'}
 								При записи активности любым из представленных
 								здесь способов, запись о ней добавляется в
