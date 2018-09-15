@@ -26,5 +26,6 @@ export default () => {
 		composeWithDevTools(applyMiddleware(...middlewares)),
 	);
 	const persistor = persistStore(store);
+	// persistor.purge();
 	return { store, persistor };
 };

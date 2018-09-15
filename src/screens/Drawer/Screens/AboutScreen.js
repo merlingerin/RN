@@ -27,15 +27,12 @@ class AboutScreen extends React.Component {
 				/>
 				<View styleName="vertical h-center" style={{ paddingTop: 20 }}>
 					<Title>Информация о приложении</Title>
-					<Title>
-						e-mail:{' '}
-						<Button
-							onPress={() =>
-								Linking.openURL('mailto:mobile4profi@gmail.com')
-							}
-							title="mobile4profi@gmail.com"
-						/>
-					</Title>
+					<Title>e-mail: </Title>
+					<Button
+						style={{ backgroundColor: '#8300ca', fontFamily: 'M-Regular', borderWidth: 0 }}
+						onPress={() => Linking.openURL('mailto:mobile4profi@gmail.com')}
+						title="mobile4profi@gmail.com"
+					/>
 				</View>
 			</Screen>
 		);

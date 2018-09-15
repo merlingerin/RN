@@ -2,13 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import { fb } from '../../services/api';
-import {
-	addActivity,
-	removeActivity,
-	toggleNotification,
-	changeGoalActive,
-	removeGoal,
-} from '../../ducks/goalsOffline';
+import { addActivity, removeActivity, toggleNotification, changeGoalActive, removeGoal } from '../../ducks/goalsOffline';
 
 import uuidv4 from 'uuid/v4';
 import { connect } from 'react-redux';
@@ -19,12 +13,7 @@ import Styles from '../../styles/styles';
 // ============================================================
 import { activityRepeatDaysParser } from '../../utils/parsers';
 
-import {
-	signInWithGoogle,
-	authWithEmail,
-	requestLogOut,
-	resetError,
-} from '../../ducks/profile';
+import { signInWithGoogle, authWithEmail, requestLogOut, resetError } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
 import { Icon, Text, CheckBox, Avatar } from 'react-native-elements';
 import { Screen, View, Image, Title, Heading } from '@shoutem/ui';
@@ -98,12 +87,7 @@ class ActivityScreen extends React.Component {
 		if (id === 4) {
 			return _.map(weekDays, id => {
 				const day = activityRepeatDaysParser(id);
-				return (
-					<Title
-						style={{ ...Styles.defaultTextTitle }}
-						key={day.id}
-					>{`${day.title}, `}</Title>
-				);
+				return <Title style={{ ...Styles.defaultTextTitle }} key={day.id}>{`${day.title}, `}</Title>;
 			});
 		}
 		if (id === 5) {
@@ -112,12 +96,7 @@ class ActivityScreen extends React.Component {
 			}
 			return _.map(monthDays, item => {
 				const { dayNumber } = item;
-				return (
-					<Title
-						style={{ ...Styles.defaultTextTitle }}
-						key={dayNumber}
-					>{`${dayNumber}, `}</Title>
-				);
+				return <Title style={{ ...Styles.defaultTextTitle }} key={dayNumber}>{`${dayNumber}, `}</Title>;
 			});
 		}
 
@@ -138,8 +117,7 @@ class ActivityScreen extends React.Component {
 						rightComponent={{
 							icon: 'home',
 							color: '#fff',
-							onPress: () =>
-								this.props.navigation.navigate('HomeScreen'),
+							onPress: () => this.props.navigation.navigate('HomeScreen'),
 						}}
 					/>
 					<Heading>Вы не авторизированы</Heading>
@@ -159,8 +137,7 @@ class ActivityScreen extends React.Component {
 						rightComponent={{
 							icon: 'home',
 							color: '#fff',
-							onPress: () =>
-								this.props.navigation.navigate('HomeScreen'),
+							onPress: () => this.props.navigation.navigate('HomeScreen'),
 						}}
 					/>
 				</Screen>
@@ -185,12 +162,7 @@ class ActivityScreen extends React.Component {
 			);
 		}
 
-		let BUTTONS = [
-			goal.active !== 1 ? 'Возобновить' : 'Приостановить',
-			'Достигнуть',
-			'Удалить',
-			'Отмена',
-		];
+		let BUTTONS = [goal.active !== 1 ? 'Возобновить' : 'Приостановить', 'Достигнуть', 'Удалить', 'Отмена'];
 		let DESTRUCTIVE_INDEX = 2;
 		let CANCEL_INDEX = 3;
 		if (goal.active === 2) {
@@ -225,10 +197,7 @@ class ActivityScreen extends React.Component {
 								// title: 'Изменить',
 							},
 							buttonIndex => {
-								if (
-									buttonIndex === 0 &&
-									(goal.active === 0 || goal.active === 2)
-								) {
+								if (buttonIndex === 0 && (goal.active === 0 || goal.active === 2)) {
 									this._startGoal(goal.id);
 								}
 								if (buttonIndex === 0 && goal.active === 1) {
@@ -249,8 +218,7 @@ class ActivityScreen extends React.Component {
 											},
 											{
 												text: 'Да',
-												onPress: () =>
-													this._deleteGoal(goal.id),
+												onPress: () => this._deleteGoal(goal.id),
 											},
 										],
 										{ cancelable: false },
@@ -267,8 +235,7 @@ class ActivityScreen extends React.Component {
 											},
 											{
 												text: 'Да',
-												onPress: () =>
-													this._deleteGoal(goal.id),
+												onPress: () => this._deleteGoal(goal.id),
 											},
 										],
 										{ cancelable: false },
@@ -289,16 +256,9 @@ class ActivityScreen extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
-					label={
-						goal.goalTitle.length > 20
-							? `${goal.goalTitle.slice(0, 20)}...`
-							: goal.goalTitle
-					}
+					label={goal.goalTitle.length > 20 ? `${goal.goalTitle.slice(0, 20)}...` : goal.goalTitle}
 					centerComponent={{
-						text:
-							goal.goalTitle.length > 20
-								? `${goal.goalTitle.slice(0, 20)}...`
-								: goal.goalTitle,
+						text: goal.goalTitle.length > 20 ? `${goal.goalTitle.slice(0, 20)}...` : goal.goalTitle,
 						style: { color: '#fff' },
 					}}
 					rightComponent={<RightComponent />}
@@ -311,12 +271,7 @@ class ActivityScreen extends React.Component {
 							source={
 								goal.image
 									? {
-											uri:
-												goal.image.indexOf('http') > -1
-													? goal.image
-													: `data:image/jpeg;base64,${
-															goal.image
-													  }`,
+											uri: goal.image.indexOf('http') > -1 ? goal.image : `data:image/jpeg;base64,${goal.image}`,
 									  }
 									: require('../../../assets/images/image-3.png')
 							}
@@ -364,8 +319,7 @@ class ActivityScreen extends React.Component {
 												},
 												{
 													text: ' Подтверждаю',
-													onPress: () =>
-														this._finishedGoal(),
+													onPress: () => this._finishedGoal(),
 												},
 											],
 											{ cancelable: false },
@@ -381,8 +335,7 @@ class ActivityScreen extends React.Component {
 											},
 											{
 												text: 'Да',
-												onPress: () =>
-													this._startGoal(goal.id),
+												onPress: () => this._startGoal(goal.id),
 											},
 										],
 										{ cancelable: false },
@@ -448,12 +401,8 @@ class ActivityScreen extends React.Component {
 							}}
 							styleName="horizontal v-center space-between"
 						>
-							<Title style={{ ...Styles.defaultText }}>
-								ДАТА СОЗДАНИЯ ЦЕЛИ:
-							</Title>
-							<Title style={{ ...Styles.defaultTextTitle }}>
-								{moment(goal.timestamp).format('DD.MM.YYYY')}
-							</Title>
+							<Title style={{ ...Styles.defaultText }}>ДАТА СОЗДАНИЯ ЦЕЛИ:</Title>
+							<Title style={{ ...Styles.defaultTextTitle }}>{moment(goal.timestamp).format('DD.MM.YYYY')}</Title>
 						</View>
 						<View
 							style={{
@@ -471,9 +420,7 @@ class ActivityScreen extends React.Component {
 							>
 								СРОК ДОСТЖЕНИЯ ЦЕЛИ:
 							</Title>
-							<Title style={{ ...Styles.defaultTextTitle }}>
-								{moment(goal.deadline).format('DD.MM.YYYY')}
-							</Title>
+							<Title style={{ ...Styles.defaultTextTitle }}>{moment(goal.deadline).format('DD.MM.YYYY')}</Title>
 						</View>
 					</View>
 					{/* <View
@@ -500,14 +447,10 @@ class ActivityScreen extends React.Component {
 						>
 							АКТИВНОСТИ
 						</Title>
-						<Title style={{ ...Styles.defaultTextTitle }}>
-							{goal.activityRepeat.title}
-						</Title>
+						<Title style={{ ...Styles.defaultTextTitle }}>{goal.activityRepeat.title}</Title>
 					</View>
-					{(goal.activityRepeat.id === 4 ||
-						goal.activityRepeat.id === 5) &&
-						(!_.isEmpty(goal.activityRepeat.weekDays) ||
-							!_.isEmpty(goal.activityRepeat.monthDays)) && (
+					{(goal.activityRepeat.id === 4 || goal.activityRepeat.id === 5) &&
+						(!_.isEmpty(goal.activityRepeat.weekDays) || !_.isEmpty(goal.activityRepeat.monthDays)) && (
 							<View
 								styleName="horizontal v-center space-between"
 								style={{
@@ -518,56 +461,50 @@ class ActivityScreen extends React.Component {
 									paddingHorizontal: 15,
 								}}
 							>
-								<Title style={{ ...Styles.defaultText }}>
-									ДНИ:
-								</Title>
-								<View styleName="horizontal v-center h-start">
-									{this._renderDays()}
-								</View>
+								<Title style={{ ...Styles.defaultText }}>ДНИ:</Title>
+								<View styleName="horizontal v-center h-start">{this._renderDays()}</View>
 							</View>
 						)}
-					<View
-						styleName="horizontal v-center space-between"
-						style={{
-							width: '100%',
-							flexWrap: 'wrap',
-							...Styles.borderBottom,
-							paddingVertical: 10,
-							paddingHorizontal: 15,
-						}}
-					>
-						<Title style={{ ...Styles.defaultText }}>
-							НАПОМИНАНИЕ:
-						</Title>
-						<View styleName="horizontal v-center h-start">
-							{_.map(goal.activityRepeat.time, item => (
-								<Title
-									style={{ ...Styles.defaultTextTitle }}
-									key={uuidv4()}
-								>{`${item}, `}</Title>
-							))}
-						</View>
-					</View>
-					<View
-						style={{
-							width: '80%',
-							flexWrap: 'wrap',
-							margin: 'auto',
-							marginVertical: 15,
-						}}
-						styleName="horizontal v-center space-between"
-					>
-						<Title style={{ ...Styles.defaultText }}>
-							НАПОМИНАНИЕ:
-						</Title>
-						<Switch
-							onTintColor="#eacbf9"
-							thumbTintColor="#8700ca"
-							tintColor="rgba(234,203,249,.7)"
-							onValueChange={value => this._toggleNotifications()}
-							value={goal.activityRepeat.reminder}
-						/>
-					</View>
+					{goal.activityRepeat.id !== 0 && (
+						<React.Fragment>
+							<View
+								styleName="horizontal v-center space-between"
+								style={{
+									width: '100%',
+									flexWrap: 'wrap',
+									...Styles.borderBottom,
+									paddingVertical: 10,
+									paddingHorizontal: 15,
+								}}
+							>
+								<Title style={{ ...Styles.defaultText }}>НАПОМИНАНИЕ:</Title>
+								<View styleName="horizontal v-center h-start">
+									{_.map(goal.activityRepeat.time, item => (
+										<Title style={{ ...Styles.defaultTextTitle }} key={uuidv4()}>{`${item}, `}</Title>
+									))}
+								</View>
+							</View>
+
+							<View
+								style={{
+									width: '80%',
+									flexWrap: 'wrap',
+									margin: 'auto',
+									marginVertical: 15,
+								}}
+								styleName="horizontal v-center space-between"
+							>
+								<Title style={{ ...Styles.defaultText }}>НАПОМИНАНИЕ:</Title>
+								<Switch
+									onTintColor="#eacbf9"
+									thumbTintColor="#8700ca"
+									tintColor="rgba(234,203,249,.7)"
+									onValueChange={value => this._toggleNotifications()}
+									value={goal.activityRepeat.reminder}
+								/>
+							</View>
+						</React.Fragment>
+					)}
 					{goal.active !== 2 && (
 						<ButtonAddActivity
 							warning
@@ -639,12 +576,7 @@ class ActivityScreen extends React.Component {
 												...Styles.defaultTextTitle,
 											},
 										}}
-										onDateChange={date =>
-											this._updatePhisicalActivity(
-												item.id,
-												date,
-											)
-										}
+										onDateChange={date => this._updatePhisicalActivity(item.id, date)}
 									/>
 									<Text
 										style={{
@@ -655,18 +587,7 @@ class ActivityScreen extends React.Component {
 										Активность
 									</Text>
 									<View style={{ padding: 10 }}>
-										<Icon
-											color="rgba(135, 0, 202, 1)"
-											type="ionicon"
-											onPress={() =>
-												this._removeActivity(
-													item.id,
-													goal,
-													this.uid,
-												)
-											}
-											name="md-close-circle"
-										/>
+										<Icon color="rgba(135, 0, 202, 1)" type="ionicon" onPress={() => this._removeActivity(item.id, goal, this.uid)} name="md-close-circle" />
 									</View>
 								</View>
 							))
@@ -680,9 +601,7 @@ class ActivityScreen extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-	goal: ownProps.navigation.getParam('goal')
-		? state.goalsOffline[ownProps.navigation.getParam('goal').id]
-		: null,
+	goal: ownProps.navigation.getParam('goal') ? state.goalsOffline[ownProps.navigation.getParam('goal').id] : null,
 	isAuth: state.profile.isAuth,
 	loading: state.loader.isShown,
 });

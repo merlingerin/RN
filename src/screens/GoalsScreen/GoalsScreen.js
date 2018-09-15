@@ -95,8 +95,7 @@ class GoalsScreen extends React.Component {
 							icon: 'menu',
 							color: '#fff',
 							underlayColor: 'transparent',
-							onPress: () =>
-								this.props.navigation.navigate('DrawerOpen'),
+							onPress: () => this.props.navigation.navigate('DrawerOpen'),
 						}}
 						centerComponent={{
 							text: 'Активность',
@@ -105,8 +104,7 @@ class GoalsScreen extends React.Component {
 						rightComponent={{
 							icon: 'home',
 							color: '#fff',
-							onPress: () =>
-								this.props.navigation.navigate('HomeScreen'),
+							onPress: () => this.props.navigation.navigate('HomeScreen'),
 						}}
 					/>
 					<Heading>Вы не авторизированы</Heading>
@@ -115,36 +113,19 @@ class GoalsScreen extends React.Component {
 		}
 		return (
 			<Container>
-				<LinearGradient
-					style={{ flex: 1 }}
-					colors={['#ffffff', '#edf3ff', '#edf3ff']}
-				>
+				<LinearGradient style={{ flex: 1 }} colors={['#ffffff', '#edf3ff', '#edf3ff']}>
 					<Header
 						leftComponent={{
 							icon: 'menu',
 							color: '#fff',
 							underlayColor: 'transparent',
-							onPress: () =>
-								this.props.navigation.navigate('DrawerOpen'),
+							onPress: () => this.props.navigation.navigate('DrawerOpen'),
 						}}
 						label={'Цели'}
 						rightComponent={
 							isAuth && profile.userPhoto ? (
-								<Animatable.View
-									animation="zoomIn"
-									easing="ease-out"
-								>
-									<Avatar
-										small
-										rounded
-										source={{ uri: profile.userPhoto }}
-										onPress={() =>
-											this.props.navigation.navigate(
-												'ProfileScreen',
-											)
-										}
-										activeOpacity={0.7}
-									/>
+								<Animatable.View animation="zoomIn" easing="ease-out">
+									<Avatar small rounded source={{ uri: profile.userPhoto }} onPress={() => this.props.navigation.navigate('ProfileScreen')} activeOpacity={0.7} />
 								</Animatable.View>
 							) : (
 								{
@@ -153,10 +134,7 @@ class GoalsScreen extends React.Component {
 									color: '#fff',
 									underlayColor: '#fff',
 									reverseColor: '#8700ca',
-									onPress: () =>
-										this.props.navigation.navigate(
-											'ProfileScreen',
-										),
+									onPress: () => this.props.navigation.navigate('ProfileScreen'),
 								}
 							)
 						}
@@ -170,11 +148,7 @@ class GoalsScreen extends React.Component {
 							shadowRadius: 30,
 							elevation: 5,
 						}}
-						onPress={() =>
-							this.props.isAuth
-								? this.props.navigation.navigate('GoalForm')
-								: false
-						}
+						onPress={() => (this.props.isAuth ? this.props.navigation.navigate('GoalForm') : false)}
 					>
 						<Text
 							style={{
@@ -201,7 +175,7 @@ class GoalsScreen extends React.Component {
 					<ScrollView
 						style={{
 							paddingHorizontal: 10,
-							paddingVertical: 20,
+							paddingBottom: 250,
 							backgroundColor: 'transparent',
 						}}
 						ref={scroller => (this.scroller = scroller)}
@@ -211,7 +185,7 @@ class GoalsScreen extends React.Component {
 							selectedIndex={selectedFilter}
 							buttons={buttons}
 							containerStyle={{
-								marginTop: 15,
+								marginTop: 50,
 								shadowColor: '#8700ca',
 								shadowOffset: { width: 10, height: 10 },
 								shadowOpacity: 0.7,
@@ -241,9 +215,7 @@ class GoalsScreen extends React.Component {
 							goals={this.renderedGoals(selectedFilter)}
 							categorys={this.props.categorys}
 							isAuth={this.props.isAuth}
-							activeCategoryID={this.props.navigation.getParam(
-								'categoryId',
-							)}
+							activeCategoryID={this.props.navigation.getParam('categoryId')}
 						/>
 					</ScrollView>
 					{/* <Fab

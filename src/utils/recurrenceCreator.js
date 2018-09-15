@@ -1,6 +1,102 @@
 import { RRule, RRuleSet, rrulestr } from 'rrule';
 import _ from 'lodash';
 
+// CRON
+// ============================================================
+// ============================================================
+export const cronTimeParser = activityRepeat => {
+	if (!activityRepeat || _.isEmpty(activityRepeat)) return null;
+
+	let cronConfigModel = {
+		seconds: '*',
+		minutes: '*',
+		hours: '*',
+		dayOfMonth: '*',
+		month: '*',
+		weekDays: '*',
+	};
+
+	const getTimes = times => {
+		if (!times || _.isEmpty(times))
+			return {
+				seconds: '*',
+				minutes: '*',
+				hours: '*',
+			};
+
+		const cronMinutes = _.map(times, item => {
+			const minutes = parseInt(item.split(':')[1]);
+			return minutes;
+		});
+
+		const cronHours = _.map(times, item => {
+			const hours = parseInt(item.split(':')[0]);
+			return hours;
+		});
+
+		return {
+			seconds: '0',
+			minutes: cronMinutes ? cronMinutes.join(',') : '0',
+			hours: cronHours ? cronHours.join(',') : '0',
+		};
+	};
+
+	const getDayOfMonth = days => {
+		if (!days || _.isEmpty(days))
+			return {
+				dayOfMonth: '*',
+			};
+
+		const dayOfMonth = _.map(days, day => day.dayNumber);
+		return { dayOfMonth: dayOfMonth.join(',') };
+	};
+
+	const getDaysOfWeek = weekDays => {
+		if (!weekDays || _.isEmpty(weekDays))
+			return {
+				weekDays: '*',
+			};
+
+		const dayOfWeeks = _.map(weekDays, value => value);
+		return { weekDays: dayOfWeeks.join(',') };
+	};
+
+	//Every Day
+	if (activityRepeat.id === 1) {
+		const times = getTimes(activityRepeat.time);
+
+		return (cronConfig = {
+			...cronConfigModel,
+			...times,
+		});
+	}
+
+	// Every week
+	if (activityRepeat.id === 4) {
+		const times = getTimes(activityRepeat.time);
+		const daysOfWeek = getDaysOfWeek(activityRepeat.weekDays);
+		return (cronConfig = {
+			...cronConfigModel,
+			...times,
+			...daysOfWeek,
+		});
+	}
+
+	// Every Month
+	if (activityRepeat.id === 5) {
+		const times = getTimes(activityRepeat.time);
+		const dayOfMonth = getDayOfMonth(activityRepeat.monthDays);
+		return (cronConfig = {
+			...cronConfigModel,
+			...times,
+			...dayOfMonth,
+		});
+	}
+};
+
+// RRULE
+// ============================================================
+// ============================================================
 const freqParser = freqID => {
 	switch (freqID) {
 		case 0:
@@ -21,15 +117,16 @@ const freqParser = freqID => {
 };
 
 export const byweekdayParser = weekDaysID => {
-	const weekDaysSchema = [
-		RRule.MO,
-		RRule.TU,
-		RRule.WE,
-		RRule.TH,
-		RRule.FR,
-		RRule.SA,
-		RRule.SU,
-	];
+	// const weekDaysSchema = [
+	// 	RRule.MO,
+	// 	RRule.TU,
+	// 	RRule.WE,
+	// 	RRule.TH,
+	// 	RRule.FR,
+	// 	RRule.SA,
+	// 	RRule.SU,
+	// ];
+	const weekDaysSchema = [1, 2, 3, 4, 5, 6, 0];
 	if (!weekDaysID || _.isEmpty(weekDaysID)) return RRule.MO;
 	let weekDays = _.map(weekDaysID, day => {
 		return weekDaysSchema[day];

@@ -10,6 +10,7 @@ import ActivityScreen from '../screens/ActivityScreen/ActivityScreen';
 import GoalsScreen from '../screens/GoalsScreen/GoalsScreen';
 import StatisticScreen from '../screens/StatisticScreen/StatisticScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import SignInScreen from '../screens/SignInScreen/SignInScreen';
 
 export default TabNavigator(
 	{
@@ -36,55 +37,21 @@ export default TabNavigator(
 				let iconName;
 				switch (routeName) {
 					case 'HomeScreen':
-						iconName =
-							Platform.OS === 'ios'
-								? `ios-map${focused ? '-outline' : '-outline'}`
-								: `ios-map${focused ? '-outline' : '-outline'}`;
+						iconName = Platform.OS === 'ios' ? `ios-map${focused ? '-outline' : '-outline'}` : `ios-map${focused ? '-outline' : '-outline'}`;
 						break;
 					case 'GoalsScreen':
-						iconName =
-							Platform.OS === 'ios'
-								? `ios-list-box${
-										focused ? '-outline' : '-outline'
-								  }`
-								: `ios-list-box${
-										focused ? '-outline' : '-outline'
-								  }`;
+						iconName = Platform.OS === 'ios' ? `ios-list-box${focused ? '-outline' : '-outline'}` : `ios-list-box${focused ? '-outline' : '-outline'}`;
 						break;
 					case 'ActivityScreen':
-						iconName =
-							Platform.OS === 'ios'
-								? `ios-calendar${focused ? '' : '-outline'}`
-								: 'ios-calendar';
+						iconName = Platform.OS === 'ios' ? `ios-calendar${focused ? '' : '-outline'}` : 'ios-calendar';
 						break;
 					case 'ProfileScreen':
-						iconName =
-							Platform.OS === 'ios'
-								? `ios-contact${
-										focused ? '-outline' : '-outline'
-								  }`
-								: `ios-contact${
-										focused ? '-outline' : '-outline'
-								  }`;
+						iconName = Platform.OS === 'ios' ? `ios-contact${focused ? '-outline' : '-outline'}` : `ios-contact${focused ? '-outline' : '-outline'}`;
 						break;
 					case 'StatisticScreen':
-						iconName =
-							Platform.OS === 'ios'
-								? `ios-stats${focused ? '' : '-outline'}`
-								: 'ios-stats';
+						iconName = Platform.OS === 'ios' ? `ios-stats${focused ? '' : '-outline'}` : 'ios-stats';
 				}
-				return (
-					<Ionicons
-						name={iconName}
-						size={30}
-						style={{ marginBottom: -3, width: 25 }}
-						color={
-							focused
-								? Colors.tabIconSelected
-								: Colors.tabIconDefault
-						}
-					/>
-				);
+				return <Ionicons name={iconName} size={30} style={{ marginBottom: -3, width: 25 }} color={focused ? Colors.tabIconSelected : Colors.tabIconDefault} />;
 			},
 		}),
 		tabBarComponent: TabBarBottom,

@@ -1,18 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
 import { fb } from '../../services/api';
+import { LinearGradient, Notifications } from 'expo';
 import { Dimensions, ListView } from 'react-native';
 import { connect } from 'react-redux';
-import {
-	signInWithGoogle,
-	authWithEmail,
-	requestLogOut,
-	resetError,
-} from '../../ducks/profile';
+import { signInWithGoogle, authWithEmail, requestLogOut, resetError } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
 import { Icon, Avatar } from 'react-native-elements';
 import { Screen, View, Image, Title, Text, Heading } from '@shoutem/ui';
-import { Form, Button, Item, Label, Input } from 'native-base';
+import { Form, Button, Item, Label, Input, Icon as NativeIcon } from 'native-base';
 import Styles from '../../styles/styles';
 
 const styles = {
@@ -117,66 +113,33 @@ class ProfileScreen extends React.Component {
 		// 		this.state.authorization.password,
 		// 	);
 		// }
-		this.props.authWithEmail(
-			this.state.authorization.email,
-			this.state.authorization.password,
-		);
+		this.props.authWithEmail(this.state.authorization.email, this.state.authorization.password);
 	};
 
 	render() {
-		const {
-			goals,
-			isAuth,
-			profile,
-			signInWithGoogle,
-			authWithEmail,
-		} = this.props;
+		const { goals, isAuth, profile, signInWithGoogle, authWithEmail } = this.props;
 
 		const activeGoals = _.filter(goals, item => {
 			return item.defaultGoal !== true && item.active === 1;
 		});
 
 		const sport = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 5 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 5 && item.defaultGoal !== true && item.active === 1;
 		});
 		const finance = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 1 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 1 && item.defaultGoal !== true && item.active === 1;
 		});
 		const careare = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 3 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 3 && item.defaultGoal !== true && item.active === 1;
 		});
 		const enviroment = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 4 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 4 && item.defaultGoal !== true && item.active === 1;
 		});
 		const selfExpression = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 0 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 0 && item.defaultGoal !== true && item.active === 1;
 		});
 		const family = _.filter(goals, item => {
-			return (
-				item.goalCategory.categoryId === 2 &&
-				item.defaultGoal !== true &&
-				item.active === 1
-			);
+			return item.goalCategory.categoryId === 2 && item.defaultGoal !== true && item.active === 1;
 		});
 
 		const RenderListRow = ({ leftText, rightText, customStyles }) => {
@@ -191,13 +154,9 @@ class ProfileScreen extends React.Component {
 					}}
 					styleName="horizontal v-center space-between"
 				>
-					<Title style={styles.listDefaultText}>
-						{leftText && leftText.toUpperCase()}
-					</Title>
+					<Title style={styles.listDefaultText}>{leftText && leftText.toUpperCase()}</Title>
 					<View style={styles.listDefaultTextDecorator}>
-						<Title style={styles.listDefaultText}>
-							{rightText}
-						</Title>
+						<Title style={styles.listDefaultText}>{rightText}</Title>
 					</View>
 				</View>
 			);
@@ -206,91 +165,156 @@ class ProfileScreen extends React.Component {
 		if (!this.props.isAuth) {
 			return (
 				<Screen styleName="paper">
-					<Header
-						centerComponent={{
-							text: 'Авторизация',
-							style: { color: '#fff' },
-						}}
-						rightComponent={{
-							icon: 'home',
-							color: '#fff',
-							onPress: () =>
-								this.props.navigation.navigate('HomeScreen'),
-						}}
-					/>
-					<Form style={{ zIndex: 9999 }}>
-						<Item floatingLabel error={this.props.isError}>
-							<Label>Email</Label>
-							<Input
-								autoCapitalize="none"
-								autoCorrect={false}
-								onChangeText={this._handleInputEmail}
-								value={this.state.authorization.email}
-							/>
-						</Item>
-						<Text
-							style={{
-								paddingLeft: 15,
-								paddingRight: 15,
-								color: 'red',
+					<LinearGradient style={{ flex: 1 }} colors={['#ffffff', '#edf3ff', '#edf3ff']}>
+						<Header
+							// centerComponent={{
+							// 	text: 'Авторизация',
+							// 	style: { color: '#8700ca' },
+							// }}
+							leftComponent={{
+								icon: 'home',
+								color: '#ffffff',
+								onPress: () => this.props.navigation.navigate('HomeScreen'),
 							}}
-						>
-							{this.props.isError && this.props.error
-								? this.props.error.message
-								: ''}
-						</Text>
-						<Item floatingLabel error={this.props.isError}>
-							<Label>Password</Label>
-							<Input
-								autoCapitalize="none"
-								autoCorrect={false}
-								onChangeText={this._handleInputPassword}
-								value={this.state.authorization.password}
-							/>
-						</Item>
-						<View
-							style={{
-								paddingTop: 10,
-								width: '90%',
-								height: 150,
-							}}
-							styleName="vertical h-center center"
-						>
-							<Button
-								success
-								block
-								style={styles.button}
-								onPress={this._handleAuthorization}
-							>
-								<Text style={styles.buttonText}> Log In </Text>
-							</Button>
-							<Button
-								primary
-								block
-								style={styles.button}
-								onPress={() =>
-									this.props.navigation.navigate(
-										'SignInScreen',
-									)
-								}
-							>
-								<Text style={styles.buttonText}> Sign Up </Text>
-							</Button>
-						</View>
-					</Form>
-					<View
-						styleName="vertical h-center v-center"
-						style={{ paddingTop: 10, zIndex: 999999 }}
-					>
-						<Icon
-							style={{ marginTop: 40 }}
-							raised
-							name="google-plus"
-							type="font-awesome"
-							color="#f50"
-							onPress={signInWithGoogle}
 						/>
-					</View>
+						{/* <View styleName="horizontal h-start v-center" style={{ paddingHorizontal: 20, height: 70 }}>
+							<Icon name="home" color="#8700ca" onPress={() => this.props.navigation.navigate('HomeScreen')} />
+						</View> */}
+						<View styleName="vertical h-center v-center">
+							<Title style={{ fontFamily: 'MA-Regular', fontSize: 42, lineHeight: 46, color: '#8700ca' }}>Вход</Title>
+							<Text style={{ fontFamily: 'MA-Regular', fontSize: 17, color: '#000000' }}>Добро пожаловать в Цели!</Text>
+						</View>
+						<Form style={{ zIndex: 9999 }}>
+							<Item floatingLabel error={this.props.isError}>
+								<NativeIcon active name="md-person" style={{ fontSize: 14, color: '#8700ca' }} />
+								<Label
+									style={{
+										fontFamily: 'MA-Regular',
+									}}
+								>
+									Email
+								</Label>
+								<Input
+									style={{
+										color: 'rgba(135, 0, 202, 1)',
+										fontSize: 16,
+										lineHeight: 16,
+										fontFamily: 'MA-Regular',
+									}}
+									returnKeyType={'done'}
+									autoCapitalize="none"
+									autoCorrect={false}
+									onChangeText={this._handleInputEmail}
+									value={this.state.authorization.email}
+								/>
+							</Item>
+							<Text
+								style={{
+									paddingLeft: 15,
+									paddingRight: 15,
+									color: 'red',
+								}}
+							>
+								{this.props.isError && this.props.error ? this.props.error.message : ''}
+							</Text>
+							<Item floatingLabel error={this.props.isError}>
+								<NativeIcon active name="md-lock" style={{ fontSize: 14, color: '#8700ca' }} />
+								<Label
+									style={{
+										fontFamily: 'MA-Regular',
+									}}
+								>
+									Пароль
+								</Label>
+								<Input
+									style={{
+										color: 'rgba(135, 0, 202, 1)',
+										fontSize: 16,
+										lineHeight: 16,
+										fontFamily: 'MA-Regular',
+									}}
+									returnKeyType={'done'}
+									autoCapitalize="none"
+									autoCorrect={false}
+									onChangeText={this._handleInputPassword}
+									value={this.state.authorization.password}
+								/>
+							</Item>
+							<View
+								style={{
+									paddingTop: 10,
+									width: '90%',
+									// height: 350,
+								}}
+								styleName="vertical h-center center"
+							>
+								<Button
+									error
+									block
+									style={{
+										width: '80%',
+										alignSelf: 'center',
+										marginVertical: 10,
+										backgroundColor: '#8700ca',
+										shadowColor: '#8700ca',
+										shadowRadius: 15,
+										elevation: 3,
+										borderRadius: 7,
+									}}
+									onPress={this._handleAuthorization}
+								>
+									<Text style={styles.buttonText}> ВОЙТИ </Text>
+								</Button>
+								<Button
+									error
+									block
+									style={{
+										width: '80%',
+										alignSelf: 'center',
+										marginVertical: 10,
+										backgroundColor: 'transparent',
+										borderWidth: 1,
+										borderColor: '#8700ca',
+										shadowColor: '#8700ca',
+										shadowRadius: 15,
+										elevation: 3,
+										borderRadius: 7,
+									}}
+									onPress={() => this.props.navigation.navigate('SignInScreen')}
+								>
+									<Text style={{ ...styles.buttonText, color: '#8700ca' }}> РЕГИСТРАЦИЯ </Text>
+								</Button>
+								<Button
+									style={{
+										width: '80%',
+										alignSelf: 'center',
+										marginVertical: 10,
+										backgroundColor: '#f34a38',
+										shadowColor: '#f34a38',
+										shadowRadius: 15,
+										elevation: 3,
+										borderRadius: 7,
+										paddingHorizontal: 25,
+									}}
+									onPress={signInWithGoogle}
+									iconRight
+								>
+									<Text style={{ ...styles.buttonText, color: '#ffffff' }}> ВОЙТИ С ПОМОЩЬЮ </Text>
+									<NativeIcon active name="logo-googleplus" style={{ color: '#ffffff' }} />
+								</Button>
+								{/* <Button success block style={styles.button} onPress={this._handleAuthorization}>
+									<Text style={styles.buttonText}> Log In </Text>
+								</Button>
+								<Button primary block style={styles.button} onPress={() => this.props.navigation.navigate('SignInScreen')}>
+									<Text style={styles.buttonText}> Sign Up </Text>
+								</Button>*/}
+							</View>
+						</Form>
+
+						{/* <View styleName="vertical h-center v-center" style={{ paddingTop: 10, zIndex: 999999 }}>
+							<Icon style={{ marginTop: 40 }} raised name="google-plus" type="font-awesome" color="#f50" onPress={signInWithGoogle} />
+						</View> */}
+					</LinearGradient>
 				</Screen>
 			);
 		}
@@ -301,8 +325,7 @@ class ProfileScreen extends React.Component {
 						icon: 'menu',
 						color: '#fff',
 						underlayColor: 'transparent',
-						onPress: () =>
-							this.props.navigation.navigate('DrawerOpen'),
+						onPress: () => this.props.navigation.navigate('DrawerOpen'),
 					}}
 					centerComponent={{
 						text: 'Профиль',
@@ -311,8 +334,7 @@ class ProfileScreen extends React.Component {
 					rightComponent={{
 						icon: 'home',
 						color: '#fff',
-						onPress: () =>
-							this.props.navigation.navigate('HomeScreen'),
+						onPress: () => this.props.navigation.navigate('HomeScreen'),
 					}}
 				/>
 				<View
@@ -412,26 +434,11 @@ class ProfileScreen extends React.Component {
 							borderTopColor: '#dde5f5',
 						}}
 					/>
-					<RenderListRow
-						leftText="Карьера / Развитие"
-						rightText={_.values(careare).length}
-					/>
-					<RenderListRow
-						leftText="Семья"
-						rightText={_.values(family).length}
-					/>
-					<RenderListRow
-						leftText="Финансы"
-						rightText={_.values(finance).length}
-					/>
-					<RenderListRow
-						leftText="Окружение / Друзья"
-						rightText={_.values(enviroment).length}
-					/>
-					<RenderListRow
-						leftText="Энергия / Отдых"
-						rightText={_.values(sport).length}
-					/>
+					<RenderListRow leftText="Карьера / Развитие" rightText={_.values(careare).length} />
+					<RenderListRow leftText="Семья" rightText={_.values(family).length} />
+					<RenderListRow leftText="Финансы" rightText={_.values(finance).length} />
+					<RenderListRow leftText="Окружение / Друзья" rightText={_.values(enviroment).length} />
+					<RenderListRow leftText="Энергия / Отдых" rightText={_.values(sport).length} />
 					<Button
 						error
 						block

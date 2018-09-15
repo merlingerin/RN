@@ -23,8 +23,9 @@ export default props => {
 				style: Styles.header.centerComponent,
 			}}
 			backgroundColor={'#8700ca'}
-			innerContainerStyles={{ zIndex: 999 }}
+			innerContainerStyles={{ zIndex: 999, backgroundColor: '#8700ca' }}
 			outerContainerStyles={{
+				backgroundColor: '#8700ca',
 				borderBottomColor: '#8700ca',
 				borderBottomWidth: 0,
 				zIndex: 999,

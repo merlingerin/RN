@@ -7,13 +7,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [0, 1, 2, 3, 4, 5, 6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 1,
@@ -41,13 +41,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [3, 6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -65,8 +65,7 @@ export const goals = {
 		},
 		goalTitle: 'Принять участие в полумарафоне',
 		id: 'd002',
-		image:
-			'https://www.yogabodylanguage.com/wp-content/uploads/2014/07/%D0%BC%D0%B0%D1%80%D0%B0%D1%84%D0%BE%D0%BD.jpg',
+		image: 'https://www.yogabodylanguage.com/wp-content/uploads/2014/10/%D0%BC%D0%B0%D1%80%D0%B0%D1%84%D0%BE%D0%BD.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -76,13 +75,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [0, 1, 2, 3, 4, 5, 6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 1,
@@ -100,8 +99,7 @@ export const goals = {
 		},
 		goalTitle: 'Сделать пробежку 10 км',
 		id: 'd003',
-		image:
-			'http://sport-cool.ru/wp-content/uploads/2014/07/1352198399_beg1.jpg',
+		image: 'http://sport-cool.ru/wp-content/uploads/2014/10/1352198399_beg1.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -111,13 +109,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [3, 6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -135,8 +133,7 @@ export const goals = {
 		},
 		goalTitle: 'Научиться играть в теннис',
 		id: 'd004',
-		image:
-			'http://files.vm.ru/photo/vecherka/2012/06/doc65epcceu5iwt4zpfhrd_800_480.jpg',
+		image: 'http://files.vm.ru/photo/vecherka/2012/06/doc65epcceu5iwt4zpfhrd_800_480.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -146,13 +143,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 5,
@@ -170,8 +167,7 @@ export const goals = {
 		},
 		goalTitle: 'Купить дом',
 		id: 'd010',
-		image:
-			'https://kvartal.ua/wp-content/uploads/2012/03/kupit-dom-v-kharkove-300x225.jpg',
+		image: 'https://kvartal.ua/wp-content/uploads/2012/03/kupit-dom-v-kharkove-300x225.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -181,13 +177,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 5,
@@ -205,8 +201,7 @@ export const goals = {
 		},
 		goalTitle: 'Отложить 50000 грн.',
 		id: 'd011',
-		image:
-			'https://cryptodaily.co.uk/wp-content/uploads/2018/03/dollars-fan-row-300x225.jpg',
+		image: 'https://cryptodaily.co.uk/wp-content/uploads/2018/03/dollars-fan-row-300x225.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -216,13 +211,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 5,
@@ -240,8 +235,7 @@ export const goals = {
 		},
 		goalTitle: 'Отложить 50000 грн.',
 		id: 'd011',
-		image:
-			'https://cryptodaily.co.uk/wp-content/uploads/2018/03/dollars-fan-row-300x225.jpg',
+		image: 'https://cryptodaily.co.uk/wp-content/uploads/2018/03/dollars-fan-row-300x225.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -251,13 +245,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 5,
@@ -275,8 +269,7 @@ export const goals = {
 		},
 		goalTitle: 'Оплатить досрочно кредит',
 		id: 'd012',
-		image:
-			'http://1sberbank.ru/wp-content/uploads/2016/02/oplata-kredita-1-e1468259419136.jpg',
+		image: 'http://1sberbank.ru/wp-content/uploads/2016/02/oplata-kredita-1-e1468259419136.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -286,13 +279,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 5,
@@ -310,8 +303,7 @@ export const goals = {
 		},
 		goalTitle: 'Создать собственный бизнес',
 		id: 'd020',
-		image:
-			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_2ycjg57SZcGnwNBU0XT1UppeNh3wQYZn_bcALz86y9h_8uk',
+		image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_2ycjg57SZcGnwNBU0XT1UppeNh3wQYZn_bcALz86y9h_8uk',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -321,13 +313,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [2, 4],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -345,8 +337,7 @@ export const goals = {
 		},
 		goalTitle: 'Выучить английский',
 		id: 'd021',
-		image:
-			'http://школа-развития-шаги.рф/uploadedFiles/catalogimages/icons/350x350_cropped/373b7930-53e3-11e6-b080-51f126e668e5.jpg',
+		image: 'http://школа-развития-шаги.рф/uploadedFiles/catalogimages/icons/350x350_cropped/373b7930-53e3-11e6-b080-51f126e668e5.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -356,13 +347,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -390,13 +381,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [1, 3, 5],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -414,8 +405,7 @@ export const goals = {
 		},
 		goalTitle: 'Получить второе высшее образование',
 		id: 'd023',
-		image:
-			'http://donntu.org/sites/default/files/other/vtoroe-vysshee-obrazovanie.jpg',
+		image: 'http://donntu.org/sites/default/files/other/vtoroe-vysshee-obrazovanie.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -425,13 +415,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [1, 3, 5],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -459,13 +449,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [1, 3, 5],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -493,13 +483,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [1, 3, 5],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -527,13 +517,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [1, 4],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -551,8 +541,7 @@ export const goals = {
 		},
 		goalTitle: 'Научиться управлять автомобилем',
 		id: 'd040',
-		image:
-			'http://photo.in.ck.ua/event/583c/1818/eef8/8833/dd00/4c82/nabir-grup-na-vodiyski-kursy-v-cherkaskiy.8.jpeg?1480333336',
+		image: 'http://photo.in.ck.ua/event/583c/1818/eef8/8833/dd00/4c82/nabir-grup-na-vodiyski-kursy-v-cherkaskiy.8.jpeg?1480333336',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -562,13 +551,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [2, 5],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -596,13 +585,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [0],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -630,13 +619,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [0],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -654,8 +643,7 @@ export const goals = {
 		},
 		goalTitle: 'Посетить 10 стран Европы',
 		id: 'd043',
-		image:
-			'http://vseprootpusk.ru/wordpress/wp-content/uploads/2011/09/europa_avto_tur.jpg',
+		image: 'http://vseprootpusk.ru/wordpress/wp-content/uploads/2011/09/europa_avto_tur.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -665,13 +653,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [0],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -689,8 +677,7 @@ export const goals = {
 		},
 		goalTitle: 'Поехать с семьей в Египет',
 		id: 'd050',
-		image:
-			'https://www.tourprom.ru/site_media/images/upload/2017/6/22/newsphoto/plyazhik.jpg',
+		image: 'https://www.tourprom.ru/site_media/images/upload/2017/6/22/newsphoto/plyazhik.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},
@@ -700,13 +687,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -734,13 +721,13 @@ export const goals = {
 		activityRepeat: {
 			weekDays: [6],
 			monthDays: {
-				'2018-07-01': {
+				'2018-10-01': {
 					id: 1,
 					dayNumber: 1,
-					dateString: '2018-07-01',
+					dateString: '2018-10-01',
 					time: ['6:30'],
 					selected: true,
-					selectedColor: 'blue',
+					selectedColor: 'rgba(135, 0, 202, .1)',
 				},
 			},
 			id: 4,
@@ -758,8 +745,7 @@ export const goals = {
 		},
 		goalTitle: 'Организовать посещение родителями Венской оперы',
 		id: 'd052',
-		image:
-			'https://upload.wikimedia.org/wikipedia/commons/5/58/Wiener_Staatsoper.jpg',
+		image: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Wiener_Staatsoper.jpg',
 		timestamp: new Date().getTime(),
 		phisicalActivity: {},
 	},

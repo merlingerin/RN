@@ -1,4 +1,6 @@
-import { DrawerNavigator } from 'react-navigation';
+import React from 'react';
+import { View, Text } from '@shoutem/ui';
+import { DrawerNavigator, DrawerItems } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import AboutScreen from '../screens/Drawer/Screens/AboutScreen';
 import FAQScreen from '../screens/Drawer/Screens/FAQScreen';
@@ -7,6 +9,7 @@ import SupportScreen from '../screens/Drawer/Screens/SupportScreen';
 import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import SideMenu from '../components/Drawer';
 
 export const AuthDrawer = DrawerNavigator(
 	{
@@ -22,9 +25,9 @@ export const AuthDrawer = DrawerNavigator(
 		FeedbackScreen: {
 			screen: FeedbackScreen,
 		},
-		SupportScreen: {
-			screen: SupportScreen,
-		},
+		// SupportScreen: {
+		// 	screen: SupportScreen,
+		// },
 		TermsOfUseScreen: {
 			screen: TermsOfUseScreen,
 		},
@@ -33,6 +36,30 @@ export const AuthDrawer = DrawerNavigator(
 		initialRouteName: 'Main',
 		drawerWidth: 300,
 		header: null,
+		contentComponent: props => (
+			<View>
+				<View styleName="horizontal h-center" style={{ width: '100%' }}>
+					<Text
+						style={{
+							paddingVertical: 20,
+							fontSize: 32,
+							color: '#8700ca',
+							fontFamily: 'M-Regular',
+						}}
+					>
+						ProfiGoals
+					</Text>
+				</View>
+				<DrawerItems
+					{...props}
+					getLabel={scene => (
+						<View styleName="horizontal h-start v-center" style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+							<Text style={{ fontFamily: 'M-Regular', fontSize: 15, color: '#000' }}>{props.getLabel(scene)}</Text>
+						</View>
+					)}
+				/>
+			</View>
+		),
 		contentOptions: {
 			activeBackgroundColor: 'transparent',
 			itemStyle: {
@@ -41,9 +68,6 @@ export const AuthDrawer = DrawerNavigator(
 			},
 			labelStyle: { fontFamily: 'M-Regular' },
 			activeTintColor: '#8700ca',
-			activeLabelStyle: {
-				fontFamily: 'MA-Regular',
-			},
 		},
 	},
 );
@@ -62,9 +86,9 @@ export const GuestDrawer = DrawerNavigator(
 		FeedbackScreen: {
 			screen: FeedbackScreen,
 		},
-		SupportScreen: {
-			screen: SupportScreen,
-		},
+		// SupportScreen: {
+		// 	screen: SupportScreen,
+		// },
 		TermsOfUseScreen: {
 			screen: TermsOfUseScreen,
 		},

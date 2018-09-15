@@ -23,6 +23,7 @@ import MonthCalendar from '../../components/MonthCalendar/MonthCalendar';
 import { showLoader, hideLoader } from '../../ducks/loader';
 import { goals } from '../../services/goals';
 import recurrenceCreator from '../../utils/recurrenceCreator';
+import { cronTimeParser } from '../../utils/cronTimeParser';
 
 styles1 = StyleSheet.create({
 	subtitleView: {
@@ -58,8 +59,7 @@ const defaultGoal = {
 		categoryTitle: 'Спорт, Здоровье',
 		color: '#F38181',
 	},
-	image:
-		'https://img.freepik.com/free-vector/business-concept-businessman-standing-on-the-arrows-that-are-shot-for-goal_1362-74.jpg?size=338&ext=jpg',
+	image: 'https://img.freepik.com/free-vector/business-concept-businessman-standing-on-the-arrows-that-are-shot-for-goal_1362-74.jpg?size=338&ext=jpg',
 	timestamp: moment().format(),
 };
 
@@ -222,16 +222,20 @@ class GoalForm extends React.Component {
 	_createNewGoal = async () => {
 		let goal = _.omit(this.state, ['sliderValue']);
 		goal.active = 1;
-		goal.lastModofiedDate = moment().format();
+		goal.lastModifiedDate = moment().format();
 		goal.uid = this.props.profile.uid;
 		if (this.state.defaultGoal) {
 			goal.defaultGoal = false;
 			goal.id = uuidv4();
 			goal.createdDate = moment().format();
 		}
-		const recurrence = recurrenceCreator({ ...goal });
+		// const recurrence = recurrenceCreator({ ...goal });
+		const recurrence = cronTimeParser({ ...goal.activityRepeat });
 
 		if (recurrence !== null) {
+			// goal.recurrence = recurrence;
+			// goal.cronRecurrence = `${recurrence.minutes} ${recurrence.hours} ${recurrence.dayOfMonth} ${recurrence.month} ${recurrence.weekDays}`;
+
 			goal.recurrence = recurrence;
 		}
 
@@ -296,10 +300,7 @@ class GoalForm extends React.Component {
 							// title="Включить достижение цели"
 							hideChevron={true}
 							subtitle={
-								<Heading
-									classNames="h-center"
-									style={{ textAlign: 'center' }}
-								>
+								<Heading classNames="h-center" style={{ textAlign: 'center' }}>
 									Цель достигнута
 								</Heading>
 							}
@@ -313,16 +314,8 @@ class GoalForm extends React.Component {
 							padding: 10,
 						}}
 					>
-						<Button
-							iconLeft
-							block
-							success
-							style={{ width: '100%', marginBottom: 10 }}
-							onPress={this._restartGoal}
-						>
-							<Text style={{ color: '#fff' }}>
-								Возобновить цель
-							</Text>
+						<Button iconLeft block success style={{ width: '100%', marginBottom: 10 }} onPress={this._restartGoal}>
+							<Text style={{ color: '#fff' }}>Возобновить цель</Text>
 						</Button>
 					</View>
 				</Container>
@@ -340,11 +333,7 @@ class GoalForm extends React.Component {
 					label={goal.goalTitle}
 				/>
 				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
-					<GoalsGallery
-						defaultImages={{ ...this.props.goals, ...goals }}
-						image={this.state.image}
-						getImage={this._setImage}
-					/>
+					<GoalsGallery defaultImages={{ ...goals }} image={this.state.image} getImage={this._setImage} />
 					<View
 						style={
 							{
@@ -352,10 +341,7 @@ class GoalForm extends React.Component {
 							}
 						}
 					>
-						<View
-							styleName="horizontal v-center space-between"
-							style={{ ...Styles.borderBottom }}
-						>
+						<View styleName="horizontal v-center space-between" style={{ ...Styles.borderBottom }}>
 							<Text
 								style={{
 									...Styles.GoalForm.rowTitle,
@@ -364,16 +350,9 @@ class GoalForm extends React.Component {
 							>
 								КАТЕГОРИЯ ЦЕЛИ
 							</Text>
-							<CustomPicker
-								selected={this.state.goalCategory.categoryId}
-								onValueChange={this.onCategoryChange}
-								type="categorys"
-							/>
+							<CustomPicker selected={this.state.goalCategory.categoryId} onValueChange={this.onCategoryChange} type="categorys" />
 						</View>
-						<View
-							styleName="horizontal v-center space-between"
-							style={{ ...Styles.borderBottom }}
-						>
+						<View styleName="horizontal v-center space-between" style={{ ...Styles.borderBottom }}>
 							<Text
 								style={{
 									...Styles.GoalForm.rowTitle,
@@ -382,17 +361,9 @@ class GoalForm extends React.Component {
 							>
 								ЦЕЛЬ
 							</Text>
-							<GoalTitleInput
-								value={this.state.goalTitle}
-								onChangeText={text =>
-									this.setState({ goalTitle: text })
-								}
-							/>
+							<GoalTitleInput value={this.state.goalTitle} onChangeText={text => this.setState({ goalTitle: text })} />
 						</View>
-						<View
-							styleName="horizontal v-center space-between"
-							style={{ ...Styles.borderBottom }}
-						>
+						<View styleName="horizontal v-center space-between" style={{ ...Styles.borderBottom }}>
 							<Text
 								style={{
 									...Styles.GoalForm.rowTitle,
@@ -401,15 +372,9 @@ class GoalForm extends React.Component {
 							>
 								СРОК ДОСТИЖЕНИЯ
 							</Text>
-							<DeadlinePicker
-								date={this.state.deadline}
-								onDateChange={this._onDeadlineChange}
-							/>
+							<DeadlinePicker date={this.state.deadline} onDateChange={this._onDeadlineChange} />
 						</View>
-						<View
-							styleName="horizontal v-center space-between"
-							style={{ ...Styles.borderBottom }}
-						>
+						<View styleName="horizontal v-center space-between" style={{ ...Styles.borderBottom }}>
 							<Text
 								style={{
 									...Styles.GoalForm.rowTitle,
@@ -419,23 +384,12 @@ class GoalForm extends React.Component {
 								АКТИВНОСТЬ
 							</Text>
 							<View style={{ marginLeft: 'auto' }}>
-								<CustomPicker
-									selected={this.state.activityRepeat.id}
-									onValueChange={
-										this.onReminderIntervalChange
-									}
-									type="reminder"
-								/>
+								<CustomPicker selected={this.state.activityRepeat.id} onValueChange={this.onReminderIntervalChange} type="reminder" />
 							</View>
 						</View>
 						{this.state.activityRepeat.id === 5 && (
 							<View styleName="horizontal v-center space-between">
-								<MonthCalendar
-									markedDays={
-										goal.activityRepeat.monthDays || {}
-									}
-									toggleMonthDays={this.toggleMonthDays}
-								/>
+								<MonthCalendar markedDays={goal.activityRepeat.monthDays || {}} toggleMonthDays={this.toggleMonthDays} />
 							</View>
 						)}
 						{this.state.activityRepeat.id === 4 && (
@@ -445,65 +399,43 @@ class GoalForm extends React.Component {
 									width: '100%',
 								}}
 							>
-								<WeekDaysSegment
-									toggleWeekButton={this.toggleWeekButton}
-									pickedWeekDays={
-										this.state.activityRepeat.weekDays
-									}
-								/>
+								<WeekDaysSegment toggleWeekButton={this.toggleWeekButton} pickedWeekDays={this.state.activityRepeat.weekDays} />
 							</View>
 						)}
 						{this.state.activityRepeat.id !== 0
-							? _.map(
-									this.state.activityRepeat.time,
-									(item, idx) => (
-										<ListItem
-											key={idx}
-											containerStyle={{
-												borderTopWidth: 0,
-												borderBottomWidth: 0,
-											}}
-											hideChevron={false}
-											leftIcon={{
-												name: 'access-time',
-												color: '#8700ca',
-											}}
-											rightIcon={
-												idx === 0
-													? {
-															name:
-																'ios-close-circle',
-															color:
-																'transparent',
-															type: 'ionicon',
-													  }
-													: {
-															name:
-																'ios-close-circle',
-															color: '#8700ca',
-															type: 'ionicon',
-													  }
-											}
-											onPressRightIcon={() =>
-												idx === 0
-													? null
-													: this.removeTimePicker(idx)
-											}
-											subtitle={
-												<View>
-													<TimePicker
-														time={item}
-														idx={idx}
-														handleChange={
-															this
-																.handleChangeTime
-														}
-													/>
-												</View>
-											}
-										/>
-									),
-							  )
+							? _.map(this.state.activityRepeat.time, (item, idx) => (
+									<ListItem
+										key={idx}
+										containerStyle={{
+											borderTopWidth: 0,
+											borderBottomWidth: 0,
+										}}
+										hideChevron={false}
+										leftIcon={{
+											name: 'access-time',
+											color: '#8700ca',
+										}}
+										rightIcon={
+											idx === 0
+												? {
+														name: 'ios-close-circle',
+														color: 'transparent',
+														type: 'ionicon',
+												  }
+												: {
+														name: 'ios-close-circle',
+														color: '#8700ca',
+														type: 'ionicon',
+												  }
+										}
+										onPressRightIcon={() => (idx === 0 ? null : this.removeTimePicker(idx))}
+										subtitle={
+											<View>
+												<TimePicker time={item} idx={idx} handleChange={this.handleChangeTime} />
+											</View>
+										}
+									/>
+							  ))
 							: null}
 						{this.state.activityRepeat.id !== 0 ? (
 							this.state.activityRepeat.time.length < 3 ? (
@@ -588,34 +520,37 @@ class GoalForm extends React.Component {
 								padding: 10,
 							}}
 						>
-							{!_.isEqual(goal, this.defaultGoalState) &&
-								!!goal.goalTitle.length && (
-									<Button
-										iconLeft
-										block
-										primary
-										style={{
-											width: '100%',
-											marginBottom: 10,
-											backgroundColor: '#8700ca',
-											shadowColor: '#8700ca',
-											shadowRadius: 15,
-											elevation: 3,
-											borderRadius: 7,
-										}}
-										onPress={this._createNewGoal}
-									>
-										<Text
+							{_.isEqual(goal, this.defaultGoalState) ||
+							(goal.activityRepeat.id === 4 && _.isEmpty(goal.activityRepeat.weekDays)) ||
+							(goal.activityRepeat.id === 5 && _.isEmpty(goal.activityRepeat.monthDays))
+								? null
+								: !!goal.goalTitle.length && (
+										<Button
+											iconLeft
+											block
+											primary
 											style={{
-												color: '#fff',
-												fontFamily: 'M-Regular',
-												fontSize: 12,
+												width: '100%',
+												marginBottom: 10,
+												backgroundColor: '#8700ca',
+												shadowColor: '#8700ca',
+												shadowRadius: 15,
+												elevation: 3,
+												borderRadius: 7,
 											}}
+											onPress={this._createNewGoal}
 										>
-											СОХРАНИТЬ
-										</Text>
-									</Button>
-								)}
+											<Text
+												style={{
+													color: '#fff',
+													fontFamily: 'M-Regular',
+													fontSize: 12,
+												}}
+											>
+												СОХРАНИТЬ
+											</Text>
+										</Button>
+								  )}
 						</View>
 					</View>
 				</ScrollView>
@@ -626,10 +561,7 @@ class GoalForm extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
 	goals: state.goalsOffline,
-	goal: ownProps.navigation.getParam('goal')
-		? state.goalsOffline[ownProps.navigation.getParam('goal').id] ||
-		  goals[ownProps.navigation.getParam('goal').id]
-		: {},
+	goal: ownProps.navigation.getParam('goal') ? state.goalsOffline[ownProps.navigation.getParam('goal').id] || goals[ownProps.navigation.getParam('goal').id] : {},
 	categorys: state.categorys,
 	profile: state.profile.profile,
 	loading: state.loader.isShown,

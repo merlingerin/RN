@@ -3,6 +3,12 @@ import _ from 'lodash';
 import { Calendar } from 'react-native-calendars';
 
 class MonthCalendar extends Component {
+	markedDays = () => {
+		if (!this.props.markedDays) {
+			return _.mapValues(this.props.markedDays, (day, key) => ({ [day.dateString]: { marked: true } }));
+		}
+		return {};
+	};
 	render() {
 		return (
 			<Calendar

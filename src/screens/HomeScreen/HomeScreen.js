@@ -1,6 +1,6 @@
 import React from 'react';
 import { NetInfo } from 'react-native';
-import { LinearGradient, Notifications } from 'expo';
+import { LinearGradient } from 'expo';
 
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
@@ -13,19 +13,7 @@ import { connect } from 'react-redux';
 import Toast from 'react-native-easy-toast';
 import { Icon, Avatar } from 'react-native-elements';
 import Header from '../../components/CustomHeader/CustomHeader';
-import {
-	TouchableOpacity,
-	ImageBackground,
-	Screen,
-	Subtitle,
-	ListView,
-	GridRow,
-	Card,
-	View,
-	Overlay,
-	Tile,
-	Image,
-} from '@shoutem/ui';
+import { TouchableOpacity, ImageBackground, Screen, Subtitle, ListView, GridRow, Card, View, Overlay, Tile, Image } from '@shoutem/ui';
 import { fb } from '../../services/api';
 import { store } from '../../../App';
 import saveState from '../../utils/persistStoreFirebase';
@@ -36,7 +24,7 @@ const anonimProfile = require('../../../assets/images/anonimProfile.png');
 
 class HomeScreen extends React.Component {
 	static navigationOptions = {
-		title: 'Карта',
+		title: 'Карта целей',
 		header: null,
 	};
 
@@ -77,10 +65,7 @@ class HomeScreen extends React.Component {
 
 	componentDidMount() {
 		const that = this;
-		NetInfo.isConnected.addEventListener(
-			'connectionChange',
-			this.persistStateWithFirebase,
-		);
+		NetInfo.isConnected.addEventListener('connectionChange', this.persistStateWithFirebase);
 
 		fb.auth().onAuthStateChanged(async user => {
 			if (user) {
@@ -108,11 +93,7 @@ class HomeScreen extends React.Component {
 
 				this.props.checkIsAuth(profile, pushToken);
 
-				saveState(
-					store.getState(),
-					this.props.fetchGoalsSuccess,
-					'auth',
-				);
+				saveState(store.getState(), this.props.fetchGoalsSuccess, 'auth');
 
 				that.unsubscribe = store.subscribe(() => {
 					saveState(store.getState());
@@ -124,10 +105,7 @@ class HomeScreen extends React.Component {
 	}
 
 	componentWillUnmount() {
-		NetInfo.isConnected.removeEventListener(
-			'connectionChange',
-			this.persistStateWithFirebase,
-		);
+		NetInfo.isConnected.removeEventListener('connectionChange', this.persistStateWithFirebase);
 	}
 
 	_addActivity = goalId => {
@@ -184,11 +162,7 @@ class HomeScreen extends React.Component {
 								borderRadius: 9,
 								overflow: 'hidden',
 							}}
-							onPress={() =>
-								this.props.isAuth
-									? this._navTo(item.categoryId)
-									: false
-							}
+							onPress={() => (this.props.isAuth ? this._navTo(item.categoryId) : false)}
 							styleName="flexible"
 						>
 							<Card styleName="flexible v-center h-center">
@@ -200,21 +174,9 @@ class HomeScreen extends React.Component {
 									}}
 									source={img}
 								>
-									<Tile
-										styleName="clear fill-parent"
-										style={Styles.homePage.categorys.tile}
-									>
-										<Image
-											styleName="small h-center v-center"
-											source={item.icon}
-										/>
-										<Subtitle
-											styleName="h-center v-center"
-											numberOfLines={2}
-											style={
-												Styles.homePage.categorys.title
-											}
-										>
+									<Tile styleName="clear fill-parent" style={Styles.homePage.categorys.tile}>
+										<Image styleName="small h-center v-center" source={item.icon} />
+										<Subtitle styleName="h-center v-center" numberOfLines={2} style={Styles.homePage.categorys.title}>
 											{item.categoryTitle}
 										</Subtitle>
 									</Tile>
@@ -224,10 +186,7 @@ class HomeScreen extends React.Component {
 					</Animatable.View>
 				);
 			}
-			let image =
-				item.image.indexOf('http') > -1
-					? item.image
-					: `data:image/jpeg;base64,${item.image}`;
+			let image = item.image.indexOf('http') > -1 ? item.image : `data:image/jpeg;base64,${item.image}`;
 			return (
 				<Animatable.View
 					animation="bounceIn"
@@ -245,12 +204,9 @@ class HomeScreen extends React.Component {
 						}}
 						onPress={() =>
 							this.props.isAuth
-								? this.props.navigation.navigate(
-										'ActivityScreen',
-										{
-											goal: item,
-										},
-								  )
+								? this.props.navigation.navigate('ActivityScreen', {
+										goal: item,
+								  })
 								: false
 						}
 						styleName="flexible"
@@ -269,13 +225,8 @@ class HomeScreen extends React.Component {
 								}}
 							>
 								<View styleName="fill-parent horizontal h-start v-start">
-									{!this._isHideActivityButton(
-										item.physicalActivity,
-									) ? (
-										<Animatable.View
-											animation="zoomIn"
-											easing="ease-out"
-										>
+									{!this._isHideActivityButton(item.physicalActivity) ? (
+										<Animatable.View animation="zoomIn" easing="ease-out">
 											<Icon
 												raised
 												name="check-circle"
@@ -285,24 +236,15 @@ class HomeScreen extends React.Component {
 												reverseColor="rgba(255,255,255,1)"
 												onPress={() => {
 													this._addActivity(item.id);
-													return this.refs.toast.show(
-														'Активность добавлена',
-														2000,
-													);
+													return this.refs.toast.show('Активность добавлена', 2000);
 												}}
 											/>
 										</Animatable.View>
 									) : null}
 								</View>
-								<View
-									styleName="content  vertical v-end"
-									style={{ width: '100%' }}
-								>
+								<View styleName="content  vertical v-end" style={{ width: '100%' }}>
 									<Overlay styleName="image-overlay  vertical v-end">
-										<Subtitle
-											styleName="h-center  vertical v-end"
-											numberOfLines={4}
-										>
+										<Subtitle styleName="h-center  vertical v-end" numberOfLines={4}>
 											{item.goalTitle}
 										</Subtitle>
 									</Overlay>
@@ -327,39 +269,22 @@ class HomeScreen extends React.Component {
 
 		return (
 			<Screen>
-				<LinearGradient
-					style={{ flex: 1 }}
-					colors={['#ffffff', '#edf3ff', '#edf3ff']}
-				>
+				<LinearGradient style={{ flex: 1 }} colors={['#ffffff', '#edf3ff', '#edf3ff']}>
 					<Header
 						leftComponent={{
 							icon: 'menu',
 							color: '#fff',
 							underlayColor: 'transparent',
-							onPress: () =>
-								this.props.navigation.navigate('DrawerOpen'),
+							onPress: () => this.props.navigation.navigate('DrawerOpen'),
 						}}
-						label={'Цели'}
+						label={'ProfiGoals'}
 						statusBarProps={{
 							barStyle: 'light-content',
 						}}
 						rightComponent={
 							isAuth && profile.userPhoto ? (
-								<Animatable.View
-									animation="zoomIn"
-									easing="ease-out"
-								>
-									<Avatar
-										small
-										rounded
-										source={{ uri: profile.userPhoto }}
-										onPress={() =>
-											this.props.navigation.navigate(
-												'ProfileScreen',
-											)
-										}
-										activeOpacity={0.7}
-									/>
+								<Animatable.View animation="zoomIn" easing="ease-out">
+									<Avatar width={24} height={24} rounded source={{ uri: profile.userPhoto }} onPress={() => this.props.navigation.navigate('ProfileScreen')} activeOpacity={0.7} />
 								</Animatable.View>
 							) : (
 								{
@@ -368,10 +293,7 @@ class HomeScreen extends React.Component {
 									color: '#fff',
 									underlayColor: '#fff',
 									reverseColor: '#8700ca',
-									onPress: () =>
-										this.props.navigation.navigate(
-											'ProfileScreen',
-										),
+									onPress: () => this.props.navigation.navigate('ProfileScreen'),
 								}
 							)
 						}
