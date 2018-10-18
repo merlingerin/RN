@@ -11,11 +11,11 @@ const DeadlinePicker = ({ date, onDateChange }) => (
 			borderColor: '#000',
 		}}
 		showIcon={false}
-		date={moment(date).format('DD-MM-YYYY')}
+		date={moment(date).format('DD.MM.YYYY')}
 		mode="date"
 		placeholder="select date"
-		format="DD-MM-YYYY"
-		minDate={moment().format('DD-MM-YYYY')}
+		format="DD.MM.YYYY"
+		minDate={moment().format('DD.MM.YYYY')}
 		confirmBtnText="Confirm"
 		cancelBtnText="Cancel"
 		customStyles={{

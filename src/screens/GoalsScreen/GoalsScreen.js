@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as Animatable from 'react-native-animatable';
-import { ScrollView } from 'react-native';
+import { ScrollView, Dimensions } from 'react-native';
 import { ButtonGroup, Avatar } from 'react-native-elements';
 import Header from '../../components/CustomHeader/CustomHeader';
 import { Screen, Heading, Button, Text } from '@shoutem/ui';
@@ -26,40 +26,50 @@ class GoalsScreen extends React.Component {
 	};
 
 	componentDidMount() {
-		if (this.props.isAuth) {
-			this._scrollToElement(100, this.props.openedCategory);
-		}
+		const that = this;
+		this.height = Dimensions.get('window').height;
+		console.log('this.height ', (this.height * 0.75) / 6);
+		// if (this.props.isAuth && this.scroller) {
+		// 	setTimeout(() => {
+		// 		that._scrollToElement((this.height * 0.75) / 6, this.props.openedCategory);
+		// 	}, 500);
+		// }
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.props.isAuth) {
-			this._scrollToElement(100, this.props.openedCategory);
+		const that = this;
+		if (this.props.isAuth && this.scroller) {
+			setTimeout(() => {
+				that._scrollToElement((this.height * 0.75) / 6, this.props.openedCategory);
+			}, 500);
 		}
 	}
 
 	_scrollToElement = (offset, selectedIndex) => {
-		if (selectedIndex !== 1) {
-			this.scroller.scrollTo({
-				x: 0,
-				y: 0,
-				animation: false,
-			});
-		}
+		if (this.props.isAuth && this.scroller) {
+			if (selectedIndex !== 1) {
+				this.scroller.scrollTo({
+					x: 0,
+					y: 0,
+					animation: false,
+				});
+			}
 
-		if (selectedIndex === 1) {
-			return this.scroller.scrollTo({
-				x: 0,
-				y: 0,
-				animation: true,
-			});
-		} else if (selectedIndex > 1 && selectedIndex < 5) {
-			return this.scroller.scrollTo({
-				x: 0,
-				y: offset * selectedIndex + 1,
-				animation: true,
-			});
-		} else {
-			return this.scroller.scrollToEnd();
+			if (selectedIndex === 1) {
+				return this.scroller.scrollTo({
+					x: 0,
+					y: 0,
+					animation: true,
+				});
+			} else if (selectedIndex > 1 && selectedIndex < 5) {
+				return this.scroller.scrollTo({
+					x: 0,
+					y: offset * selectedIndex + 1,
+					animation: true,
+				});
+			} else {
+				return this.scroller.scrollToEnd();
+			}
 		}
 	};
 

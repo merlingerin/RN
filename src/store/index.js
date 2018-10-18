@@ -2,7 +2,6 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import ReduxThunk from 'redux-thunk';
-import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import rootReducer from '../ducks';
 const middlewares = [ReduxThunk];
@@ -18,12 +17,12 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
+const withDevTools = process.env.NODE_ENV === 'development' ? composeWithDevTools(applyMiddleware(...middlewares)) : applyMiddleware(...middlewares);
 export default () => {
 	const store = createStore(
 		persistedReducer,
 		// rootReducer,
-		composeWithDevTools(applyMiddleware(...middlewares)),
+		withDevTools,
 	);
 	const persistor = persistStore(store);
 	// persistor.purge();

@@ -14,7 +14,7 @@ import WeekDaysSegment from '../../components/WeekDaysSegment/WeekDaysSegment';
 import { fb } from '../../services/api';
 import Header from '../../components/CustomHeader/CustomHeader';
 import { List, ListItem, Text, Icon } from 'react-native-elements';
-import { Container, Button } from 'native-base';
+import { Container, Button, Spinner } from 'native-base';
 import { View, Heading, Screen, TouchableOpacity } from '@shoutem/ui';
 import GoalTitleInput from '../../components/GoalTitleInput/GoalTitleInput';
 import DeadlinePicker from '../../components/DeadlinePicker/DeadlinePicker';
@@ -22,7 +22,6 @@ import { activityRepeatTypeParser } from '../../utils/parsers';
 import MonthCalendar from '../../components/MonthCalendar/MonthCalendar';
 import { showLoader, hideLoader } from '../../ducks/loader';
 import { goals } from '../../services/goals';
-import recurrenceCreator from '../../utils/recurrenceCreator';
 import { cronTimeParser } from '../../utils/cronTimeParser';
 
 styles1 = StyleSheet.create({
@@ -59,7 +58,7 @@ const defaultGoal = {
 		categoryTitle: 'Спорт, Здоровье',
 		color: '#F38181',
 	},
-	image: 'https://img.freepik.com/free-vector/business-concept-businessman-standing-on-the-arrows-that-are-shot-for-goal_1362-74.jpg?size=338&ext=jpg',
+	image: 21,
 	timestamp: moment().format(),
 };
 
@@ -70,6 +69,7 @@ class GoalForm extends React.Component {
 			...defaultGoal,
 			...(this.props.goal ? this.props.goal : {}),
 			sliderValue: 1,
+			isSaving: false,
 		};
 		this.defaultGoalState = {
 			...defaultGoal,
@@ -219,29 +219,32 @@ class GoalForm extends React.Component {
 
 	_setImage = uri => this.setState({ image: uri });
 
-	_createNewGoal = async () => {
-		let goal = _.omit(this.state, ['sliderValue']);
-		goal.active = 1;
-		goal.lastModifiedDate = moment().format();
-		goal.uid = this.props.profile.uid;
-		if (this.state.defaultGoal) {
-			goal.defaultGoal = false;
-			goal.id = uuidv4();
-			goal.createdDate = moment().format();
-		}
-		// const recurrence = recurrenceCreator({ ...goal });
-		const recurrence = cronTimeParser({ ...goal.activityRepeat });
+	_createNewGoal = () => {
+		this.setState({ isSaving: true });
+		setTimeout(() => {
+			let goal = _.omit(this.state, ['sliderValue', 'isSaving']);
+			goal.active = 1;
+			goal.lastModifiedDate = moment().format();
+			goal.uid = this.props.profile.uid;
+			if (this.state.defaultGoal) {
+				goal.defaultGoal = false;
+				goal.id = uuidv4();
+				goal.createdDate = moment().format();
+			}
 
-		if (recurrence !== null) {
-			// goal.recurrence = recurrence;
-			// goal.cronRecurrence = `${recurrence.minutes} ${recurrence.hours} ${recurrence.dayOfMonth} ${recurrence.month} ${recurrence.weekDays}`;
+			const recurrence = cronTimeParser({ ...goal.activityRepeat });
 
-			goal.recurrence = recurrence;
-		}
+			if (recurrence !== null) {
+				// goal.recurrence = recurrence;
+				// goal.cronRecurrence = `${recurrence.minutes} ${recurrence.hours} ${recurrence.dayOfMonth} ${recurrence.month} ${recurrence.weekDays}`;
 
-		this.props.saveNewGoal(goal);
+				goal.recurrence = recurrence;
+			}
+			this.props.saveNewGoal(goal);
+			this.setState({ isSaving: false });
 
-		this.props.navigation.goBack();
+			this.props.navigation.goBack();
+		}, 0);
 	};
 
 	_deleteGoal = async () => {
@@ -255,7 +258,7 @@ class GoalForm extends React.Component {
 	};
 
 	_finishedGoal = async () => {
-		let goal = _.omit(this.state, ['sliderValue']);
+		let goal = _.omit(this.state, ['sliderValue', 'isSaving']);
 		goal.active = 2;
 		await fb
 			.database()
@@ -268,7 +271,7 @@ class GoalForm extends React.Component {
 	};
 
 	_restartGoal = async () => {
-		let goal = _.omit(this.state, ['sliderValue']);
+		let goal = _.omit(this.state, ['sliderValue', 'isSaving']);
 		goal.active = 1;
 		await fb
 			.database()
@@ -281,7 +284,8 @@ class GoalForm extends React.Component {
 	};
 
 	render() {
-		let goal = _.omit(this.state, ['sliderValue']);
+		let goal = _.omit(this.state, ['sliderValue', 'isSaving']);
+
 		if (this.state.active === 2) {
 			return (
 				<Container style={{ backgroundColor: 'blue' }}>
@@ -292,7 +296,7 @@ class GoalForm extends React.Component {
 							underlayColor: 'transparent',
 							onPress: () => this.props.navigation.goBack(),
 						}}
-						label={goal.goalTitle}
+						label={'Редактировать цель'}
 					/>
 
 					<List style={{ backgroundColor: 'blue' }}>
@@ -330,7 +334,7 @@ class GoalForm extends React.Component {
 						underlayColor: 'transparent',
 						onPress: () => this.props.navigation.goBack(),
 					}}
-					label={goal.goalTitle}
+					label={'Редактировать цель'}
 				/>
 				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
 					<GoalsGallery defaultImages={{ ...goals }} image={this.state.image} getImage={this._setImage} />
@@ -511,6 +515,7 @@ class GoalForm extends React.Component {
 							// />
 							null
 						) : null}
+
 						<View
 							style={{
 								display: 'flex',
@@ -529,6 +534,7 @@ class GoalForm extends React.Component {
 											iconLeft
 											block
 											primary
+											disabled={this.state.isSaving}
 											style={{
 												width: '100%',
 												marginBottom: 10,
@@ -538,17 +544,21 @@ class GoalForm extends React.Component {
 												elevation: 3,
 												borderRadius: 7,
 											}}
-											onPress={this._createNewGoal}
+											onPress={this.state.isSaving ? null : this._createNewGoal}
 										>
-											<Text
-												style={{
-													color: '#fff',
-													fontFamily: 'M-Regular',
-													fontSize: 12,
-												}}
-											>
-												СОХРАНИТЬ
-											</Text>
+											{this.state.isSaving ? (
+												<Spinner />
+											) : (
+												<Text
+													style={{
+														color: '#fff',
+														fontFamily: 'M-Regular',
+														fontSize: 12,
+													}}
+												>
+													СОХРАНИТЬ
+												</Text>
+											)}
 										</Button>
 								  )}
 						</View>

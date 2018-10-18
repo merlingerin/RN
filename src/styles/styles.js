@@ -13,12 +13,12 @@ export default {
 		color: '#8700ca',
 	},
 	defaultTextPrime: {
-		fontFamily: 'MA-Regular',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		color: '#000',
 	},
 	defaultTitlePrime: {
-		fontFamily: 'MA-Regular',
+		fontFamily: 'Roboto',
 		fontSize: 14,
 		color: '#8700ca',
 	},
@@ -30,7 +30,7 @@ export default {
 	header: {
 		centerComponent: {
 			color: '#fff',
-			fontSize: 18,
+			fontSize: 15,
 			fontFamily: 'MA-Regular',
 		},
 	},

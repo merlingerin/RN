@@ -1,15 +1,33 @@
 import React from 'react';
 import _ from 'lodash';
 import { fb } from '../../services/api';
-import { LinearGradient, Notifications } from 'expo';
-import { Dimensions, ListView } from 'react-native';
+import { LinearGradient, Permissions, ImagePicker } from 'expo';
+import { TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { signInWithGoogle, authWithEmail, requestLogOut, resetError } from '../../ducks/profile';
+import { signInWithGoogle, authWithEmail, requestLogOut, resetError, updateProfileData } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
-import { Icon, Avatar } from 'react-native-elements';
 import { Screen, View, Image, Title, Text, Heading } from '@shoutem/ui';
 import { Form, Button, Item, Label, Input, Icon as NativeIcon } from 'native-base';
 import Styles from '../../styles/styles';
+import { ActionSheet } from 'native-base';
+const categoryImage1 = require('../../../assets/images/template/profileCategorys/category-0.png');
+const categoryImage2 = require('../../../assets/images/template/profileCategorys/category-1.png');
+const categoryImage3 = require('../../../assets/images/template/profileCategorys/category-2.png');
+const categoryImage4 = require('../../../assets/images/template/profileCategorys/category-3.png');
+const categoryImage5 = require('../../../assets/images/template/profileCategorys/category-4.png');
+const categoryImage6 = require('../../../assets/images/template/profileCategorys/category-5.png');
+const categoryImages = {
+	0: categoryImage1,
+	1: categoryImage2,
+	2: categoryImage3,
+	3: categoryImage4,
+	4: categoryImage5,
+	5: categoryImage6,
+};
+
+var BUTTONS = ['Галерея', 'Камера', 'Cancel'];
+var DESTRUCTIVE_INDEX = 3;
+var CANCEL_INDEX = 2;
 
 const styles = {
 	button: {
@@ -68,6 +86,7 @@ class ProfileScreen extends React.Component {
 		this.state = {
 			isAuth: false,
 			profile: {},
+			image: 'https://sigma-static-files.imgix.net/default_profile_pic.png',
 			authorization: {
 				email: '',
 				password: '',
@@ -102,23 +121,66 @@ class ProfileScreen extends React.Component {
 	};
 
 	_handleAuthorization = () => {
-		// if (
-		// 	!this.state.authorization.email ||
-		// 	!this.state.authorization.password
-		// ) {
-		// 	alert("Field can't be blank!");
-		// } else {
-		// 	this.props.authWithEmail(
-		// 		this.state.authorization.email,
-		// 		this.state.authorization.password,
-		// 	);
-		// }
 		this.props.authWithEmail(this.state.authorization.email, this.state.authorization.password);
+	};
+
+	_askPermissionsAsync = async () => {
+		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		await Permissions.askAsync(Permissions.CAMERA);
+		// you would probably do something to verify that permissions
+		// are actually granted, but I'm skipping that for brevity
+	};
+
+	_takePhoto = async () => {
+		await this._askPermissionsAsync();
+		let pickerResult = await ImagePicker.launchCameraAsync({
+			exif: true,
+			base64: true,
+			allowsEditing: true,
+			quality: 0,
+			base64: true,
+			aspect: [4, 3],
+		});
+		if (!pickerResult.cancelled) {
+			// this.setState({ image: pickerResult.uri });
+			this.props.updateProfileData({
+				...this.props.profile,
+				customPhoto: `data:image/jpeg;base64,${pickerResult.base64}`,
+			});
+		}
+	};
+
+	_choosePhoto = async () => {
+		await this._askPermissionsAsync();
+		let pickerResult = await ImagePicker.launchImageLibraryAsync({
+			exif: true,
+			allowsEditing: true,
+			quality: 0,
+			base64: true,
+			aspect: [4, 3],
+		});
+		if (!pickerResult.cancelled) {
+			// var user = fb.auth().currentUser;
+			// user.updateProfile({
+			// 	photoURL: `data:image/jpeg;base64,${pickerResult.base64}`,
+			// })
+			// 	.then(function(res) {
+			// 		// Update successful.
+			// 		console.log('response', res);
+
+			// 	})
+			// 	.catch(function(error) {
+			// 		// An error happened.
+			// 	});
+			this.props.updateProfileData({
+				...this.props.profile,
+				userPhoto: `data:image/jpeg;base64,${pickerResult.base64}`,
+			});
+		}
 	};
 
 	render() {
 		const { goals, isAuth, profile, signInWithGoogle, authWithEmail } = this.props;
-
 		const activeGoals = _.filter(goals, item => {
 			return item.defaultGoal !== true && item.active === 1;
 		});
@@ -127,10 +189,10 @@ class ProfileScreen extends React.Component {
 			return item.goalCategory.categoryId === 5 && item.defaultGoal !== true && item.active === 1;
 		});
 		const finance = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 1 && item.defaultGoal !== true && item.active === 1;
+			return item.goalCategory.categoryId === 3 && item.defaultGoal !== true && item.active === 1;
 		});
 		const careare = _.filter(goals, item => {
-			return item.goalCategory.categoryId === 3 && item.defaultGoal !== true && item.active === 1;
+			return item.goalCategory.categoryId === 1 && item.defaultGoal !== true && item.active === 1;
 		});
 		const enviroment = _.filter(goals, item => {
 			return item.goalCategory.categoryId === 4 && item.defaultGoal !== true && item.active === 1;
@@ -142,7 +204,7 @@ class ProfileScreen extends React.Component {
 			return item.goalCategory.categoryId === 2 && item.defaultGoal !== true && item.active === 1;
 		});
 
-		const RenderListRow = ({ leftText, rightText, customStyles }) => {
+		const RenderListRow = ({ leftText, rightText, customStyles, categoryId }) => {
 			return (
 				<View
 					style={{
@@ -154,7 +216,8 @@ class ProfileScreen extends React.Component {
 					}}
 					styleName="horizontal v-center space-between"
 				>
-					<Title style={styles.listDefaultText}>{leftText && leftText.toUpperCase()}</Title>
+					<Image styleName="small-avatar" style={{ borderRadius: 0 }} source={categoryImages[categoryId]} />
+					<Title style={{ ...styles.listDefaultText, marginRight: 'auto', marginLeft: 20 }}>{leftText && leftText.toUpperCase()}</Title>
 					<View style={styles.listDefaultTextDecorator}>
 						<Title style={styles.listDefaultText}>{rightText}</Title>
 					</View>
@@ -182,7 +245,7 @@ class ProfileScreen extends React.Component {
 						</View> */}
 						<View styleName="vertical h-center v-center">
 							<Title style={{ fontFamily: 'MA-Regular', fontSize: 42, lineHeight: 46, color: '#8700ca' }}>Вход</Title>
-							<Text style={{ fontFamily: 'MA-Regular', fontSize: 17, color: '#000000' }}>Добро пожаловать в Цели!</Text>
+							<Text style={{ fontFamily: 'MA-Regular', fontSize: 17, color: '#000000' }}>Добро пожаловать в ProfiGoals</Text>
 						</View>
 						<Form style={{ zIndex: 9999 }}>
 							<Item floatingLabel error={this.props.isError}>
@@ -318,6 +381,12 @@ class ProfileScreen extends React.Component {
 				</Screen>
 			);
 		}
+		/**
+		 * PICK PROFILE PHOTO
+		 */
+		const userAvatar = this.props.profile && this.props.profile.userPhoto ? this.props.profile.userPhoto : null;
+
+		// ============================================================
 		return (
 			<Screen styleName="paper" style={{ backgroundColor: '#edf3ff' }}>
 				<Header
@@ -362,16 +431,38 @@ class ProfileScreen extends React.Component {
 					}}
 					styleName="medium-avatar"
 				>
-					<Image
-						styleName="medium-avatar"
-						source={
-							this.props.isAuth && profile.userPhoto
-								? {
-										uri: profile.userPhoto,
-								  }
-								: require('../../../assets/images/image-3.png')
+					<TouchableOpacity
+						onPress={() =>
+							ActionSheet.show(
+								{
+									options: BUTTONS,
+									cancelButtonIndex: CANCEL_INDEX,
+									// destructiveButtonIndex: DESTRUCTIVE_INDEX,
+									title: 'Сменить аватар',
+								},
+								buttonIndex => {
+									if (buttonIndex === 0) {
+										return this._choosePhoto();
+									}
+									if (buttonIndex === 1) {
+										return this._takePhoto();
+									}
+									return undefined;
+								},
+							)
 						}
-					/>
+					>
+						<Image
+							styleName="medium-avatar"
+							source={
+								this.props.isAuth && userAvatar
+									? {
+											uri: userAvatar,
+									  }
+									: require('../../../assets/images/image-3.png')
+							}
+						/>
+					</TouchableOpacity>
 				</View>
 				<View
 					style={{
@@ -427,6 +518,7 @@ class ProfileScreen extends React.Component {
 						Всего активных целей: {_.values(activeGoals).length}
 					</Heading>
 					<RenderListRow
+						categoryId={0}
 						leftText="Самореализация / Драйв"
 						rightText={_.values(selfExpression).length}
 						customStyles={{
@@ -434,11 +526,11 @@ class ProfileScreen extends React.Component {
 							borderTopColor: '#dde5f5',
 						}}
 					/>
-					<RenderListRow leftText="Карьера / Развитие" rightText={_.values(careare).length} />
-					<RenderListRow leftText="Семья" rightText={_.values(family).length} />
-					<RenderListRow leftText="Финансы" rightText={_.values(finance).length} />
-					<RenderListRow leftText="Окружение / Друзья" rightText={_.values(enviroment).length} />
-					<RenderListRow leftText="Энергия / Отдых" rightText={_.values(sport).length} />
+					<RenderListRow categoryId={1} leftText="Карьера / Развитие" rightText={_.values(careare).length} />
+					<RenderListRow categoryId={2} leftText="Семья" rightText={_.values(family).length} />
+					<RenderListRow categoryId={3} leftText="Финансы" rightText={_.values(finance).length} />
+					<RenderListRow categoryId={4} leftText="Окружение / Друзья" rightText={_.values(enviroment).length} />
+					<RenderListRow categoryId={5} leftText="Энергия / Отдых" rightText={_.values(sport).length} />
 					<Button
 						error
 						block
@@ -475,6 +567,7 @@ const mapDispatchToProps = {
 	authWithEmail,
 	requestLogOut,
 	resetError,
+	updateProfileData,
 };
 
 export default connect(

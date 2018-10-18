@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-	Platform,
-	StatusBar,
-	StyleSheet,
-	NetInfo,
-	View,
-	Text,
-} from 'react-native';
+import { Platform, StatusBar, StyleSheet, NetInfo, View, Text } from 'react-native';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,15 +17,11 @@ export default class App extends React.Component {
 	};
 
 	componentDidMount() {
-		NetInfo.addEventListener('connectionChange', status =>
-			this._handleFirstConnectivityChange(status),
-		);
+		NetInfo.addEventListener('connectionChange', status => this._handleFirstConnectivityChange(status));
 	}
 
 	componentWillUnmount() {
-		NetInfo.removeEventListener('connectionChange', status =>
-			this._handleFirstConnectivityChange(status),
-		);
+		NetInfo.removeEventListener('connectionChange', status => this._handleFirstConnectivityChange(status));
 	}
 
 	_handleFirstConnectivityChange = status => {
@@ -56,30 +45,13 @@ export default class App extends React.Component {
 
 	render() {
 		if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-			return (
-				<AppLoading
-					startAsync={this._loadResourcesAsync}
-					onError={this._handleLoadingError}
-					onFinish={this._handleFinishLoading}
-				/>
-			);
+			return <AppLoading startAsync={this._loadResourcesAsync} onError={this._handleLoadingError} onFinish={this._handleFinishLoading} />;
 		} else {
 			return (
 				<Provider store={store}>
-					<PersistGate
-						loading={
-							<Spinner
-								visible={true}
-								textContent={'Loading...'}
-								textStyle={{ color: '#FFF' }}
-							/>
-						}
-						persistor={persistor}
-					>
+					<PersistGate loading={<Spinner visible={true} textContent={'Loading...'} textStyle={{ color: '#FFF' }} />} persistor={persistor}>
 						<View style={styles.container}>
-							{Platform.OS === 'ios' && (
-								<StatusBar barStyle="default" />
-							)}
+							{Platform.OS === 'ios' && <StatusBar barStyle="default" />}
 							<Root>
 								<RootNavigation />
 								{/* {this.state.isOffline && <NoConnection />} */}
@@ -111,6 +83,13 @@ export default class App extends React.Component {
 				require('./assets/images/template/categorys/category-4.png'),
 				require('./assets/images/template/categorys/category-5.png'),
 
+				require('./assets/images/template/profileCategorys/category-0.png'),
+				require('./assets/images/template/profileCategorys/category-1.png'),
+				require('./assets/images/template/profileCategorys/category-2.png'),
+				require('./assets/images/template/profileCategorys/category-3.png'),
+				require('./assets/images/template/profileCategorys/category-4.png'),
+				require('./assets/images/template/profileCategorys/category-5.png'),
+
 				require('./assets/images/template/categorys/backgrounds/1.png'),
 				require('./assets/images/template/categorys/backgrounds/2.png'),
 				require('./assets/images/template/categorys/backgrounds/3.png'),
@@ -118,6 +97,100 @@ export default class App extends React.Component {
 				require('./assets/images/template/categorys/backgrounds/5.png'),
 				require('./assets/images/template/categorys/backgrounds/6.png'),
 
+				/**
+				 * CATEGORY RELAX AND SPORT
+				 */
+				require('./assets/images/categorys/relax/relax1.jpg'),
+				require('./assets/images/categorys/relax/relax2.jpg'),
+				require('./assets/images/categorys/relax/relax3.jpg'),
+				require('./assets/images/categorys/relax/relax4.jpg'),
+				require('./assets/images/categorys/relax/relax1.1.jpg'),
+				require('./assets/images/categorys/relax/relax1.2.jpg'),
+				require('./assets/images/categorys/relax/relax1.3.jpg'),
+				require('./assets/images/categorys/relax/relax1.4.jpg'),
+				require('./assets/images/categorys/relax/relax1.5.jpg'),
+				require('./assets/images/categorys/relax/relax1.6.jpg'),
+				require('./assets/images/categorys/relax/relax1.7.jpg'),
+				require('./assets/images/categorys/relax/relax1.9.jpg'),
+				require('./assets/images/categorys/relax/relax1.10.jpg'),
+				require('./assets/images/categorys/relax/relax1.11.jpg'),
+
+				/**
+				 * CATEGORY SELFExpression
+				 */
+				require('./assets/images/categorys/selfExpression/selfExpression1.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression2.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression3.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression4.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.1.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.2.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.3.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.4.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.5.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.6.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.7.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.9.jpg'),
+				require('./assets/images/categorys/selfExpression/selfExpression1.10.jpg'),
+
+				/**
+				 * CATEGORY FAMILY
+				 */
+				require('./assets/images/categorys/family/family1.png'),
+				require('./assets/images/categorys/family/family2.jpg'),
+				require('./assets/images/categorys/family/family3.jpg'),
+				require('./assets/images/categorys/family/family1.1.jpg'),
+				require('./assets/images/categorys/family/family1.2.jpg'),
+				require('./assets/images/categorys/family/family1.3.jpg'),
+				require('./assets/images/categorys/family/family1.4.jpg'),
+				require('./assets/images/categorys/family/family1.5.jpg'),
+				require('./assets/images/categorys/family/family1.6.jpg'),
+				require('./assets/images/categorys/family/family1.7.jpg'),
+				require('./assets/images/categorys/family/family1.9.jpg'),
+				require('./assets/images/categorys/family/family1.10.jpg'),
+				require('./assets/images/categorys/family/family1.11.jpg'),
+				require('./assets/images/categorys/family/family1.12.jpg'),
+
+				/**
+				 * CATEGORY FINANCE
+				 */
+				require('./assets/images/categorys/finance/finance1.1.jpg'),
+				require('./assets/images/categorys/finance/finance1.2.jpg'),
+				require('./assets/images/categorys/finance/finance1.3.jpg'),
+				require('./assets/images/categorys/finance/finance1.4.jpg'),
+				require('./assets/images/categorys/finance/finance1.5.jpg'),
+				require('./assets/images/categorys/finance/finance1.6.jpg'),
+				require('./assets/images/categorys/finance/finance1.7.jpg'),
+				require('./assets/images/categorys/finance/finance1.jpg'),
+				require('./assets/images/categorys/finance/finance2.jpg'),
+				require('./assets/images/categorys/finance/finance3.jpg'),
+
+				/**
+				 * CATEGORY FRIEND
+				 */
+				require('./assets/images/categorys/friend/friend1.1.jpg'),
+				require('./assets/images/categorys/friend/friend1.2.jpg'),
+				require('./assets/images/categorys/friend/friend1.3.jpg'),
+				require('./assets/images/categorys/friend/friend1.4.jpg'),
+				require('./assets/images/categorys/friend/friend1.5.jpg'),
+				require('./assets/images/categorys/friend/friend1.6.jpg'),
+				require('./assets/images/categorys/friend/friend1.7.jpg'),
+				require('./assets/images/categorys/friend/friend1.8.jpg'),
+				require('./assets/images/categorys/friend/friend1.9.jpg'),
+				require('./assets/images/categorys/friend/friend1.jpg'),
+				require('./assets/images/categorys/friend/friend2.jpg'),
+				require('./assets/images/categorys/friend/friend3.jpg'),
+
+				/**
+				 * CATEGORY CAREAR
+				 */
+				require('./assets/images/categorys/carear/carear1.jpg'),
+				require('./assets/images/categorys/carear/carear2.jpg'),
+				require('./assets/images/categorys/carear/carear3.jpg'),
+				require('./assets/images/categorys/carear/carear4.jpg'),
+				require('./assets/images/categorys/carear/carear1.1.jpg'),
+				require('./assets/images/categorys/carear/carear1.2.jpg'),
+				require('./assets/images/categorys/carear/carear1.3.jpg'),
+				require('./assets/images/categorys/carear/carear1.4.jpg'),
 				// ============================================================
 			]),
 			Font.loadAsync({

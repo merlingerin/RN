@@ -1,25 +1,35 @@
 {
 	"expo": {
-		"name": "Goals",
-		"description": "A very interesting project.",
-		"slug": "Goals",
+		"name": "ProfiGoals",
+		"description": "ProfiGoals project.",
+		"slug": "ProfiGoals",
 		"privacy": "unlisted",
 		"sdkVersion": "27.0.0",
 		"platforms": ["ios", "android"],
 		"version": "1.0.1",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
+		"icon": "./assets/images/appicon.png",
 		"splash": {
-			"image": "./assets/images/splash.png",
+			"image": "./assets/images/splashscreen.png",
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
 		},
+		"android": {
+			"package": "com.goals.profigoals",
+			"config": {
+				"googleSignIn": {
+					"apiKey": "AIzaSyBTlu3HFY4szjg9j--P5_Q_6L97LkSxN-w",
+					"certificateHash": "EBE7E8C95FD2FA15D20B6D5DE8BD287B812257C6"
+				}
+			}
+		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": false,
+			"bundleIdentifier": "com.goals.profigoals"
 		}
 	}
 }

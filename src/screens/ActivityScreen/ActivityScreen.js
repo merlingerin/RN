@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import moment from 'moment';
+import moment, { weekdays } from 'moment';
 import { fb } from '../../services/api';
 import { addActivity, removeActivity, toggleNotification, changeGoalActive, removeGoal } from '../../ducks/goalsOffline';
 
@@ -20,6 +20,16 @@ import { Screen, View, Image, Title, Heading } from '@shoutem/ui';
 import { ActionSheet } from 'native-base';
 import DatePicker from 'react-native-datepicker';
 import ButtonAddActivity from '../../components/ButtonAddActivity/ButtonAddActivity';
+
+const sorter = {
+	пн: 1,
+	вт: 2,
+	ср: 3,
+	чт: 4,
+	пт: 5,
+	сб: 6,
+	вс: 7,
+};
 
 class ActivityScreen extends React.Component {
 	static navigationOptions = {
@@ -43,6 +53,9 @@ class ActivityScreen extends React.Component {
 		};
 
 		this.props.addActivity(activity, this.props.goal.id);
+		setTimeout(() => {
+			this.scrollView.scrollToEnd({ animated: true });
+		}, 1);
 	};
 
 	_removeActivity = id => {
@@ -83,9 +96,11 @@ class ActivityScreen extends React.Component {
 	_renderDays = () => {
 		const { id } = this.props.goal.activityRepeat;
 		const { weekDays, monthDays } = this.props.goal.activityRepeat;
+		const sortedWeekDays = weekDays ? _.sortBy(weekDays) : [];
+		const sortedMonthDays = monthDays && _.sortBy(monthDays, ['id']);
 
 		if (id === 4) {
-			return _.map(weekDays, id => {
+			return _.map(sortedWeekDays, id => {
 				const day = activityRepeatDaysParser(id);
 				return <Title style={{ ...Styles.defaultTextTitle }} key={day.id}>{`${day.title}, `}</Title>;
 			});
@@ -94,7 +109,7 @@ class ActivityScreen extends React.Component {
 			if (_.isEmpty(monthDays)) {
 				return false;
 			}
-			return _.map(monthDays, item => {
+			return _.map(sortedMonthDays, item => {
 				const { dayNumber } = item;
 				return <Title style={{ ...Styles.defaultTextTitle }} key={dayNumber}>{`${dayNumber}, `}</Title>;
 			});
@@ -151,6 +166,7 @@ class ActivityScreen extends React.Component {
 		*/
 		const { goal } = this.props;
 		let physicalActivity = null;
+		const _parsedTimes = _.sortBy(this.props.goal.activityRepeat.time);
 
 		if (!_.isEmpty(this.props.goal.physicalActivity)) {
 			physicalActivity = _.orderBy(
@@ -263,19 +279,9 @@ class ActivityScreen extends React.Component {
 					}}
 					rightComponent={<RightComponent />}
 				/>
-				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
+				<ScrollView ref={scrollView => (this.scrollView = scrollView)} style={{ backgroundColor: '#edf3ff' }}>
 					<View styleName="vertical h-center">
-						<Image
-							style={{ paddingBottom: 15 }}
-							styleName="large-banner"
-							source={
-								goal.image
-									? {
-											uri: goal.image.indexOf('http') > -1 ? goal.image : `data:image/jpeg;base64,${goal.image}`,
-									  }
-									: require('../../../assets/images/image-3.png')
-							}
-						/>
+						<Image style={{ paddingBottom: 15 }} styleName="large-banner" source={_.isNumber(goal.image) ? goal.image : { uri: `data:image/jpeg;base64,${goal.image}` }} />
 						<View
 							style={{
 								paddingHorizontal: 15,
@@ -296,7 +302,7 @@ class ActivityScreen extends React.Component {
 						<View
 							style={{
 								paddingHorizontal: 15,
-								paddingVertical: 15,
+								paddingVertical: 5,
 							}}
 							styleName="horizontal v-center space-around"
 						>
@@ -395,7 +401,7 @@ class ActivityScreen extends React.Component {
 								paddingHorizontal: 15,
 								width: '100%',
 								...Styles.borderBottom,
-								paddingVertical: 10,
+								paddingVertical: 3,
 								borderTopWidth: 1,
 								borderTopColor: '#dde5f5',
 							}}
@@ -408,7 +414,7 @@ class ActivityScreen extends React.Component {
 							style={{
 								paddingHorizontal: 15,
 								width: '100%',
-								paddingVertical: 10,
+								paddingVertical: 3,
 								...Styles.borderBottom,
 							}}
 							styleName="horizontal v-center space-between"
@@ -436,7 +442,7 @@ class ActivityScreen extends React.Component {
 							width: '100%',
 							...Styles.borderBottom,
 							paddingHorizontal: 15,
-							paddingVertical: 10,
+							paddingVertical: 3,
 						}}
 						styleName="horizontal v-center space-between"
 					>
@@ -457,7 +463,7 @@ class ActivityScreen extends React.Component {
 									width: '100%',
 									flexWrap: 'wrap',
 									...Styles.borderBottom,
-									paddingVertical: 10,
+									paddingVertical: 3,
 									paddingHorizontal: 15,
 								}}
 							>
@@ -473,13 +479,13 @@ class ActivityScreen extends React.Component {
 									width: '100%',
 									flexWrap: 'wrap',
 									...Styles.borderBottom,
-									paddingVertical: 10,
+									paddingVertical: 3,
 									paddingHorizontal: 15,
 								}}
 							>
 								<Title style={{ ...Styles.defaultText }}>НАПОМИНАНИЕ:</Title>
 								<View styleName="horizontal v-center h-start">
-									{_.map(goal.activityRepeat.time, item => (
+									{_.map(_parsedTimes, item => (
 										<Title style={{ ...Styles.defaultTextTitle }} key={uuidv4()}>{`${item}, `}</Title>
 									))}
 								</View>
@@ -495,13 +501,7 @@ class ActivityScreen extends React.Component {
 								styleName="horizontal v-center space-between"
 							>
 								<Title style={{ ...Styles.defaultText }}>НАПОМИНАНИЕ:</Title>
-								<Switch
-									onTintColor="#eacbf9"
-									thumbTintColor="#8700ca"
-									tintColor="rgba(234,203,249,.7)"
-									onValueChange={value => this._toggleNotifications()}
-									value={goal.activityRepeat.reminder}
-								/>
+								<Switch onTintColor="#eacbf9" thumbTintColor="#8700ca" tintColor="#fff" onValueChange={value => this._toggleNotifications()} value={goal.activityRepeat.reminder} />
 							</View>
 						</React.Fragment>
 					)}
@@ -511,7 +511,7 @@ class ActivityScreen extends React.Component {
 							withIcons
 							handleClick={() => {
 								const id = uuidv4();
-								return this._addActivity(id, goal, this.uid);
+								this._addActivity(id, goal, this.uid);
 							}}
 							buttonText="ДОБАВИТЬ АКТИВНОСТЬ"
 						/>
@@ -520,7 +520,7 @@ class ActivityScreen extends React.Component {
 					<View
 						styleName="vertical h-center"
 						style={{
-							paddingVertical: 10,
+							paddingVertical: 3,
 							// paddingHorizontal: 15,
 							width: '100%',
 							alignItems: 'stretch',
@@ -601,7 +601,7 @@ class ActivityScreen extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-	goal: ownProps.navigation.getParam('goal') ? state.goalsOffline[ownProps.navigation.getParam('goal').id] : null,
+	goal: ownProps.navigation.getParam('goalId') ? state.goalsOffline[ownProps.navigation.getParam('goalId')] : null,
 	isAuth: state.profile.isAuth,
 	loading: state.loader.isShown,
 });

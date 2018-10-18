@@ -11,6 +11,7 @@ export const ADD_ACTIVITY = 'goals/add_activity';
 export const REMOVE_ACTIVITY = 'goals/remove_activity';
 export const UPDATE_ACTIVITY = 'goals/update_activity';
 export const CHANGE_GOAL_ACTIVE = 'goals/change_goal_active';
+const SYNC_GOALS_WITH_FIREBASE = 'SYNC_GOALS_WITH_FIREBASE';
 
 const initialState = {};
 
@@ -18,6 +19,11 @@ const goalsOffline = (state = initialState, { type, payload }) => {
 	switch (type) {
 		case FETCH_GOALS_REQUEST:
 			return state;
+		case SYNC_GOALS_WITH_FIREBASE:
+			return {
+				...state,
+				...payload,
+			};
 		case FETCH_GOALS_SUCCESS:
 			return {
 				...state,
@@ -70,6 +76,13 @@ const goalsOffline = (state = initialState, { type, payload }) => {
 		default:
 			return state;
 	}
+};
+
+export const syncGoalsWithFirebase = goals => {
+	return {
+		type: SYNC_GOALS_WITH_FIREBASE,
+		payload: goals,
+	};
 };
 
 export const fetchGoalsSuccess = goals => {

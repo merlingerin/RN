@@ -1,22 +1,24 @@
 import React from 'react';
-import { NetInfo } from 'react-native';
-import { LinearGradient } from 'expo';
-
+import { NetInfo, Platform } from 'react-native';
+import { LinearGradient, Notifications } from 'expo';
+import { persistor } from '../../../App';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import moment from 'moment';
 import * as Animatable from 'react-native-animatable';
-import { requestLogOut, checkIsAuth, logOut } from '../../ducks/profile';
+import { requestLogOut, checkIsAuth, logOut, updateProfileData, syncFirebaseWithProfile } from '../../ducks/profile';
 import { setSelectedFilter, setOpenedCategory } from '../../ducks/filterGoals';
-import { fetchGoalsSuccess, addActivity } from '../../ducks/goalsOffline';
+import { fetchGoalsSuccess, addActivity, syncGoalsWithFirebase } from '../../ducks/goalsOffline';
 import { connect } from 'react-redux';
 import Toast from 'react-native-easy-toast';
 import { Icon, Avatar } from 'react-native-elements';
 import Header from '../../components/CustomHeader/CustomHeader';
+import CustomNewPicker from '../../components/CustomNewPicker';
 import { TouchableOpacity, ImageBackground, Screen, Subtitle, ListView, GridRow, Card, View, Overlay, Tile, Image } from '@shoutem/ui';
 import { fb } from '../../services/api';
 import { store } from '../../../App';
 import saveState from '../../utils/persistStoreFirebase';
+import { chainStoreFirebase, chainFirebaseStore } from '../../utils/chainStoreFirebase';
 import Styles from '../../styles/styles';
 import registerForPushNotificationsAsync from '../../../api/registerForPushNotificationsAsync';
 
@@ -33,6 +35,7 @@ class HomeScreen extends React.Component {
 		this.renderRow = this.renderRow.bind(this);
 		this.state = {
 			isModalVisible: false,
+			listenning: false,
 		};
 	}
 
@@ -52,53 +55,153 @@ class HomeScreen extends React.Component {
 
 		return pushToken;
 		// Watch for incoming notifications
-		// this._notificationSubscription = Notifications.addListener(
-		// 	this._handleNotification,
-		// );
 	};
-
+	_handleNotification = notification => {
+		// console.log('NOTIFICATION =>>>', notification);
+		const handleTap = _.throttle(
+			this.props.navigation.navigate('ActivityScreen', {
+				goalId: notification.data.id,
+			}),
+			2000,
+		);
+	};
 	// _handleNotification = ({ origin, data }) => {
 	// 	console.log(
 	// 		`Push notification ${origin} with data: ${JSON.stringify(data)}`,
 	// 	);
 	// };
+	/**
+	 * SYNC GOALS
+	 */
+	_syncFirebaseGoalsWithStore = uid =>
+		_.throttle(
+			fb
+				.database()
+				.ref(`goals/${uid}`)
+				.on('value', snapshot => {
+					let newGoals = snapshot.val();
+					let { lastLocalUpdate } = store.getState().profile;
+					let lastFirebaseUpdate = 1;
+					// console.log('Platform.OS', Platform.OS);
+					// console.log('SYNC FIREBASE GOALS WITH DB FIRED');
+					const syncCheckAndStart = _.debounce(() => {
+						return fb
+							.database()
+							.ref(`users/${uid}/lastUpdate`)
+							.once('value')
+							.then(snap => {
+								lastFirebaseUpdate = snap.val() || 1;
+								// ============================================================
+								// console.log('/========================================/');
+								// console.log('Platform.OS', Platform.OS);
+								// console.log('GET LAST UPDATE FRON FB 0');
+								// console.log('/========================================/');
+								// ============================================================
+								if (lastFirebaseUpdate && lastLocalUpdate < lastFirebaseUpdate) {
+									this.props.syncGoalsWithFirebase(newGoals);
+								}
+							});
+					}, 500);
+					syncCheckAndStart();
+				}),
+			100,
+		);
+
+	_syncFirebaseProfileWithStore = uid =>
+		_.throttle(
+			fb
+				.database()
+				.ref(`users/${uid}`)
+				.on('value', snap => {
+					// ============================================================
+
+					// console.log('Platform.OS', Platform.OS);
+					// console.log('SYNC FIREBASE PROFILE WITH DB START');
+					// ============================================================
+
+					const syncCheckAndStart = _.throttle(() => {
+						let { lastLocalUpdate } = store.getState().profile;
+						let lastFirebaseUpdate = snap.val() && snap.val().lastUpdate ? snap.val().lastUpdate : 1;
+						let newProfile = snap.val() && snap.val().profile ? snap.val().profile : {};
+						// ============================================================
+						// console.log('/========================================/');
+						// console.log('Platform.OS', Platform.OS);
+						// console.log('SYNC FIREBASE PROFILE WITH DB CHECK');
+						// console.log('/========================================/');
+						// ============================================================
+						if (lastFirebaseUpdate && lastLocalUpdate < lastFirebaseUpdate) {
+							this.props.syncFirebaseWithProfile(newProfile);
+						}
+					}, 500);
+					syncCheckAndStart();
+				}),
+			1000,
+		);
+
+	/**
+	 * SYNC DB WITH FIREBASE ON CHANGE STORE
+	 */
+	_syncDbWithFIrebase = () =>
+		_.debounce(
+			(this.unsubscribe = store.subscribe(
+				_.throttle(() => {
+					// console.log('Fire => START SUBSCRIBE');
+					return chainStoreFirebase(store.getState(), this.props.fetchGoalsSuccess, this.props.updateProfileData);
+				}, 500),
+			)),
+			1000,
+		);
 
 	componentDidMount() {
 		const that = this;
 		NetInfo.isConnected.addEventListener('connectionChange', this.persistStateWithFirebase);
-
+		this._notificationSubscription = Notifications.addListener(this._handleNotification);
 		fb.auth().onAuthStateChanged(async user => {
 			if (user) {
-				let profile = {
-					userPhoto: user.photoURL,
-					email: user.email,
-				};
-				profile.uid = user.uid;
-				profile.name = this.props.profile.name || '';
-				await fb
-					.database()
-					.ref(`users/${profile.uid}`)
-					.once('value')
-					.then(snap => {
-						const value = snap.val();
-						if (value && value.profile && value.profile.name) {
-							profile.name = value.profile.name;
-						}
-					});
-
-				if (user.displayName && user.displayName.length > 1) {
-					profile.name = user.displayName || '';
-				}
 				const pushToken = await this._registerForPushNotifications();
+				const { uid } = user;
 
+				let profile = { ...this.props.profile, uid: user.uid };
+				if (user.photoURL && !this.props.profile.userPhoto) {
+					profile.userPhoto = user.photoURL;
+				}
+
+				/**
+				|--------------------------------------------------
+				| CHECK AUTHRORIZATION USER; CREATE TOKEN FOR NOTIFICATION;
+				| CREATE AUTHORIZATION SESSION
+				|--------------------------------------------------
+				*/
+				// if (!this.state.listenning) {
 				this.props.checkIsAuth(profile, pushToken);
 
-				saveState(store.getState(), this.props.fetchGoalsSuccess, 'auth');
-
-				that.unsubscribe = store.subscribe(() => {
-					saveState(store.getState());
-				});
+				/**
+				|--------------------------------------------------
+				| SYNC FIREABSE GOALS WITH DATABASE ON FIREBASE CHANGE
+				|--------------------------------------------------
+				*/
+				this._syncFirebaseGoalsWithStore(uid);
+				/**
+				 * SYNC FIREBASE PROFILE WITH DB ON FIREBASE CHANGE
+				 */
+				this._syncFirebaseProfileWithStore(uid);
+				/**
+				|--------------------------------------------------
+				| SYNC DB WITH FIREBASE ON DATABASE CHANGE
+				|--------------------------------------------------
+				*/
+				this._syncDbWithFIrebase();
+				// this.setState({
+				// 	listenning: true,
+				// });
+				// }
 			} else {
+				/**
+				|--------------------------------------------------
+				| CLEAN ASYNC STORAGE AND LOGOUT
+				|--------------------------------------------------
+				*/
+				await persistor.purge();
 				this.props.logOut();
 			}
 		});
@@ -106,6 +209,12 @@ class HomeScreen extends React.Component {
 
 	componentWillUnmount() {
 		NetInfo.isConnected.removeEventListener('connectionChange', this.persistStateWithFirebase);
+		/**
+		 * UNSUBSCRIBE ON CLOSE APP
+		 */
+		if (_.isFunction(this.unsubscribe)) {
+			this.unsubscribe();
+		}
 	}
 
 	_addActivity = goalId => {
@@ -162,7 +271,7 @@ class HomeScreen extends React.Component {
 								borderRadius: 9,
 								overflow: 'hidden',
 							}}
-							onPress={() => (this.props.isAuth ? this._navTo(item.categoryId) : false)}
+							onPress={() => (this.props.isAuth ? this._navTo(item.categoryId) : this.props.navigation.navigate('ProfileScreen'))}
 							styleName="flexible"
 						>
 							<Card styleName="flexible v-center h-center">
@@ -186,7 +295,7 @@ class HomeScreen extends React.Component {
 					</Animatable.View>
 				);
 			}
-			let image = item.image.indexOf('http') > -1 ? item.image : `data:image/jpeg;base64,${item.image}`;
+			// let image = item.image.indexOf('http') > -1 || _.isNumber(item) ? item.image : `data:image/jpeg;base64,${item.image}`;
 			return (
 				<Animatable.View
 					animation="bounceIn"
@@ -205,7 +314,7 @@ class HomeScreen extends React.Component {
 						onPress={() =>
 							this.props.isAuth
 								? this.props.navigation.navigate('ActivityScreen', {
-										goal: item,
+										goalId: item.id,
 								  })
 								: false
 						}
@@ -220,9 +329,10 @@ class HomeScreen extends React.Component {
 									borderRadius: 9,
 									overflow: 'hidden',
 								}}
-								source={{
-									uri: image,
-								}}
+								// source={{
+								// 	uri: image,
+								// }}
+								source={_.isNumber(item.image) ? item.image : { uri: `data:image/jpeg;base64,${item.image}` }}
 							>
 								<View styleName="fill-parent horizontal h-start v-start">
 									{!this._isHideActivityButton(item.physicalActivity) ? (
@@ -245,7 +355,7 @@ class HomeScreen extends React.Component {
 								<View styleName="content  vertical v-end" style={{ width: '100%' }}>
 									<Overlay styleName="image-overlay  vertical v-end">
 										<Subtitle styleName="h-center  vertical v-end" numberOfLines={4}>
-											{item.goalTitle}
+											{item.goalTitle && `${item.goalTitle.slice(0, 23)}...`}
 										</Subtitle>
 									</Overlay>
 								</View>
@@ -267,14 +377,18 @@ class HomeScreen extends React.Component {
 			return 1;
 		});
 
+		const userAvatar = this.props.profile && this.props.profile.userPhoto ? this.props.profile.userPhoto : null;
+
 		return (
 			<Screen>
+				{/* <CustomNewPicker /> */}
 				<LinearGradient style={{ flex: 1 }} colors={['#ffffff', '#edf3ff', '#edf3ff']}>
 					<Header
 						leftComponent={{
 							icon: 'menu',
 							color: '#fff',
 							underlayColor: 'transparent',
+							size: 36,
 							onPress: () => this.props.navigation.navigate('DrawerOpen'),
 						}}
 						label={'ProfiGoals'}
@@ -282,9 +396,9 @@ class HomeScreen extends React.Component {
 							barStyle: 'light-content',
 						}}
 						rightComponent={
-							isAuth && profile.userPhoto ? (
+							isAuth && userAvatar ? (
 								<Animatable.View animation="zoomIn" easing="ease-out">
-									<Avatar width={24} height={24} rounded source={{ uri: profile.userPhoto }} onPress={() => this.props.navigation.navigate('ProfileScreen')} activeOpacity={0.7} />
+									<Avatar width={36} height={36} rounded source={{ uri: userAvatar }} onPress={() => this.props.navigation.navigate('ProfileScreen')} activeOpacity={0.7} />
 								</Animatable.View>
 							) : (
 								{
@@ -293,6 +407,7 @@ class HomeScreen extends React.Component {
 									color: '#fff',
 									underlayColor: '#fff',
 									reverseColor: '#8700ca',
+									size: 36,
 									onPress: () => this.props.navigation.navigate('ProfileScreen'),
 								}
 							)
@@ -345,6 +460,9 @@ const mapDispatchToProps = {
 	setSelectedFilter,
 	setOpenedCategory,
 	addActivity,
+	updateProfileData,
+	syncFirebaseWithProfile,
+	syncGoalsWithFirebase,
 };
 
 export default connect(

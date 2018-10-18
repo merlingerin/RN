@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Picker } from 'native-base';
 import _ from 'lodash';
 import { Icon, Header } from 'react-native-elements';
-
+import RNPickerSelect from 'react-native-picker-select';
 /** Style*/
 import Styles from '../../styles/styles';
 
@@ -85,22 +85,21 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 						width: 200,
 						borderWidth: 0,
 						borderColor: '#000',
-						color: '#8700ca',
 					}}
 					itemTextStyle={{
 						fontFamily: 'MA-Regular',
 						fontSize: 16,
+					}}
+					textStyle={{
+						fontFamily: 'MA-Regular',
 						color: '#8700ca',
+						fontSize: 16,
 					}}
 					selectedValue={selected}
 					onValueChange={onValueChange}
 				>
 					{_.map(categorys, category => (
-						<Picker.Item
-							key={category.key}
-							label={category.label}
-							value={category.key}
-						/>
+						<Picker.Item color={'#8700ca'} key={category.key} label={category.label} value={category.key} />
 					))}
 				</Picker>
 			);
@@ -125,32 +124,23 @@ const CustomPicker = ({ selected, onValueChange, type }) => {
 					mode="dropdown"
 					style={{
 						width: 200,
-						// marginLeft: 'auto',
 						borderWidth: 0,
 						borderColor: '#000',
-						color: '#8700ca',
 					}}
 					textStyle={{
 						fontFamily: 'MA-Regular',
+						color: '#8700ca',
 						fontSize: 16,
 					}}
-					// itemStyle={{
-					// 	backgroundColor: 'rgba(135, 0, 202, .1)',
-					// }}
 					itemTextStyle={{
 						fontFamily: 'MA-Regular',
 						fontSize: 16,
-						color: '#8700ca',
 					}}
 					selectedValue={selected}
 					onValueChange={onValueChange}
 				>
 					{_.map(reminder, rem => (
-						<Picker.Item
-							key={rem.key}
-							label={rem.label}
-							value={rem.key}
-						/>
+						<Picker.Item color={'#8700ca'} key={rem.key} label={rem.label} value={rem.key} />
 					))}
 				</Picker>
 			);

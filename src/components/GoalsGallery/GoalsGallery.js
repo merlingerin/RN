@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import {
-	TouchableOpacity,
-	ListView,
-	GridRow,
-	Image,
-	View,
-	ImageBackground,
-	Tile,
-	Overlay,
-	Row,
-} from '@shoutem/ui';
+import { TouchableOpacity, ListView, GridRow, Image, View, ImageBackground, Tile, Overlay, Row } from '@shoutem/ui';
 import { Text, Icon, List, ListItem } from 'react-native-elements';
 import { ImagePicker, Permissions, LinearGradient } from 'expo';
 import _ from 'lodash';
 import { Button } from 'native-base';
+import goalsImages from '../../data/goalsImages';
 
 const Styles = {
 	row: {
@@ -63,12 +54,8 @@ export default class GoalsGallery extends Component {
 	renderRow = (rowData, sectionId, index) => {
 		const cellViews = rowData.map((item, id) => {
 			return (
-				<TouchableOpacity
-					key={item.id}
-					styleName="flexible"
-					onPress={() => this._pickImage(item.image)}
-				>
-					<Image styleName="small" source={{ uri: item.image }} />
+				<TouchableOpacity key={id} styleName="flexible" onPress={() => this._pickImage(item)}>
+					<Image styleName="small" source={item} />
 				</TouchableOpacity>
 			);
 		});
@@ -109,13 +96,9 @@ export default class GoalsGallery extends Component {
 		const images = this.props.defaultImages;
 		let { image } = this.props;
 
-		const groupedData = GridRow.groupByRows(
-			this.props.defaultImages,
-			2,
-			() => {
-				return 1;
-			},
-		);
+		const groupedData = GridRow.groupByRows(goalsImages, 2, () => {
+			return 1;
+		});
 
 		const renderButtons = this.props.image !== this.state.image;
 
@@ -130,14 +113,10 @@ export default class GoalsGallery extends Component {
 					{!!image ? (
 						<ImageBackground
 							styleName="large-banner"
-							source={{
-								uri:
-									this.state.image.indexOf('http') > -1
-										? this.state.image
-										: `data:image/jpeg;base64,${
-												this.state.image
-										  }`,
-							}}
+							source={_.isNumber(this.state.image) ? this.state.image : { uri: `data:image/jpeg;base64,${this.state.image}` }}
+							// source={{
+							// 	uri: this.state.image.indexOf('http') > -1 ? this.state.image : `data:image/jpeg;base64,${this.state.image}`,
+							// }}
 						>
 							<TouchableOpacity
 								styleName="fill-parent"
@@ -163,10 +142,7 @@ export default class GoalsGallery extends Component {
 										}}
 										start={[0.1, 0.1]}
 										end={[1, 1]}
-										colors={[
-											'rgba(252,145,93, .8)',
-											'rgba(252,211,116, .8)',
-										]}
+										colors={['rgba(252,145,93, .8)', 'rgba(252,211,116, .8)']}
 									>
 										<Text
 											style={{
@@ -176,8 +152,7 @@ export default class GoalsGallery extends Component {
 												fontSize: 14,
 											}}
 										>
-											Кликните, что бы изменить
-											изображение цели
+											Кликните, что бы изменить изображение цели
 										</Text>
 									</LinearGradient>
 								</Tile>
@@ -197,9 +172,7 @@ export default class GoalsGallery extends Component {
 													backgroundColor: '#8700ca',
 												}}
 											>
-												<Text style={{ color: '#fff' }}>
-													ВЫБРАТЬ ФОТО
-												</Text>
+												<Text style={{ color: '#fff' }}>ВЫБРАТЬ ФОТО</Text>
 											</Row>
 
 											<Row style={Styles.row.row}>
@@ -210,26 +183,14 @@ export default class GoalsGallery extends Component {
 														this._toggleIsShow();
 													}}
 												>
-													<Text
-														style={Styles.row.text}
-														numberOfLines={1}
-													>
+													<Text style={Styles.row.text} numberOfLines={1}>
 														БИБЛИОТЕКА
 													</Text>
 												</TouchableOpacity>
 											</Row>
 											<Row style={Styles.row.row}>
-												<TouchableOpacity
-													style={Styles.row.button}
-													onPress={
-														this
-															._pickImageFromCamera
-													}
-												>
-													<Text
-														style={Styles.row.text}
-														numberOfLines={1}
-													>
+												<TouchableOpacity style={Styles.row.button} onPress={this._pickImageFromCamera}>
+													<Text style={Styles.row.text} numberOfLines={1}>
 														ГАЛЕРЕЯ
 													</Text>
 												</TouchableOpacity>
@@ -237,18 +198,11 @@ export default class GoalsGallery extends Component {
 											<Row
 												style={{
 													...Styles.row.row,
-													backgroundColor:
-														'rgba(207, 217, 237, .3)',
+													backgroundColor: 'rgba(207, 217, 237, .3)',
 												}}
 											>
-												<TouchableOpacity
-													style={Styles.row.button}
-													onPress={this._closeMenu}
-												>
-													<Text
-														style={Styles.row.text}
-														numberOfLines={1}
-													>
+												<TouchableOpacity style={Styles.row.button} onPress={this._closeMenu}>
+													<Text style={Styles.row.text} numberOfLines={1}>
 														ОТМЕНИТЬ
 													</Text>
 												</TouchableOpacity>
@@ -329,15 +283,7 @@ export default class GoalsGallery extends Component {
 						</ImageBackground>
 					) : null}
 
-					{this.state.isShow && (
-						<ListView
-							style={{ backgroundColor: '#fff', padding: 10 }}
-							columns={2}
-							horizontal={true}
-							data={groupedData}
-							renderRow={this.renderRow}
-						/>
-					)}
+					{this.state.isShow && <ListView style={{ backgroundColor: '#fff', padding: 10 }} columns={2} horizontal={true} data={groupedData} renderRow={this.renderRow} />}
 				</View>
 				{renderButtons && (
 					<View

@@ -39,7 +39,7 @@ class TermsOfUseScreen extends React.Component {
 						>
 							Политика конфиденциальности ProfiGoals
 						</Title>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{'\n'}
 							1) Эта политика конфиденциальности предназначена для обеспечения прозрачности использования приложения ProfiGoals для устройств Android.
 						</Subtitle>
@@ -47,12 +47,12 @@ class TermsOfUseScreen extends React.Component {
 							{'\n'}
 							Компания 4Profi разработала приложение «ProfiGoals» в качестве коммерческого приложения. Приложение помогает пользователям ставить цели и добиватться их.
 						</Text>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{' '}
 							{'\n'}
 							2) Этот сервис предоставляется 4Profi и предназначен для использования как есть.
 						</Subtitle>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{' '}
 							{'\n'}
 							3) Информация, которую мы собираем
@@ -67,7 +67,7 @@ class TermsOfUseScreen extends React.Component {
 							Приложение имеет доступ к вашим фотографиям, и вы можете использовать свои личные фотографии внутри приложения. Вся ваша личная информация используются только внутри
 							компании и не передаются третьим лицам.
 						</Text>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{'\n'}
 							4) Как мы используем информацию
 						</Subtitle>
@@ -78,7 +78,7 @@ class TermsOfUseScreen extends React.Component {
 						<Text style={Styles.defaultTextPrime}>{'\n'}• для создания индивидуального профиля и предоставления персональных услуг.</Text>
 						<Text style={Styles.defaultTextPrime}>{'\n'}• отвечать на ваши запросы, выполнять ваши запросы, предоставлять услуги или полные транзакции, которые вы запросили</Text>
 						<Text style={Styles.defaultTextPrime}>{'\n'}• предложить использовать или использовать некоторые функции в приложении</Text>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{'\n'}
 							5) Все права на ваши данные принадлежат вам.
 						</Subtitle>
@@ -89,7 +89,7 @@ class TermsOfUseScreen extends React.Component {
 							используют необходимые меры предосторожности, если находятся за пределами ЕС.
 						</Text>
 
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{' '}
 							{'\n'}
 							6) Рекламные серверы
@@ -98,7 +98,7 @@ class TermsOfUseScreen extends React.Component {
 							{'\n'}
 							Мы не сотрудничаем и не имеем никаких отношений с компаниями, предоставляющими рекламные серверы.
 						</Text>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{' '}
 							{'\n'}
 							7) Безопасность
@@ -107,7 +107,7 @@ class TermsOfUseScreen extends React.Component {
 							{'\n'}
 							Все данные и информация, переданные через Сервис, шифруются с помощью SSL- протокола.
 						</Text>
-						<Subtitle style={{ ...Styles.defaultTextPrime, fontFamily: 'MA-Regular', color: '#8700ca' }}>
+						<Subtitle style={{ ...Styles.defaultTextPrime, color: '#8700ca' }}>
 							{' '}
 							{'\n'}
 							8) Изменения

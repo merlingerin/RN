@@ -1,4 +1,3 @@
-import { RRule, RRuleSet, rrulestr } from 'rrule';
 import _ from 'lodash';
 
 // CRON
@@ -155,56 +154,56 @@ export const bymonthdayParser = days => {
 	return _.map(days, day => day.dayNumber);
 };
 
-const recurrenceCreator = goal => {
-	const { activityRepeat, createdDate, deadline } = goal;
-	/**
-	// DEFAULT OBJECT CREATOR
-			let activityObject = {
-				freq: freqParser(activityRepeat.id),
-				dtstart: new Date(createdDate),
-				until: new Date(deadline),
-				byweekday: byweekdayParser(activityRepeat.weekDays),
-				byseconds: bysecondsParser(activityRepeat.time),
-				bymonthday: bymonthdayParser(activityRepeat.monthDays),
-			};
-	// ============================================================
-	*/
-	if (!activityRepeat) return undefined;
-	let rruleConfig = null;
+// const recurrenceCreator = goal => {
+// 	const { activityRepeat, createdDate, deadline } = goal;
+// 	/**
+// 	// DEFAULT OBJECT CREATOR
+// 			let activityObject = {
+// 				freq: freqParser(activityRepeat.id),
+// 				dtstart: new Date(createdDate),
+// 				until: new Date(deadline),
+// 				byweekday: byweekdayParser(activityRepeat.weekDays),
+// 				byseconds: bysecondsParser(activityRepeat.time),
+// 				bymonthday: bymonthdayParser(activityRepeat.monthDays),
+// 			};
+// 	// ============================================================
+// 	*/
+// 	if (!activityRepeat) return undefined;
+// 	let rruleConfig = null;
 
-	if (activityRepeat.id === 1) {
-		rruleConfig = {
-			freq: RRule[freqParser(activityRepeat.id)],
-			dtstart: new Date(createdDate),
-			until: new Date(deadline),
-			bysecond: bysecondsParser(activityRepeat.time),
-		};
-	}
+// 	if (activityRepeat.id === 1) {
+// 		rruleConfig = {
+// 			freq: RRule[freqParser(activityRepeat.id)],
+// 			dtstart: new Date(createdDate),
+// 			until: new Date(deadline),
+// 			bysecond: bysecondsParser(activityRepeat.time),
+// 		};
+// 	}
 
-	if (activityRepeat.id === 4) {
-		rruleConfig = {
-			freq: RRule[freqParser(activityRepeat.id)],
-			dtstart: new Date(createdDate),
-			until: new Date(deadline),
-			byweekday: byweekdayParser(activityRepeat.weekDays),
-			bysecond: bysecondsParser(activityRepeat.time),
-		};
-	}
-	if (activityRepeat.id === 5) {
-		rruleConfig = {
-			freq: RRule[freqParser(activityRepeat.id)],
-			dtstart: new Date(createdDate),
-			until: new Date(deadline),
-			bymonthday: bymonthdayParser(activityRepeat.monthDays),
-			bysecond: bysecondsParser(activityRepeat.time),
-		};
-	}
-	if (!rruleConfig) {
-		return null;
-	}
+// 	if (activityRepeat.id === 4) {
+// 		rruleConfig = {
+// 			freq: RRule[freqParser(activityRepeat.id)],
+// 			dtstart: new Date(createdDate),
+// 			until: new Date(deadline),
+// 			byweekday: byweekdayParser(activityRepeat.weekDays),
+// 			bysecond: bysecondsParser(activityRepeat.time),
+// 		};
+// 	}
+// 	if (activityRepeat.id === 5) {
+// 		rruleConfig = {
+// 			freq: RRule[freqParser(activityRepeat.id)],
+// 			dtstart: new Date(createdDate),
+// 			until: new Date(deadline),
+// 			bymonthday: bymonthdayParser(activityRepeat.monthDays),
+// 			bysecond: bysecondsParser(activityRepeat.time),
+// 		};
+// 	}
+// 	if (!rruleConfig) {
+// 		return null;
+// 	}
 
-	let rruleSet = new RRule(rruleConfig);
-	return rruleSet.toString();
-};
+// 	let rruleSet = new RRule(rruleConfig);
+// 	return rruleSet.toString();
+// };
 
-export default recurrenceCreator;
+// export default recurrenceCreator;

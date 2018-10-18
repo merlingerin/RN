@@ -26,8 +26,8 @@ class FAQScreen extends React.Component {
 					// }}
 					label="Справка"
 				/>
-				<ScrollView style={{ backgroundColor: '#edf3ff' }}>
-					<View style={{ paddingTop: 20, paddingHorizontal: 15 }}>
+				<ScrollView style={{ backgroundColor: '#edf3ff', paddingBottom: 150 }}>
+					<View style={{ paddingTop: 20, paddingHorizontal: 15, paddingBottom: 70 }}>
 						<Title
 							style={{
 								...Styles.defaultTitlePrime,
@@ -43,6 +43,21 @@ class FAQScreen extends React.Component {
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
 								<Subtitle style={{ color: '#fff', fontSize: 12 }}>01</Subtitle>
 							</View>
+							<Subtitle style={Styles.defaultTitlePrime}>{`Как начать работать с приложением?`.toUpperCase()}</Subtitle>
+						</View>
+						<Text style={Styles.defaultTextPrime}>
+							Чтобы начать работать с приложением, необходимо авторизоваться в системе. Это вам позволит создавать и сохранять ваши цели и активности по ним на различных девайсах вашего
+							аккаунта. Выполните тап по кнопке – аватарке, расположенной в правом верхнем углу начального экрана. Либо же выберите любую интересующую вас категорию на начальном экране.
+							Откроется экран входа в систему. Авторизуйтесь любым удобным для вас способом: {'\n'}
+							1) Войдите с помощью своего Google аккаунта.
+							{'\n'}
+							2) Зарегистрируйтесь путем введения адреса электронной почты и пароля. После авторизации в приложении вы можете установить цели.{' '}
+						</Text>
+
+						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
+							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>02</Subtitle>
+							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу поставить свою цель?`.toUpperCase()}</Subtitle>
 						</View>
 						<Text style={Styles.defaultTextPrime}>
@@ -53,7 +68,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>02</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>03</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Что такое шаблоны целей?`.toUpperCase()}</Subtitle>
 						</View>
@@ -65,7 +80,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>03</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>04</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу поставить цель на основе шаблона`.toUpperCase()}</Subtitle>
 						</View>
@@ -77,7 +92,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>04</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>05</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу поставить (изменить) напоминания для цели`.toUpperCase()}</Subtitle>
 						</View>
@@ -89,7 +104,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>05</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>06</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу посмотреть все свои активные цели`.toUpperCase()}</Subtitle>
 						</View>
@@ -99,7 +114,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>06</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>07</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Что такое активность по цели`.toUpperCase()}</Subtitle>
 						</View>
@@ -109,7 +124,7 @@ class FAQScreen extends React.Component {
 						</Text>
 						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
 							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
-								<Subtitle style={{ color: '#fff', fontSize: 12 }}>07</Subtitle>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>08</Subtitle>
 							</View>
 							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу отметить активность (действие) по цели`.toUpperCase()}</Subtitle>
 						</View>
@@ -130,11 +145,18 @@ class FAQScreen extends React.Component {
 							<Text style={Styles.defaultTextPrime}>
 								{'\n'}
 								При записи активности любым из представленных здесь способов, запись о ней добавляется в журнал активностей При клике на изображение цели на карте целей пользователь
-								переходит на карточку цели, где он может получить всю информацию по данной цели, история активностей, а также перейти в режим редактирования 8. Как я могу посмотреть
-								историю своих активностей по цели Для того, чтобы посмотреть историю своих активностей по заданной цели, нужно перейти в карточку цели. В разделе Журнал активностей
-								можно найти весь список активностей по выбранной цели. В случае необходимости активность можно отредактировать – изменить дату и время выполнения активности, или
-								удалить ошибочно поставленную активность.
+								переходит на карточку цели, где он может получить всю информацию по данной цели, история активностей, а также перейти в режим редактирования
 							</Text>
+						</Text>
+						<View styleName="horizontal v-center h-start" style={{ marginBottom: 5, marginTop: 15 }}>
+							<View styleName="horizontal v-center h-center" style={{ marginRight: 7, width: 20, height: 20, borderRadius: 10, backgroundColor: '#8700ca' }}>
+								<Subtitle style={{ color: '#fff', fontSize: 12 }}>09</Subtitle>
+							</View>
+							<Subtitle style={Styles.defaultTitlePrime}>{`Как я могу посмотреть историю своих активностей по цели`.toUpperCase()}</Subtitle>
+						</View>
+						<Text style={Styles.defaultTextPrime}>
+							Для того, чтобы посмотреть историю своих активностей по заданной цели, нужно перейти в карточку цели. В разделе Журнал активностей можно найти весь список активностей по
+							выбранной цели. В случае необходимости активность можно отредактировать – изменить дату и время выполнения активности, или удалить ошибочно поставленную активность.
 						</Text>
 					</View>
 				</ScrollView>
