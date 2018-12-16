@@ -455,22 +455,21 @@ class ActivityScreen extends React.Component {
 						</Title>
 						<Title style={{ ...Styles.defaultTextTitle }}>{goal.activityRepeat.title}</Title>
 					</View>
-					{(goal.activityRepeat.id === 4 || goal.activityRepeat.id === 5) &&
-						(!_.isEmpty(goal.activityRepeat.weekDays) || !_.isEmpty(goal.activityRepeat.monthDays)) && (
-							<View
-								styleName="horizontal v-center space-between"
-								style={{
-									width: '100%',
-									flexWrap: 'wrap',
-									...Styles.borderBottom,
-									paddingVertical: 3,
-									paddingHorizontal: 15,
-								}}
-							>
-								<Title style={{ ...Styles.defaultText }}>ДНИ:</Title>
-								<View styleName="horizontal v-center h-start">{this._renderDays()}</View>
-							</View>
-						)}
+					{(goal.activityRepeat.id === 4 || goal.activityRepeat.id === 5) && (!_.isEmpty(goal.activityRepeat.weekDays) || !_.isEmpty(goal.activityRepeat.monthDays)) && (
+						<View
+							styleName="horizontal v-center space-between"
+							style={{
+								width: '100%',
+								flexWrap: 'wrap',
+								...Styles.borderBottom,
+								paddingVertical: 3,
+								paddingHorizontal: 15,
+							}}
+						>
+							<Title style={{ ...Styles.defaultText }}>ДНИ:</Title>
+							<View styleName="horizontal v-center h-start">{this._renderDays()}</View>
+						</View>
+					)}
 					{goal.activityRepeat.id !== 0 && (
 						<React.Fragment>
 							<View
@@ -501,7 +500,14 @@ class ActivityScreen extends React.Component {
 								styleName="horizontal v-center space-between"
 							>
 								<Title style={{ ...Styles.defaultText }}>НАПОМИНАНИЕ:</Title>
-								<Switch onTintColor="#eacbf9" thumbTintColor="#8700ca" tintColor="#fff" onValueChange={value => this._toggleNotifications()} value={goal.activityRepeat.reminder} />
+								<Switch
+									disabled={this.props.goal.active === 2}
+									onTintColor="#eacbf9"
+									thumbTintColor="#8700ca"
+									tintColor="#fff"
+									onValueChange={value => this._toggleNotifications()}
+									value={goal.activityRepeat.reminder}
+								/>
 							</View>
 						</React.Fragment>
 					)}

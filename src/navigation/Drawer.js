@@ -10,6 +10,7 @@ import TermsOfUseScreen from '../screens/Drawer/Screens/TermsOfUseScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import SideMenu from '../components/Drawer';
+let pkg = require('../../app.json');
 
 export const AuthDrawer = DrawerNavigator(
 	{
@@ -41,22 +42,31 @@ export const AuthDrawer = DrawerNavigator(
 				<View styleName="horizontal h-center" style={{ width: '100%' }}>
 					<Text
 						style={{
-							paddingVertical: 20,
 							fontSize: 32,
 							color: '#8700ca',
 							fontFamily: 'M-Regular',
+							paddingVertical: 20,
 						}}
 					>
 						ProfiGoals
 					</Text>
 				</View>
+				<View styleName="horizontal h-end v-center" style={{ paddingHorizontal: 20 }}>
+					<Text>ver.{pkg.expo.version}</Text>
+				</View>
+
 				<DrawerItems
 					{...props}
-					getLabel={scene => (
-						<View styleName="horizontal h-start v-center" style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+					getLabel={scene => {
+						if(props.getLabel(scene) === 'Карта целей') {
+							return null
+						}
+						return (
+							<View styleName="horizontal h-start v-center" style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
 							<Text style={{ fontFamily: 'M-Regular', fontSize: 15, color: '#000' }}>{props.getLabel(scene)}</Text>
 						</View>
-					)}
+						)
+					}}
 				/>
 			</View>
 		),

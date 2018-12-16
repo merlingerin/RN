@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { fb } from '../../services/api';
 import { LinearGradient, Permissions, ImagePicker } from 'expo';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { signInWithGoogle, authWithEmail, requestLogOut, resetError, updateProfileData } from '../../ducks/profile';
 import Header from '../../components/CustomHeader/CustomHeader';
@@ -137,15 +137,15 @@ class ProfileScreen extends React.Component {
 			exif: true,
 			base64: true,
 			allowsEditing: true,
-			quality: 0,
-			base64: true,
+			quality: Platform.OS === 'ios' ? 0 : 0.5,
 			aspect: [4, 3],
 		});
+
 		if (!pickerResult.cancelled) {
 			// this.setState({ image: pickerResult.uri });
 			this.props.updateProfileData({
 				...this.props.profile,
-				customPhoto: `data:image/jpeg;base64,${pickerResult.base64}`,
+				userPhoto: `data:image/jpeg;base64,${pickerResult.base64}`,
 			});
 		}
 	};
@@ -155,7 +155,7 @@ class ProfileScreen extends React.Component {
 		let pickerResult = await ImagePicker.launchImageLibraryAsync({
 			exif: true,
 			allowsEditing: true,
-			quality: 0,
+			quality: Platform.OS === 'ios' ? 0 : 0.5,
 			base64: true,
 			aspect: [4, 3],
 		});
@@ -299,6 +299,8 @@ class ProfileScreen extends React.Component {
 									returnKeyType={'done'}
 									autoCapitalize="none"
 									autoCorrect={false}
+									secureTextEntry={true}
+									textContentType={"password"}
 									onChangeText={this._handleInputPassword}
 									value={this.state.authorization.password}
 								/>

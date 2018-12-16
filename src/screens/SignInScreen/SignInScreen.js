@@ -127,6 +127,8 @@ class SignInScreen extends Component {
 									lineHeight: 16,
 									fontFamily: 'MA-Regular',
 								}}
+								secureTextEntry={true}
+								textContentType={'password'}
 								returnKeyType={'done'}
 								autoCapitalize="none"
 								autoCorrect={false}

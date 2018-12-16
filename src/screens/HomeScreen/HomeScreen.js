@@ -52,18 +52,18 @@ class HomeScreen extends React.Component {
 		// a notification every time you open the app. Check out the source
 		// for this function in api/registerForPushNotificationsAsync.js
 		const pushToken = await registerForPushNotificationsAsync();
-
+		console.log('pushToken', pushToken);
 		return pushToken;
 		// Watch for incoming notifications
 	};
 	_handleNotification = notification => {
 		// console.log('NOTIFICATION =>>>', notification);
-		const handleTap = _.throttle(
-			this.props.navigation.navigate('ActivityScreen', {
+		const handleTap = _.throttle(() => {
+			return this.props.navigation.navigate('ActivityScreen', {
 				goalId: notification.data.id,
-			}),
-			2000,
-		);
+			});
+		}, 2000);
+		handleTap();
 	};
 	// _handleNotification = ({ origin, data }) => {
 	// 	console.log(
@@ -355,7 +355,7 @@ class HomeScreen extends React.Component {
 								<View styleName="content  vertical v-end" style={{ width: '100%' }}>
 									<Overlay styleName="image-overlay  vertical v-end">
 										<Subtitle styleName="h-center  vertical v-end" numberOfLines={4}>
-											{item.goalTitle && `${item.goalTitle.slice(0, 23)}...`}
+											{item.goalTitle && `${_.truncate(item.goalTitle, { length: 23 })}`}
 										</Subtitle>
 									</Overlay>
 								</View>
